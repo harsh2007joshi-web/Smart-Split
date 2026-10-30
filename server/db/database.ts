@@ -823,7 +823,6 @@ class Database {
       name: 'Rahul Sharma',
       email: 'rahul@example.com',
       passwordHash: demoPasswordHash,
-      avatarUrl: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80',
       isEmailVerified: true,
       createdAt: new Date(Date.now() - 30 * 86400000).toISOString(),
       updatedAt: new Date().toISOString(),

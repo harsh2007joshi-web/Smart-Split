@@ -146,14 +146,12 @@ export const Topbar: React.FC<TopbarProps> = ({ onToggleSidebar, onOpenAddExpens
           to="/profile"
           className="flex items-center space-x-2.5 p-1.5 sm:pr-3 rounded-2xl border border-[#D8E9FA] dark:border-[#303030] bg-white dark:bg-[#101010] hover:bg-[#F1F9FF] dark:hover:bg-[#141414] transition-colors"
         >
-          <img
-            src={
-              user?.avatarUrl ||
-              'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&auto=format&fit=crop&q=80'
-            }
-            alt={user?.name || 'User'}
-            className="w-8 h-8 rounded-full object-cover border border-[#BFE9FF] dark:border-[#303030]"
-          />
+          <div
+            className="w-8 h-8 rounded-full bg-[#E9F5FE] text-[#1685F8] dark:bg-[#141414] dark:text-[#2589FF] border border-[#1685F8] dark:border-[#2589FF] flex items-center justify-center text-xs font-black uppercase select-none flex-shrink-0"
+            title={user?.name || 'User'}
+          >
+            {(user?.name || 'User').trim().charAt(0).toUpperCase()}
+          </div>
           <div className="hidden sm:block text-left">
             <div className="text-xs font-bold text-[#10274A] dark:text-[#F5F5F5] leading-tight">
               {user?.name || 'Rahul Sharma'}

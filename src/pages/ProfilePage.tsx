@@ -64,14 +64,12 @@ export const ProfilePage: React.FC = () => {
           {/* User Profile Card */}
           <div className="clay-card p-6 sm:p-8 bg-white dark:bg-[#101010] dark:border dark:border-[#303030] space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center space-y-4 sm:space-y-0 sm:space-x-5">
-              <img
-                src={
-                  user?.avatarUrl ||
-                  'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80'
-                }
-                alt={user?.name || 'User'}
-                className="w-20 h-20 rounded-3xl object-cover border-2 border-[#1685F8] dark:border-[#2589FF] shadow-md"
-              />
+              <div
+                className="w-20 h-20 rounded-3xl bg-gradient-to-br from-[#E9F5FE] to-[#D8E9FA] dark:from-[#141414] dark:to-[#1E293B] border-2 border-[#1685F8] dark:border-[#2589FF] shadow-md flex items-center justify-center text-3xl font-black text-[#1685F8] dark:text-[#2589FF] uppercase select-none flex-shrink-0"
+                title={user?.name || 'User Profile'}
+              >
+                {(user?.name || 'User').trim().charAt(0).toUpperCase()}
+              </div>
               <div className="space-y-1">
                 <div className="flex items-center space-x-2.5">
                   <h3 className="text-xl font-black text-[#10274A] dark:text-[#F5F5F5]">{user?.name}</h3>

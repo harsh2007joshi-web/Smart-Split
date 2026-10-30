@@ -126,14 +126,12 @@ export const Sidebar: React.FC<{ isOpen?: boolean; onClose?: () => void }> = ({
         {/* User Card */}
         <div className="p-3 rounded-2xl bg-[#F1F9FF] dark:bg-[#101010] border border-[#D8E9FA] dark:border-[#303030] flex items-center justify-between">
           <div className="flex items-center space-x-2.5 truncate">
-            <img
-              src={
-                user?.avatarUrl ||
-                'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&auto=format&fit=crop&q=80'
-              }
-              alt={user?.name || 'User'}
-              className="w-9 h-9 rounded-full object-cover border border-[#BFE9FF] dark:border-[#303030]"
-            />
+            <div
+              className="w-9 h-9 rounded-full bg-[#E9F5FE] text-[#1685F8] dark:bg-[#141414] dark:text-[#2589FF] border border-[#1685F8] dark:border-[#2589FF] flex items-center justify-center text-sm font-black uppercase flex-shrink-0 select-none"
+              title={user?.name || 'User'}
+            >
+              {(user?.name || 'User').trim().charAt(0).toUpperCase()}
+            </div>
             <div className="truncate">
               <div className="text-xs font-bold text-[#10274A] dark:text-[#F5F5F5] truncate">
                 {user?.name || 'Rahul Sharma'}
