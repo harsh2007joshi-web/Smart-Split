@@ -79,6 +79,8 @@ export interface StoredGroup {
   category: string;
   currency: string;
   creatorId: string;
+  budget?: number;
+  budgetCurrency?: string;
   createdAt: string;
   updatedAt: string;
   members: StoredGroupMember[];
@@ -106,6 +108,8 @@ export interface StoredExpense {
   splitType: 'EQUAL' | 'CUSTOM' | 'PERCENTAGE';
   splits: StoredExpenseSplit[];
   notes?: string;
+  taxAmount?: number;
+  receiptUrl?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -622,6 +626,49 @@ class Database {
     return { success: true, message: `Trip group "${group.name}" has been successfully deleted and closed.` };
   }
 
+  public updateGroup(groupId: string, updates: Partial<StoredGroup>): StoredGroup | undefined {
+    const group = this.getGroupById(groupId);
+    if (!group) return undefined;
+    Object.assign(group, updates, { updatedAt: new Date().toISOString() });
+    this.save();
+    return group;
+  }
+
+  public findPotentialDuplicateExpense(
+    groupId: string,
+    data: { title: string; amount: number; payerId?: string; date?: string }
+  ): StoredExpense | undefined {
+    const expenses = this.getExpensesForGroup(groupId);
+    const targetTitle = (data.title || '').trim().toLowerCase();
+    const targetAmount = Number(data.amount);
+    if (!targetAmount || targetAmount <= 0) return undefined;
+
+    const targetTime = data.date ? new Date(data.date).getTime() : Date.now();
+
+    return expenses.find(e => {
+      // Amount closeness: within 1% or within 50 paise
+      const diff = Math.abs(Number(e.amount) - targetAmount);
+      const isAmountClose = diff <= 0.5 || (targetAmount > 0 && diff / targetAmount < 0.015);
+      if (!isAmountClose) return false;
+
+      // Title similarity
+      const eTitle = e.title.trim().toLowerCase();
+      const isTitleMatch =
+        eTitle === targetTitle ||
+        (targetTitle.length > 3 && eTitle.includes(targetTitle)) ||
+        (eTitle.length > 3 && targetTitle.includes(eTitle));
+
+      // Date similarity: within 3 days
+      const eTime = new Date(e.date).getTime();
+      const isDateClose = Math.abs(eTime - targetTime) <= 3 * 86400000;
+
+      // Same payer if provided
+      const isPayerMatch = !data.payerId || e.payerId === data.payerId;
+
+      return isAmountClose && isTitleMatch && isDateClose && isPayerMatch;
+    });
+  }
+
   // --- Expenses ---
   public getExpensesForGroup(groupId: string): StoredExpense[] {
     return this.data.expenses.filter(e => e.groupId === groupId).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
@@ -825,6 +872,7 @@ class Database {
       category: 'Travel',
       currency: 'INR',
       creatorId: rahul.id,
+      budget: 35000,
       createdAt: new Date(Date.now() - 14 * 86400000).toISOString(),
       updatedAt: new Date().toISOString(),
       members: [

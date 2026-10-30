@@ -67,11 +67,21 @@ router.get('/', (req: AuthenticatedRequest, res: Response): void => {
     const topCat = Object.entries(categoryTotals).sort((a, b) => b[1] - a[1])[0] || ['Food', 0];
     const topCatPct = totalSpent > 0 ? Math.round((topCat[1] / totalSpent) * 100) : 0;
 
+    // Check group budgets
+    const groupWithBudget = userGroups.find(g => g.budget && g.budget > 0);
+    let budgetInsightText = '';
+    if (groupWithBudget) {
+      const gExpenses = allExpenses.filter(e => e.groupId === groupWithBudget.id);
+      const gSpent = gExpenses.reduce((sum, e) => sum + Number(e.amount), 0);
+      const bPct = Math.round((gSpent / groupWithBudget.budget!) * 100);
+      budgetInsightText = ` "${groupWithBudget.name}" has utilized ${bPct}% of its ${groupWithBudget.currency} ${groupWithBudget.budget!.toLocaleString()} budget.`;
+    }
+
     let aiInsight = {
       title: 'AI Insight',
       badge: 'Smart Budgeting',
       description: totalSpent > 0
-        ? `${topCat[0]} is your biggest expense this month (${topCatPct}% of total group spending).`
+        ? `${topCat[0]} is your largest spending category this month (${topCatPct}% of total group spending).${budgetInsightText}`
         : 'Start tracking group expenses to unlock personalized smart AI insights.',
       recommendation: youOwe > 0
         ? `You have ₹${youOwe.toLocaleString()} in pending settlements. Use PayPal or 3D Card checkout to clear balances with 1 click.`

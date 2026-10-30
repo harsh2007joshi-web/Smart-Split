@@ -53,4 +53,22 @@ router.post('/ask', async (req: AuthenticatedRequest, res: Response): Promise<vo
   }
 });
 
+// 3. RECEIPT OCR / MULTIMODAL SCANNING
+router.post('/scan-receipt', async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+  try {
+    const { imageBase64, mimeType } = req.body;
+
+    if (!imageBase64) {
+      res.status(400).json({ error: 'Receipt image data is required.' });
+      return;
+    }
+
+    const result = await aiService.scanReceipt(imageBase64, mimeType || 'image/jpeg');
+    res.json(result);
+  } catch (err: any) {
+    console.error('Receipt scan error:', err);
+    res.status(500).json({ error: 'Failed to process receipt image.' });
+  }
+});
+
 export default router;

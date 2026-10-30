@@ -5,6 +5,34 @@ import { AuthenticatedRequest, authenticateToken } from '../middleware/auth';
 const router = Router();
 router.use(authenticateToken);
 
+// 0. CHECK FOR POTENTIAL DUPLICATE EXPENSE
+router.post('/check-duplicate', (req: AuthenticatedRequest, res: Response): void => {
+  try {
+    const { groupId, title, amount, payerId, date } = req.body;
+    if (!groupId || !title || !amount) {
+      res.json({ isDuplicate: false });
+      return;
+    }
+    const match = db.findPotentialDuplicateExpense(groupId, {
+      title,
+      amount: parseFloat(amount),
+      payerId,
+      date,
+    });
+    if (match) {
+      res.json({
+        isDuplicate: true,
+        duplicateExpense: match,
+        message: `A similar expense "${match.title}" for ${match.currency} ${match.amount.toLocaleString()} on ${match.date} was paid by ${match.payerName}.`,
+      });
+    } else {
+      res.json({ isDuplicate: false });
+    }
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to check duplicates.' });
+  }
+});
+
 // 1. ADD EXPENSE TO GROUP
 router.post('/group/:groupId', (req: AuthenticatedRequest, res: Response): void => {
   try {
@@ -20,6 +48,9 @@ router.post('/group/:groupId', (req: AuthenticatedRequest, res: Response): void 
       splitType = 'EQUAL',
       participants, // array of { userId, userName, shareAmount?, percentage? }
       notes,
+      taxAmount,
+      receiptUrl,
+      allowDuplicate = false,
     } = req.body;
 
     if (!title || !title.trim()) {
@@ -46,6 +77,25 @@ router.post('/group/:groupId', (req: AuthenticatedRequest, res: Response): void 
       return;
     }
     db.syncUserWithGroups(req.user!);
+
+    // Duplicate expense guard
+    if (!allowDuplicate) {
+      const existingMatch = db.findPotentialDuplicateExpense(groupId, {
+        title: title.trim(),
+        amount: numAmount,
+        payerId: payerId || req.user!.id,
+        date,
+      });
+
+      if (existingMatch) {
+        res.status(200).json({
+          warning: 'POTENTIAL_DUPLICATE',
+          message: `A similar expense "${existingMatch.title}" (${existingMatch.currency} ${existingMatch.amount.toLocaleString()}) was already recorded on ${existingMatch.date} by ${existingMatch.payerName}.`,
+          duplicateExpense: existingMatch,
+        });
+        return;
+      }
+    }
 
     if (!participants || !Array.isArray(participants) || participants.length === 0) {
       res.status(400).json({ error: 'Please select at least one participant.' });
@@ -80,8 +130,15 @@ router.post('/group/:groupId', (req: AuthenticatedRequest, res: Response): void 
         res.status(400).json({ error: `Percentages must add up to 100%. Currently: ${totalPct.toFixed(1)}%` });
         return;
       }
+
+      let runningShareSum = 0;
       calculatedSplits = participants.map((p, idx) => {
-        const share = Math.round((numAmount * (Number(p.percentage) / 100)) * 100) / 100;
+        let share = Math.round((numAmount * (Number(p.percentage) / 100)) * 100) / 100;
+        if (idx === participants.length - 1) {
+          share = Math.round((numAmount - runningShareSum) * 100) / 100;
+        } else {
+          runningShareSum += share;
+        }
         return {
           id: 'sp_' + Math.random().toString(36).substring(2, 9),
           expenseId: '',
@@ -124,6 +181,8 @@ router.post('/group/:groupId', (req: AuthenticatedRequest, res: Response): void 
       splitType,
       splits: calculatedSplits,
       notes: notes?.trim() || '',
+      taxAmount: taxAmount ? parseFloat(taxAmount) : undefined,
+      receiptUrl: receiptUrl || undefined,
     });
 
     // Notify other members
@@ -136,6 +195,35 @@ router.post('/group/:groupId', (req: AuthenticatedRequest, res: Response): void 
           type: 'EXPENSE',
           link: `/groups/${group.id}`,
         });
+      }
+    }
+
+    // Smart Budget Alerts Check
+    if (group.budget && group.budget > 0) {
+      const allGroupExpenses = db.getExpensesForGroup(groupId);
+      const totalGroupSpent = allGroupExpenses.reduce((sum, e) => sum + Number(e.amount), 0);
+      const pctUsed = Math.round((totalGroupSpent / group.budget) * 100);
+
+      if (pctUsed >= 100) {
+        for (const member of group.members) {
+          db.createNotification({
+            userId: member.userId,
+            title: '🚨 Group Budget Exceeded',
+            message: `"${group.name}" has reached ${pctUsed}% of its budget (${currency} ${group.budget.toLocaleString()}). Total spent: ${currency} ${totalGroupSpent.toLocaleString()}.`,
+            type: 'ALERT',
+            link: `/groups/${group.id}`,
+          });
+        }
+      } else if (pctUsed >= 70) {
+        for (const member of group.members) {
+          db.createNotification({
+            userId: member.userId,
+            title: '⚠️ Group Budget Warning',
+            message: `"${group.name}" has used ${pctUsed}% of its budget (${currency} ${group.budget.toLocaleString()}). Remaining: ${currency} ${(group.budget - totalGroupSpent).toLocaleString()}.`,
+            type: 'ALERT',
+            link: `/groups/${group.id}`,
+          });
+        }
       }
     }
 
@@ -167,6 +255,23 @@ router.put('/:id', (req: AuthenticatedRequest, res: Response): void => {
     if (notes !== undefined) updates.notes = notes;
 
     const updated = db.updateExpense(expenseId, updates);
+
+    // Notify other group members
+    const group = db.getGroupById(existing.groupId);
+    if (group) {
+      for (const member of group.members) {
+        if (member.userId !== req.user!.id) {
+          db.createNotification({
+            userId: member.userId,
+            title: 'Expense Updated',
+            message: `${req.user!.name} updated "${updated?.title || existing.title}" in ${group.name}.`,
+            type: 'EXPENSE',
+            link: `/groups/${group.id}`,
+          });
+        }
+      }
+    }
+
     res.json({ message: 'Expense updated successfully.', expense: updated });
   } catch (err) {
     res.status(500).json({ error: 'Failed to update expense.' });

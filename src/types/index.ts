@@ -32,6 +32,9 @@ export interface Group {
   members: GroupMember[];
   totalSpent?: number;
   recentExpensesCount?: number;
+  budget?: number;
+  remainingBudget?: number;
+  budgetUsedPercentage?: number;
 }
 
 export interface ExpenseSplit {
@@ -57,6 +60,8 @@ export interface Expense {
   splitType: SplitMethod;
   splits: ExpenseSplit[];
   notes?: string;
+  taxAmount?: number;
+  receiptUrl?: string;
   createdAt: string;
 }
 
@@ -153,4 +158,32 @@ export interface DashboardData {
     amount?: number;
     currency?: string;
   }[];
+}
+
+export interface ScannedReceipt {
+  success: boolean;
+  message?: string;
+  merchantName?: string;
+  title?: string;
+  amount?: number;
+  currency?: string;
+  date?: string;
+  category?: 'Food' | 'Travel' | 'Accommodation' | 'Entertainment' | 'Shopping' | 'Utilities' | 'Others';
+  taxAmount?: number;
+  notes?: string;
+  confidence?: number;
+  serviceConfigured: boolean;
+}
+
+export interface SpendingPrediction {
+  hasSufficientData: boolean;
+  historicalAverage: number;
+  currentMonthSpent: number;
+  estimatedMonthEnd: number;
+  dailyVelocity: number;
+  daysRemainingInMonth: number;
+  trend: 'INCREASING' | 'DECREASING' | 'STABLE';
+  budgetOverrunRisk: boolean;
+  budgetRiskMessage: string;
+  disclaimer: string;
 }

@@ -63,9 +63,12 @@ export const api = {
   addMember: (groupId: string, payload: any) => request<any>(`/groups/${groupId}/members`, { method: 'POST', body: JSON.stringify(payload) }),
   joinGroup: (token: string) => request<any>('/groups/join', { method: 'POST', body: JSON.stringify({ token }) }),
   deleteGroup: (groupId: string) => request<any>(`/groups/${groupId}`, { method: 'DELETE' }),
+  updateGroupBudget: (groupId: string, budget: number) => request<any>(`/groups/${groupId}/budget`, { method: 'PUT', body: JSON.stringify({ budget }) }),
 
   // Expenses
   addExpense: (groupId: string, payload: any) => request<any>(`/expenses/group/${groupId}`, { method: 'POST', body: JSON.stringify(payload) }),
+  checkDuplicateExpense: (payload: { groupId: string; title: string; amount: number | string; payerId?: string; date?: string }) =>
+    request<any>('/expenses/check-duplicate', { method: 'POST', body: JSON.stringify(payload) }),
   updateExpense: (expenseId: string, payload: any) => request<any>(`/expenses/${expenseId}`, { method: 'PUT', body: JSON.stringify(payload) }),
   deleteExpense: (expenseId: string) => request<any>(`/expenses/${expenseId}`, { method: 'DELETE' }),
 
@@ -78,12 +81,14 @@ export const api = {
   capturePayPalOrder: (payload: any) => request<any>('/payments/paypal/capture-order', { method: 'POST', body: JSON.stringify(payload) }),
   cardCheckout: (payload: any) => request<any>('/payments/card-checkout', { method: 'POST', body: JSON.stringify(payload) }),
   googlePayCheckout: (payload: any) => request<any>('/payments/google-pay', { method: 'POST', body: JSON.stringify(payload) }),
+  cancelPayment: (payload?: any) => request<any>('/payments/cancel', { method: 'POST', body: JSON.stringify(payload || {}) }),
   getReceipt: (reference: string) => request<any>(`/payments/receipt/${reference}`),
   getTransactions: () => request<any>('/payments/transactions'),
 
-  // AI Assistant
+  // AI Assistant & OCR Receipt Scanner
   parseExpenseWithAI: (prompt: string) => request<any>('/ai/expense-parse', { method: 'POST', body: JSON.stringify({ prompt }) }),
   askAIAssistant: (question: string) => request<any>('/ai/ask', { method: 'POST', body: JSON.stringify({ question }) }),
+  scanReceipt: (imageBase64: string, mimeType?: string) => request<any>('/ai/scan-receipt', { method: 'POST', body: JSON.stringify({ imageBase64, mimeType }) }),
 
   // Analytics
   getAnalytics: () => request<any>('/analytics'),

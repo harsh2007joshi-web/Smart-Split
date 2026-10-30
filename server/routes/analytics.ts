@@ -104,6 +104,50 @@ router.get('/', (req: AuthenticatedRequest, res: Response): void => {
       { month: 'Mar 2026', amount: totalGroupSpent > 0 ? totalGroupSpent : 23500 },
     ];
 
+    // Transparent forecasting calculation
+    const now = new Date();
+    const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+    const dayOfMonth = Math.max(1, now.getDate());
+    const daysRemaining = Math.max(0, daysInMonth - dayOfMonth);
+
+    const currentMonthSpent = totalGroupSpent > 0 ? totalGroupSpent : 18420;
+    const dailyVelocity = Math.round((currentMonthSpent / dayOfMonth) * 100) / 100;
+    const estimatedMonthEnd = Math.round(currentMonthSpent + (dailyVelocity * daysRemaining));
+
+    const historicalAmounts = monthlySpending.slice(0, 5).map(m => m.amount);
+    const historicalAverage = Math.round(historicalAmounts.reduce((a, b) => a + b, 0) / historicalAmounts.length);
+    const trend = estimatedMonthEnd > historicalAverage * 1.08 ? 'INCREASING' : estimatedMonthEnd < historicalAverage * 0.92 ? 'DECREASING' : 'STABLE';
+
+    // Check budget overrun risks
+    let budgetOverrunRisk = false;
+    let budgetRiskMessage = '';
+    const groupsWithBudget = userGroups.filter(g => g.budget && g.budget > 0);
+    for (const g of groupsWithBudget) {
+      const gSpent = allExpenses.filter(e => e.groupId === g.id).reduce((sum, e) => sum + Number(e.amount), 0);
+      if (gSpent > g.budget!) {
+        budgetOverrunRisk = true;
+        budgetRiskMessage = `Group "${g.name}" has exceeded its set budget by ${g.currency} ${(gSpent - g.budget!).toLocaleString()}.`;
+        break;
+      } else if (gSpent / g.budget! >= 0.85) {
+        budgetOverrunRisk = true;
+        budgetRiskMessage = `Group "${g.name}" is near its budget (${Math.round((gSpent / g.budget!) * 100)}% used).`;
+        break;
+      }
+    }
+
+    const spendingPrediction = {
+      hasSufficientData: allExpenses.length > 0,
+      historicalAverage,
+      currentMonthSpent,
+      estimatedMonthEnd,
+      dailyVelocity,
+      daysRemainingInMonth: daysRemaining,
+      trend,
+      budgetOverrunRisk,
+      budgetRiskMessage,
+      disclaimer: 'Predictions are mathematical estimates based on current daily spending velocity and historical patterns. They are not guaranteed outcomes.',
+    };
+
     res.json({
       summary: {
         totalSpent: totalGroupSpent,
@@ -117,6 +161,7 @@ router.get('/', (req: AuthenticatedRequest, res: Response): void => {
       categoryBreakdown,
       groupBreakdown,
       monthlySpending,
+      spendingPrediction,
     });
   } catch (err) {
     res.status(500).json({ error: 'Failed to retrieve analytics data.' });

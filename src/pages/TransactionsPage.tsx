@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Sidebar } from '../components/common/Sidebar';
 import { Topbar } from '../components/common/Topbar';
-import { PaymentTransaction } from '../types';
+import { PaymentTransaction, Group } from '../types';
 import { api } from '../services/api';
+import { ReceiptModal, ReceiptData } from '../components/payment/ReceiptModal';
 import {
   Receipt,
   Search,
@@ -13,22 +14,35 @@ import {
   XCircle,
   CreditCard,
   Download,
+  Calendar,
+  ExternalLink,
 } from 'lucide-react';
 
 export const TransactionsPage: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [transactions, setTransactions] = useState<PaymentTransaction[]>([]);
+  const [groups, setGroups] = useState<Group[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   // Filters
   const [statusFilter, setStatusFilter] = useState('ALL');
   const [methodFilter, setMethodFilter] = useState('ALL');
+  const [dateFilter, setDateFilter] = useState('ALL');
+  const [groupFilter, setGroupFilter] = useState('ALL');
   const [searchTerm, setSearchTerm] = useState('');
+
+  // Receipt Modal State
+  const [selectedReceipt, setSelectedReceipt] = useState<ReceiptData | null>(null);
+  const [isReceiptOpen, setIsReceiptOpen] = useState(false);
 
   const fetchTransactions = async () => {
     try {
-      const res = await api.getTransactions();
-      setTransactions(res.transactions || []);
+      const [txRes, grpRes] = await Promise.all([
+        api.getTransactions(),
+        api.getGroups(),
+      ]);
+      setTransactions(txRes.transactions || []);
+      setGroups(grpRes.groups || []);
     } catch (err) {
       console.error(err);
     } finally {
@@ -40,9 +54,50 @@ export const TransactionsPage: React.FC = () => {
     fetchTransactions();
   }, []);
 
+  const handleOpenReceipt = async (t: PaymentTransaction) => {
+    try {
+      const res = await api.getReceipt(t.reference);
+      if (res.receipt) {
+        setSelectedReceipt(res.receipt);
+        setIsReceiptOpen(true);
+      }
+    } catch (e) {
+      // Fallback to transaction data
+      setSelectedReceipt({
+        receiptNumber: t.metadata?.receiptNumber || `REC-2026-${t.id.slice(-6).toUpperCase()}`,
+        date: t.createdAt,
+        reference: t.reference,
+        payerName: t.payerName,
+        recipientName: t.recipientName,
+        groupName: t.groupName || 'Direct Settlement',
+        amount: t.amount,
+        currency: t.currency,
+        method: t.method,
+        status: t.status,
+        verifiedStamp: t.status === 'COMPLETED' ? 'OFFICIALLY VERIFIED & SETTLED' : t.status,
+      });
+      setIsReceiptOpen(true);
+    }
+  };
+
   const filteredTransactions = transactions.filter(t => {
     const matchesStatus = statusFilter === 'ALL' || t.status === statusFilter;
     const matchesMethod = methodFilter === 'ALL' || t.method === methodFilter;
+    const matchesGroup = groupFilter === 'ALL' || t.groupId === groupFilter || t.groupName === groupFilter;
+
+    // Date filtering
+    let matchesDate = true;
+    const tTime = new Date(t.createdAt).getTime();
+    const now = Date.now();
+    if (dateFilter === '7_DAYS') {
+      matchesDate = tTime >= now - 7 * 86400000;
+    } else if (dateFilter === '30_DAYS') {
+      matchesDate = tTime >= now - 30 * 86400000;
+    } else if (dateFilter === 'THIS_MONTH') {
+      const startOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1).getTime();
+      matchesDate = tTime >= startOfMonth;
+    }
+
     const matchesSearch =
       searchTerm === '' ||
       t.reference.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -50,7 +105,7 @@ export const TransactionsPage: React.FC = () => {
       t.recipientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (t.groupName && t.groupName.toLowerCase().includes(searchTerm.toLowerCase()));
 
-    return matchesStatus && matchesMethod && matchesSearch;
+    return matchesStatus && matchesMethod && matchesGroup && matchesDate && matchesSearch;
   });
 
   return (
@@ -108,6 +163,29 @@ export const TransactionsPage: React.FC = () => {
                 <option value="PAYPAL">PayPal</option>
                 <option value="CREDIT_CARD">Credit Card</option>
                 <option value="DEBIT_CARD">Debit Card</option>
+                <option value="GOOGLE_PAY">Google Pay</option>
+              </select>
+
+              <select
+                value={dateFilter}
+                onChange={e => setDateFilter(e.target.value)}
+                className="clay-input px-3 py-2 text-xs font-semibold text-[#10274A] dark:text-[#F5F5F5] dark:bg-[#0D0D0D] dark:border-[#303030]"
+              >
+                <option value="ALL">All Time</option>
+                <option value="7_DAYS">Last 7 Days</option>
+                <option value="30_DAYS">Last 30 Days</option>
+                <option value="THIS_MONTH">This Month</option>
+              </select>
+
+              <select
+                value={groupFilter}
+                onChange={e => setGroupFilter(e.target.value)}
+                className="clay-input px-3 py-2 text-xs font-semibold text-[#10274A] dark:text-[#F5F5F5] dark:bg-[#0D0D0D] dark:border-[#303030]"
+              >
+                <option value="ALL">All Groups</option>
+                {groups.map(g => (
+                  <option key={g.id} value={g.id}>{g.name}</option>
+                ))}
               </select>
             </div>
           </div>
@@ -123,19 +201,25 @@ export const TransactionsPage: React.FC = () => {
                     <th className="py-3.5 px-4">Method</th>
                     <th className="py-3.5 px-4">Amount</th>
                     <th className="py-3.5 px-4">Date</th>
+                    <th className="py-3.5 px-4 text-center">Receipt</th>
                     <th className="py-3.5 px-4 sm:px-6 text-right">Status</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#D8E9FA]/50 dark:divide-[#303030]">
                   {filteredTransactions.length === 0 ? (
                     <tr>
-                      <td colSpan={6} className="text-center py-12 text-[#64748B] dark:text-[#737373]">
+                      <td colSpan={7} className="text-center py-12 text-[#64748B] dark:text-[#737373]">
                         No matching transactions found.
                       </td>
                     </tr>
                   ) : (
                     filteredTransactions.map(t => (
-                      <tr key={t.id} className="hover:bg-blue-50/30 dark:hover:bg-[#141414] transition-colors">
+                      <tr
+                        key={t.id}
+                        onClick={() => handleOpenReceipt(t)}
+                        className="hover:bg-blue-50/30 dark:hover:bg-[#141414] transition-colors cursor-pointer"
+                        title="Click to view verified payment receipt"
+                      >
                         <td className="py-3.5 px-4 sm:px-6 font-mono font-bold text-[#1685F8] dark:text-[#2589FF]">
                           {t.reference}
                         </td>
@@ -158,6 +242,16 @@ export const TransactionsPage: React.FC = () => {
                         </td>
                         <td className="py-3.5 px-4 text-[#64748B] dark:text-[#A1A1AA]">
                           {new Date(t.createdAt).toLocaleDateString()}
+                        </td>
+                        <td className="py-3.5 px-4 text-center">
+                          <button
+                            type="button"
+                            onClick={(e) => { e.stopPropagation(); handleOpenReceipt(t); }}
+                            className="p-1.5 rounded-lg hover:bg-[#E9F5FE] dark:hover:bg-[#181818] text-[#1685F8] dark:text-[#2589FF] transition-colors inline-flex items-center space-x-1 text-[11px] font-bold"
+                          >
+                            <Receipt className="w-3.5 h-3.5" />
+                            <span>View</span>
+                          </button>
                         </td>
                         <td className="py-3.5 px-4 sm:px-6 text-right">
                           {t.status === 'COMPLETED' && (
@@ -194,6 +288,13 @@ export const TransactionsPage: React.FC = () => {
           </div>
         </main>
       </div>
+
+      {/* Printable Receipt Modal */}
+      <ReceiptModal
+        isOpen={isReceiptOpen}
+        onClose={() => setIsReceiptOpen(false)}
+        receipt={selectedReceipt}
+      />
     </div>
   );
 };

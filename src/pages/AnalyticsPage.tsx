@@ -11,6 +11,8 @@ import {
   Sparkles,
   ArrowUpRight,
   ArrowDownLeft,
+  AlertTriangle,
+  Info,
 } from 'lucide-react';
 import {
   ResponsiveContainer,
@@ -43,6 +45,7 @@ export const AnalyticsPage: React.FC = () => {
   const categories = analyticsData?.categoryBreakdown || [];
   const groups = analyticsData?.groupBreakdown || [];
   const monthly = analyticsData?.monthlySpending || [];
+  const prediction = analyticsData?.spendingPrediction;
 
   return (
     <div className="min-h-screen bg-[#F1F9FF] dark:bg-[#080808] text-[#10274A] dark:text-[#F5F5F5] flex">
@@ -153,6 +156,91 @@ export const AnalyticsPage: React.FC = () => {
               </ResponsiveContainer>
             </div>
           </div>
+
+          {/* AI Spending Predictions & Forecast Card */}
+          {prediction && (
+            <div className="clay-card p-6 bg-white dark:bg-[#101010] dark:border dark:border-[#303030] space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div className="flex items-center space-x-2.5">
+                  <div className="w-9 h-9 rounded-2xl bg-[#E9F5FE] text-[#1685F8] dark:bg-[#141414] dark:text-[#2589FF] dark:border dark:border-[#303030] flex items-center justify-center">
+                    <Sparkles className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h3 className="text-base font-bold text-[#10274A] dark:text-[#F5F5F5] flex items-center space-x-2">
+                      <span>AI Spending Forecast & Predictions</span>
+                      <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded-full bg-[#E9F5FE] text-[#1685F8] dark:bg-[#2589FF]/15 dark:text-[#2589FF] border border-[#BFE9FF] dark:border-[#2589FF]/30">
+                        Estimated
+                      </span>
+                    </h3>
+                    <p className="text-xs text-[#64748B] dark:text-[#A1A1AA]">
+                      Transparent extrapolation based on verified expenses and daily spending velocity
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center space-x-2 self-start sm:self-auto">
+                  <span className={`text-xs font-bold px-2.5 py-1 rounded-full border ${
+                    prediction.trend === 'INCREASING'
+                      ? 'bg-amber-50 text-amber-600 border-amber-200 dark:bg-amber-950/30 dark:text-amber-400 dark:border-amber-700/40'
+                      : prediction.trend === 'DECREASING'
+                      ? 'bg-emerald-50 text-emerald-600 border-emerald-200 dark:bg-emerald-950/30 dark:text-emerald-400 dark:border-emerald-700/40'
+                      : 'bg-blue-50 text-blue-600 border-blue-200 dark:bg-blue-950/30 dark:text-blue-400 dark:border-blue-700/40'
+                  }`}>
+                    {prediction.trend === 'INCREASING' && '↗ Projected Upward Trend'}
+                    {prediction.trend === 'DECREASING' && '↘ Projected Downward Trend'}
+                    {prediction.trend === 'STABLE' && '→ Projected Stable Velocity'}
+                  </span>
+                </div>
+              </div>
+
+              {/* 3 Metric Pills */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-1">
+                <div className="p-4 rounded-2xl bg-[#F8FCFF] dark:bg-[#0D0D0D] border border-[#D8E9FA] dark:border-[#303030]">
+                  <span className="text-xs font-semibold text-[#64748B] dark:text-[#737373]">Estimated Month-End Spending</span>
+                  <div className="text-xl font-black text-[#1685F8] dark:text-[#2589FF] mt-1">
+                    ₹{prediction.estimatedMonthEnd.toLocaleString()}
+                  </div>
+                  <span className="text-[10px] text-[#64748B] dark:text-[#737373] mt-0.5 block">
+                    Based on ₹{prediction.dailyVelocity.toLocaleString()}/day over {prediction.daysRemainingInMonth} remaining days
+                  </span>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-[#F8FCFF] dark:bg-[#0D0D0D] border border-[#D8E9FA] dark:border-[#303030]">
+                  <span className="text-xs font-semibold text-[#64748B] dark:text-[#737373]">Historical Monthly Average</span>
+                  <div className="text-xl font-black text-[#10274A] dark:text-[#F5F5F5] mt-1">
+                    ₹{prediction.historicalAverage.toLocaleString()}
+                  </div>
+                  <span className="text-[10px] text-[#64748B] dark:text-[#737373] mt-0.5 block">
+                    Baseline benchmark from past billing cycles
+                  </span>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-[#F8FCFF] dark:bg-[#0D0D0D] border border-[#D8E9FA] dark:border-[#303030]">
+                  <span className="text-xs font-semibold text-[#64748B] dark:text-[#737373]">Current Month Spend So Far</span>
+                  <div className="text-xl font-black text-[#10274A] dark:text-[#F5F5F5] mt-1">
+                    ₹{prediction.currentMonthSpent.toLocaleString()}
+                  </div>
+                  <span className="text-[10px] text-[#16B890] dark:text-[#34D399] font-semibold mt-0.5 block">
+                    Actual logged transactions
+                  </span>
+                </div>
+              </div>
+
+              {/* Budget Overrun Warning if applicable */}
+              {prediction.budgetOverrunRisk && (
+                <div className="p-3.5 rounded-2xl bg-amber-50 dark:bg-amber-950/20 border border-amber-300 dark:border-amber-700/40 flex items-start space-x-2.5 text-xs text-amber-800 dark:text-amber-300 font-medium">
+                  <AlertTriangle className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+                  <span>{prediction.budgetRiskMessage}</span>
+                </div>
+              )}
+
+              {/* Disclaimer */}
+              <div className="text-[11px] text-[#64748B] dark:text-[#737373] flex items-center space-x-1.5 pt-1 border-t border-[#D8E9FA]/50 dark:border-[#303030]">
+                <Info className="w-3.5 h-3.5 shrink-0 text-[#1685F8] dark:text-[#2589FF]" />
+                <span>{prediction.disclaimer}</span>
+              </div>
+            </div>
+          )}
 
           {/* 2 Columns: Category Breakdown & Spending by Group */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">

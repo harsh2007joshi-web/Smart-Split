@@ -98,11 +98,17 @@ router.get('/:id', (req: AuthenticatedRequest, res: Response): void => {
     const optimizedTransfers = SettlementEngine.optimizeTransfers(balances, group.currency);
 
     const totalSpent = expenses.reduce((sum, e) => sum + Number(e.amount), 0);
+    const budget = group.budget || 0;
+    const remainingBudget = budget > 0 ? Math.max(0, budget - totalSpent) : 0;
+    const budgetUsedPercentage = budget > 0 ? Math.round((totalSpent / budget) * 100) : 0;
 
     res.json({
       group: {
         ...group,
         totalSpent,
+        budget,
+        remainingBudget,
+        budgetUsedPercentage,
       },
       expenses,
       settlements,
@@ -239,6 +245,38 @@ router.delete('/:id', (req: AuthenticatedRequest, res: Response): void => {
     });
   } catch (err) {
     res.status(500).json({ error: 'Failed to delete trip group.' });
+  }
+});
+
+// 7. SET OR UPDATE GROUP BUDGET
+router.put('/:id/budget', (req: AuthenticatedRequest, res: Response): void => {
+  try {
+    const groupId = (Array.isArray(req.params.id) ? req.params.id[0] : req.params.id) as string;
+    const { budget } = req.body;
+    const numBudget = parseFloat(budget);
+
+    if (isNaN(numBudget) || numBudget < 0) {
+      res.status(400).json({ error: 'Valid positive budget number is required.' });
+      return;
+    }
+
+    const group = db.getGroupById(groupId);
+    if (!group) {
+      res.status(404).json({ error: 'Group not found.' });
+      return;
+    }
+
+    const userEmail = req.user!.email.toLowerCase().trim();
+    const isMember = group.members.some(m => m.userId === req.user!.id || (m.email && m.email.toLowerCase().trim() === userEmail));
+    if (!isMember) {
+      res.status(403).json({ error: 'Unauthorized to update this group.' });
+      return;
+    }
+
+    const updated = db.updateGroup(groupId, { budget: numBudget });
+    res.json({ message: 'Budget updated successfully.', group: updated });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to update group budget.' });
   }
 });
 

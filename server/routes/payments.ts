@@ -17,6 +17,16 @@ router.post('/paypal/create-order', async (req: AuthenticatedRequest, res: Respo
       return;
     }
 
+    if (settlementId) {
+      const existingSettlement = db.getAllSettlements().find(
+        s => s.id === settlementId && s.status === 'COMPLETED'
+      );
+      if (existingSettlement) {
+        res.status(409).json({ error: 'This settlement balance has already been completed and verified.' });
+        return;
+      }
+    }
+
     const order = await paypalService.createOrder({
       amount: numAmount,
       currency,
@@ -44,6 +54,28 @@ router.post('/paypal/capture-order', async (req: AuthenticatedRequest, res: Resp
     if (!orderId) {
       res.status(400).json({ error: 'Order ID is required.' });
       return;
+    }
+
+    // Guard against duplicate submission
+    const existingPaymentForOrder = db.getAllPayments().find(
+      p => p.metadata?.paypalOrderId === orderId && p.status === 'COMPLETED'
+    );
+    if (existingPaymentForOrder) {
+      res.status(409).json({
+        error: 'This PayPal order has already been captured and processed.',
+        payment: existingPaymentForOrder,
+      });
+      return;
+    }
+
+    if (settlementId) {
+      const existingSettlement = db.getAllSettlements().find(
+        s => s.id === settlementId && s.status === 'COMPLETED'
+      );
+      if (existingSettlement) {
+        res.status(409).json({ error: 'This settlement balance has already been completed and verified.' });
+        return;
+      }
     }
 
     // Capture & verify on backend
@@ -155,6 +187,16 @@ router.post('/card-checkout', async (req: AuthenticatedRequest, res: Response): 
     if (isNaN(numAmount) || numAmount <= 0) {
       res.status(400).json({ error: 'Valid payment amount is required.' });
       return;
+    }
+
+    if (settlementId) {
+      const existingSettlement = db.getAllSettlements().find(
+        s => s.id === settlementId && s.status === 'COMPLETED'
+      );
+      if (existingSettlement) {
+        res.status(409).json({ error: 'This settlement balance has already been completed and verified.' });
+        return;
+      }
     }
 
     if (!cardholderName || !cardholderName.trim()) {
@@ -272,6 +314,16 @@ router.post('/google-pay', async (req: AuthenticatedRequest, res: Response): Pro
     if (isNaN(numAmount) || numAmount <= 0) {
       res.status(400).json({ error: 'Valid payment amount is required.' });
       return;
+    }
+
+    if (settlementId) {
+      const existingSettlement = db.getAllSettlements().find(
+        s => s.id === settlementId && s.status === 'COMPLETED'
+      );
+      if (existingSettlement) {
+        res.status(409).json({ error: 'This settlement balance has already been completed and verified.' });
+        return;
+      }
     }
 
     const txnRef = `SS-GPAY-${Date.now().toString(36).toUpperCase()}-${Math.floor(1000 + Math.random() * 9000)}`;

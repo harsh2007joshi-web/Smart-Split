@@ -18,6 +18,21 @@ export interface ParsedExpenseResult {
   source: 'GEMINI_AI' | 'LOCAL_NLP_ENGINE';
 }
 
+export interface ScannedReceiptResult {
+  success: boolean;
+  message?: string;
+  merchantName?: string;
+  title?: string;
+  amount?: number;
+  currency?: string;
+  date?: string;
+  category?: 'Food' | 'Travel' | 'Accommodation' | 'Entertainment' | 'Shopping' | 'Utilities' | 'Others';
+  taxAmount?: number;
+  notes?: string;
+  confidence?: number;
+  serviceConfigured: boolean;
+}
+
 export interface AIAskResponse {
   answer: string;
   source: 'GEMINI_AI' | 'LOCAL_FINANCIAL_ENGINE';
@@ -282,6 +297,115 @@ Return ONLY valid raw JSON without markdown code fences.`
     const cleaned = textOutput.replace(/```json/g, '').replace(/```/g, '').trim();
     const parsed = JSON.parse(cleaned);
     return { ...parsed, source: 'GEMINI_AI' };
+  }
+
+  /**
+   * Scan receipt image via Google Gemini 1.5 Vision or multimodal extraction
+   */
+  public async scanReceipt(
+    imageBase64: string,
+    mimeType: string = 'image/jpeg'
+  ): Promise<ScannedReceiptResult> {
+    const validMimes = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg'];
+    const lowerMime = mimeType.toLowerCase();
+    if (!validMimes.some(m => lowerMime.includes(m.replace('image/', '')))) {
+      return {
+        success: false,
+        serviceConfigured: !!this.geminiApiKey,
+        message: 'Unsupported image format. Please upload a JPEG, PNG, or WebP receipt image.',
+      };
+    }
+
+    const cleanBase64 = imageBase64.includes(',') ? imageBase64.split(',')[1] : imageBase64;
+    if (cleanBase64.length > 7 * 1024 * 1024) {
+      return {
+        success: false,
+        serviceConfigured: !!this.geminiApiKey,
+        message: 'Receipt image exceeds 5MB limit. Please upload a smaller photo.',
+      };
+    }
+
+    if (this.geminiApiKey) {
+      try {
+        const response = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${this.geminiApiKey}`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [
+                {
+                  parts: [
+                    {
+                      text: `You are SplitSmart AI Receipt OCR & Expense Scanner.
+Examine this receipt image carefully. Extract:
+1. Merchant/Store/Restaurant name
+2. Expense Title (e.g. Dinner, Groceries, Hotel Stay)
+3. Total Amount (number only, excluding currency symbol)
+4. Currency (e.g. "INR", "USD", "EUR", "GBP")
+5. Date in YYYY-MM-DD format (if missing, use today's date ${new Date().toISOString().split('T')[0]})
+6. Tax amount if itemized (number only)
+7. Category: exactly one of "Food", "Travel", "Accommodation", "Entertainment", "Shopping", "Utilities", "Others"
+8. Any brief notes or item summary
+
+Return ONLY a valid JSON object matching this schema without markdown fences:
+{
+  "merchantName": string,
+  "title": string,
+  "amount": number,
+  "currency": string,
+  "date": "YYYY-MM-DD",
+  "taxAmount": number,
+  "category": "Food"|"Travel"|"Accommodation"|"Entertainment"|"Shopping"|"Utilities"|"Others",
+  "notes": string,
+  "confidence": 0.95
+}`
+                    },
+                    {
+                      inline_data: {
+                        mime_type: lowerMime.includes('png') ? 'image/png' : lowerMime.includes('webp') ? 'image/webp' : 'image/jpeg',
+                        data: cleanBase64,
+                      }
+                    }
+                  ]
+                }
+              ]
+            })
+          }
+        );
+
+        if (response.ok) {
+          const data = await response.json();
+          const textOutput = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+          if (textOutput) {
+            const cleaned = textOutput.replace(/```json/g, '').replace(/```/g, '').trim();
+            const parsed = JSON.parse(cleaned);
+            return {
+              success: true,
+              merchantName: parsed.merchantName || parsed.title || 'Receipt Merchant',
+              title: parsed.title || parsed.merchantName || 'Scanned Receipt Expense',
+              amount: parseFloat(parsed.amount) || 0,
+              currency: parsed.currency || 'INR',
+              date: parsed.date || new Date().toISOString().split('T')[0],
+              category: parsed.category || 'Food',
+              taxAmount: parsed.taxAmount ? parseFloat(parsed.taxAmount) : undefined,
+              notes: parsed.notes || `Scanned from receipt (${parsed.merchantName || ''})`,
+              confidence: parsed.confidence || 0.95,
+              serviceConfigured: true,
+            };
+          }
+        }
+        console.warn('Gemini vision receipt parse returned empty response');
+      } catch (e) {
+        console.warn('Gemini vision API error:', e);
+      }
+    }
+
+    return {
+      success: false,
+      serviceConfigured: !!this.geminiApiKey,
+      message: 'Google Gemini Multimodal Vision API is not configured. Please add GEMINI_API_KEY to your .env file to enable live camera OCR scanning.',
+    };
   }
 
   /**

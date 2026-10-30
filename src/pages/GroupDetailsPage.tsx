@@ -26,6 +26,7 @@ import {
   Mail,
   Share2,
   Sparkles,
+  X,
 } from 'lucide-react';
 
 export const GroupDetailsPage: React.FC = () => {
@@ -53,6 +54,11 @@ export const GroupDetailsPage: React.FC = () => {
   const [customDomainInput, setCustomDomainInput] = useState('');
   const [isUpdatingDomain, setIsUpdatingDomain] = useState(false);
   const [domainSuccess, setDomainSuccess] = useState('');
+
+  // Budget Management States
+  const [isBudgetModalOpen, setIsBudgetModalOpen] = useState(false);
+  const [budgetValue, setBudgetValue] = useState('');
+  const [isUpdatingBudget, setIsUpdatingBudget] = useState(false);
 
   const fetchGroupDetails = async () => {
     if (!id) return;
@@ -147,6 +153,26 @@ export const GroupDetailsPage: React.FC = () => {
     navigator.clipboard.writeText(activeInviteUrl);
     setIsCopied(true);
     setTimeout(() => setIsCopied(false), 2500);
+  };
+
+  const handleSaveBudget = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!id) return;
+    const num = parseFloat(budgetValue);
+    if (isNaN(num) || num < 0) {
+      alert('Please enter a valid positive budget number.');
+      return;
+    }
+    setIsUpdatingBudget(true);
+    try {
+      await api.updateGroupBudget(id, num);
+      setIsBudgetModalOpen(false);
+      fetchGroupDetails();
+    } catch (err: any) {
+      alert(err.message || 'Failed to update budget.');
+    } finally {
+      setIsUpdatingBudget(false);
+    }
   };
 
   const handleDeleteGroup = async () => {
@@ -451,6 +477,110 @@ export const GroupDetailsPage: React.FC = () => {
                 </div>
               </div>
 
+              {/* Group Budget Tracker Card */}
+              <div className="clay-card p-6 bg-white dark:bg-[#101010] dark:border-[#303030] space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 rounded-2xl bg-[#E9F5FE] text-[#1685F8] dark:bg-[#141414] dark:text-[#2589FF] dark:border dark:border-[#303030] flex items-center justify-center">
+                      <Wallet className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-base font-bold text-[#10274A] dark:text-[#F5F5F5] flex items-center space-x-2">
+                        <span>Group Budget Tracker</span>
+                        {group?.budget && (
+                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                            (group.budgetUsedPercentage || 0) >= 100
+                              ? 'bg-red-100 text-red-600 dark:bg-red-950/40 dark:text-red-400'
+                              : (group.budgetUsedPercentage || 0) >= 70
+                              ? 'bg-amber-100 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400'
+                              : 'bg-[#DDF8EE] text-[#16B890] dark:bg-[#34D399]/15 dark:text-[#34D399]'
+                          }`}>
+                            {group.budgetUsedPercentage || 0}% Used
+                          </span>
+                        )}
+                      </h3>
+                      <p className="text-xs text-[#64748B] dark:text-[#A1A1AA]">
+                        Track total spend against group spending limits
+                      </p>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={() => {
+                      setBudgetValue(group?.budget ? String(group.budget) : '30000');
+                      setIsBudgetModalOpen(true);
+                    }}
+                    className="clay-btn-secondary px-3.5 py-1.5 text-xs font-bold flex items-center space-x-1.5 self-start sm:self-auto"
+                  >
+                    <Edit2 className="w-3.5 h-3.5 text-[#1685F8] dark:text-[#2589FF]" />
+                    <span>{group?.budget ? 'Update Budget' : '+ Set Budget'}</span>
+                  </button>
+                </div>
+
+                {group?.budget ? (
+                  <div className="space-y-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-1">
+                      <div className="p-3.5 rounded-2xl bg-[#F8FCFF] dark:bg-[#0D0D0D] border border-[#D8E9FA] dark:border-[#303030]">
+                        <span className="text-[11px] font-semibold text-[#64748B] dark:text-[#737373]">Total Budget</span>
+                        <div className="text-lg font-black text-[#10274A] dark:text-[#F5F5F5] mt-0.5">
+                          {group.currency} {group.budget.toLocaleString()}
+                        </div>
+                      </div>
+                      <div className="p-3.5 rounded-2xl bg-[#F8FCFF] dark:bg-[#0D0D0D] border border-[#D8E9FA] dark:border-[#303030]">
+                        <span className="text-[11px] font-semibold text-[#64748B] dark:text-[#737373]">Amount Spent</span>
+                        <div className="text-lg font-black text-[#1685F8] dark:text-[#2589FF] mt-0.5">
+                          {group.currency} {(group.totalSpent || 0).toLocaleString()}
+                        </div>
+                      </div>
+                      <div className="p-3.5 rounded-2xl bg-[#F8FCFF] dark:bg-[#0D0D0D] border border-[#D8E9FA] dark:border-[#303030]">
+                        <span className="text-[11px] font-semibold text-[#64748B] dark:text-[#737373]">Remaining</span>
+                        <div className={`text-lg font-black mt-0.5 ${
+                          (group.remainingBudget || 0) <= 0
+                            ? 'text-red-500'
+                            : 'text-[#16B890] dark:text-[#34D399]'
+                        }`}>
+                          {group.currency} {Math.max(0, group.budget - (group.totalSpent || 0)).toLocaleString()}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Progress Bar */}
+                    <div className="space-y-1 pt-1">
+                      <div className="w-full h-3 rounded-full bg-[#E9F5FE] dark:bg-[#181818] overflow-hidden">
+                        <div
+                          className={`h-full rounded-full transition-all duration-500 ${
+                            (group.budgetUsedPercentage || 0) >= 100
+                              ? 'bg-red-500'
+                              : (group.budgetUsedPercentage || 0) >= 70
+                              ? 'bg-amber-500'
+                              : 'bg-gradient-to-r from-[#1685F8] to-[#16B890]'
+                          }`}
+                          style={{ width: `${Math.min(100, group.budgetUsedPercentage || 0)}%` }}
+                        />
+                      </div>
+                      {(group.budgetUsedPercentage || 0) >= 100 && (
+                        <p className="text-[11px] font-bold text-red-500 dark:text-red-400">
+                          ⚠️ Group has exceeded its planned budget by {group.currency} {((group.totalSpent || 0) - group.budget).toLocaleString()}.
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="p-4 rounded-2xl bg-[#F8FCFF] dark:bg-[#0D0D0D] border border-[#D8E9FA] dark:border-[#303030] flex items-center justify-between text-xs text-[#64748B] dark:text-[#A1A1AA]">
+                    <span>No spending budget configured yet for this trip.</span>
+                    <button
+                      onClick={() => {
+                        setBudgetValue('30000');
+                        setIsBudgetModalOpen(true);
+                      }}
+                      className="text-[#1685F8] dark:text-[#2589FF] font-bold hover:underline"
+                    >
+                      Set a budget limit →
+                    </button>
+                  </div>
+                )}
+              </div>
+
               {/* Member Balances Table */}
               <div className="clay-card p-6 bg-white dark:bg-[#101010] dark:border-[#303030] space-y-4">
                 <h3 className="text-base font-bold text-[#10274A] dark:text-[#F5F5F5]">Member Balances & Settlements</h3>
@@ -719,6 +849,58 @@ export const GroupDetailsPage: React.FC = () => {
                   className="clay-btn-primary px-4 py-1.5 text-xs font-bold"
                 >
                   Send Invite
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Set / Update Budget Modal */}
+      {isBudgetModalOpen && (
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="relative w-full max-w-sm bg-white dark:bg-[#101010] rounded-3xl shadow-clay-float border border-[#D8E9FA] dark:border-[#303030] p-6 space-y-4 animate-in fade-in zoom-in-95">
+            <div className="flex items-center justify-between pb-3 border-b border-[#D8E9FA] dark:border-[#303030]">
+              <div className="flex items-center space-x-2">
+                <Wallet className="w-5 h-5 text-[#1685F8] dark:text-[#2589FF]" />
+                <h3 className="text-base font-bold text-[#10274A] dark:text-[#F5F5F5]">Group Budget Limit</h3>
+              </div>
+              <button onClick={() => setIsBudgetModalOpen(false)} className="text-[#64748B] dark:text-[#A1A1AA] hover:text-[#10274A] dark:hover:text-[#F5F5F5]">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <form onSubmit={handleSaveBudget} className="space-y-3">
+              <div>
+                <label className="block text-xs font-bold text-[#10274A] dark:text-[#F5F5F5] mb-1">
+                  Total Planned Budget ({group?.currency || 'INR'})
+                </label>
+                <input
+                  type="number"
+                  step="100"
+                  placeholder="30000"
+                  value={budgetValue}
+                  onChange={e => setBudgetValue(e.target.value)}
+                  required
+                  className="clay-input w-full px-3.5 py-2.5 text-sm font-bold text-[#1685F8] dark:text-[#2589FF] dark:bg-[#0D0D0D]"
+                />
+                <p className="text-[11px] text-[#64748B] dark:text-[#737373] mt-1.5">
+                  Members will receive automated warnings when spending reaches 70% and 100% of this budget.
+                </p>
+              </div>
+              <div className="pt-2 flex justify-end space-x-2">
+                <button
+                  type="button"
+                  onClick={() => setIsBudgetModalOpen(false)}
+                  className="clay-btn-secondary px-3.5 py-2 text-xs font-bold"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isUpdatingBudget}
+                  className="clay-btn-primary px-4 py-2 text-xs font-bold disabled:opacity-50"
+                >
+                  {isUpdatingBudget ? 'Saving...' : 'Save Budget'}
                 </button>
               </div>
             </form>

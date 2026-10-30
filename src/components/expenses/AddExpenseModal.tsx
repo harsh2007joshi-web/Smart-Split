@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Group, SplitMethod, GroupMember } from '../../types';
 import { api } from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
-import { X, Check, Users, Sparkles, AlertCircle } from 'lucide-react';
+import { X, Check, Users, Sparkles, AlertCircle, Camera, FileText, AlertTriangle, CheckCircle2 } from 'lucide-react';
 
 interface AddExpenseModalProps {
   isOpen: boolean;
@@ -41,6 +41,21 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
+  // Receipt Scanner & AI Quick Fill states
+  const receiptFileRef = useRef<HTMLInputElement>(null);
+  const [isScanningReceipt, setIsScanningReceipt] = useState(false);
+  const [scanNotice, setScanNotice] = useState<{ type: 'success' | 'info' | 'error'; message: string } | null>(null);
+  const [taxAmount, setTaxAmount] = useState<number | undefined>(initialData?.taxAmount);
+  const [receiptUrl, setReceiptUrl] = useState<string | undefined>(initialData?.receiptUrl);
+
+  // Duplicate detection state
+  const [potentialDuplicate, setPotentialDuplicate] = useState<any>(null);
+
+  // AI Quick Fill toggle & state
+  const [showQuickFill, setShowQuickFill] = useState(false);
+  const [quickFillPrompt, setQuickFillPrompt] = useState('');
+  const [isQuickFilling, setIsQuickFilling] = useState(false);
+
   const currentGroup = groups.find(g => g.id === selectedGroupId) || groups[0];
 
   useEffect(() => {
@@ -78,9 +93,108 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleReceiptUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      setErrorMessage('Please upload a valid image file (PNG, JPG, or WebP).');
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      setErrorMessage('Receipt image must be under 5MB.');
+      return;
+    }
+
+    setIsScanningReceipt(true);
+    setScanNotice(null);
     setErrorMessage('');
+
+    try {
+      const reader = new FileReader();
+      reader.onload = async () => {
+        try {
+          const base64Data = reader.result as string;
+          setReceiptUrl(base64Data);
+          const res = await api.scanReceipt(base64Data, file.type);
+
+          if (res.success) {
+            if (res.title) setTitle(res.title);
+            if (res.amount) setAmount(String(res.amount));
+            if (res.currency) setCurrency(res.currency);
+            if (res.category) setCategory(res.category);
+            if (res.date) setDate(res.date);
+            if (res.taxAmount) setTaxAmount(res.taxAmount);
+            if (res.notes) setNotes(res.notes);
+
+            setScanNotice({
+              type: 'success',
+              message: `Receipt scanned: Extracted ${res.currency || currency} ${res.amount} (${res.merchantName || res.title}). Review details below.`,
+            });
+          } else {
+            setScanNotice({
+              type: 'info',
+              message: res.message || 'Receipt OCR requires GEMINI_API_KEY in .env. You can continue manual entry.',
+            });
+          }
+        } catch (err: any) {
+          setScanNotice({
+            type: 'error',
+            message: err.message || 'Could not scan receipt. Please enter details manually.',
+          });
+        } finally {
+          setIsScanningReceipt(false);
+        }
+      };
+      reader.readAsDataURL(file);
+    } catch (err: any) {
+      setIsScanningReceipt(false);
+      setErrorMessage('Error reading receipt file.');
+    }
+  };
+
+  const handleQuickFill = async () => {
+    if (!quickFillPrompt.trim() || isQuickFilling) return;
+    setIsQuickFilling(true);
+    setErrorMessage('');
+    try {
+      const res = await api.parseExpenseWithAI(quickFillPrompt);
+      const parsed = res.parsedExpense;
+      if (parsed) {
+        if (parsed.title) setTitle(parsed.title);
+        if (parsed.amount) setAmount(String(parsed.amount));
+        if (parsed.currency) setCurrency(parsed.currency);
+        if (parsed.category) setCategory(parsed.category);
+        if (parsed.date) setDate(parsed.date);
+        if (parsed.splitType) setSplitType(parsed.splitType);
+        if (parsed.notes) setNotes(parsed.notes);
+
+        if (currentGroup?.members) {
+          const matchedPayer = currentGroup.members.find(
+            m => m.name.toLowerCase().includes(parsed.payerName.toLowerCase()) ||
+                 parsed.payerName.toLowerCase().includes(m.name.toLowerCase())
+          );
+          if (matchedPayer) setPayerId(matchedPayer.userId);
+        }
+
+        setScanNotice({
+          type: 'success',
+          message: `AI Quick-Fill: Extracted "${parsed.title}" for ${parsed.currency} ${parsed.amount}. Review details below.`,
+        });
+        setShowQuickFill(false);
+      }
+    } catch (err: any) {
+      setErrorMessage(err.message || 'AI Quick-Fill could not parse the text.');
+    } finally {
+      setIsQuickFilling(false);
+    }
+  };
+
+  const handleSubmit = async (e?: React.FormEvent, bypassDuplicate: boolean = false) => {
+    if (e) e.preventDefault();
+    setErrorMessage('');
+    setPotentialDuplicate(null);
 
     if (!title.trim()) {
       setErrorMessage('Please enter an expense title.');
@@ -129,7 +243,7 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({
     setIsSubmitting(true);
     try {
       const payer = currentGroup.members.find(m => m.userId === payerId);
-      await api.addExpense(currentGroup.id, {
+      const res = await api.addExpense(currentGroup.id, {
         title,
         amount: numAmt,
         currency,
@@ -140,7 +254,16 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({
         splitType,
         participants,
         notes,
+        taxAmount,
+        receiptUrl,
+        allowDuplicate: bypassDuplicate,
       });
+
+      if (res.warning === 'POTENTIAL_DUPLICATE' && !bypassDuplicate) {
+        setPotentialDuplicate(res.duplicateExpense);
+        setIsSubmitting(false);
+        return;
+      }
 
       onExpenseAdded();
       onClose();
@@ -172,6 +295,124 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({
             <X className="w-5 h-5" />
           </button>
         </div>
+
+        {/* Action Row: Scan Receipt & AI Quick Fill */}
+        <div className="mt-3 flex items-center justify-between gap-2">
+          <input
+            type="file"
+            ref={receiptFileRef}
+            onChange={handleReceiptUpload}
+            accept="image/png,image/jpeg,image/webp"
+            className="hidden"
+          />
+          <button
+            type="button"
+            onClick={() => receiptFileRef.current?.click()}
+            disabled={isScanningReceipt}
+            className="clay-btn-secondary flex-1 py-2 px-3 text-[11px] font-bold flex items-center justify-center space-x-1.5"
+          >
+            {isScanningReceipt ? (
+              <>
+                <div className="w-3 h-3 border-2 border-[#1685F8] border-t-transparent rounded-full animate-spin" />
+                <span>Scanning Receipt...</span>
+              </>
+            ) : (
+              <>
+                <Camera className="w-3.5 h-3.5 text-[#1685F8] dark:text-[#2589FF]" />
+                <span>Scan Receipt (OCR)</span>
+              </>
+            )}
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setShowQuickFill(!showQuickFill)}
+            className="clay-btn-secondary flex-1 py-2 px-3 text-[11px] font-bold flex items-center justify-center space-x-1.5"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-[#1685F8] dark:text-[#2589FF]" />
+            <span>AI Quick-Fill</span>
+          </button>
+        </div>
+
+        {/* AI Quick Fill Input Box */}
+        {showQuickFill && (
+          <div className="mt-3 p-3 rounded-2xl bg-[#E9F5FE] dark:bg-[#141414] border border-[#BFE9FF] dark:border-[#303030] space-y-2 animate-in fade-in">
+            <div className="text-[11px] font-bold text-[#10274A] dark:text-[#F5F5F5] flex items-center space-x-1">
+              <Sparkles className="w-3.5 h-3.5 text-[#1685F8] dark:text-[#2589FF]" />
+              <span>Describe in natural language:</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <input
+                type="text"
+                placeholder="e.g. Rahul paid ₹2400 for dinner with Priya and Aman"
+                value={quickFillPrompt}
+                onChange={e => setQuickFillPrompt(e.target.value)}
+                onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); handleQuickFill(); } }}
+                className="clay-input flex-1 px-3 py-1.5 text-xs text-[#10274A] dark:text-[#F5F5F5] dark:bg-[#0D0D0D]"
+              />
+              <button
+                type="button"
+                onClick={handleQuickFill}
+                disabled={isQuickFilling || !quickFillPrompt.trim()}
+                className="clay-btn-primary px-3 py-1.5 text-xs font-bold disabled:opacity-50"
+              >
+                {isQuickFilling ? 'Parsing...' : 'Fill'}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Scan / Quick-Fill Notice */}
+        {scanNotice && (
+          <div className={`mt-3 p-3 rounded-2xl text-xs font-medium flex items-start space-x-2 border ${
+            scanNotice.type === 'success'
+              ? 'bg-[#DDF8EE] dark:bg-[#34D399]/15 border-[#16B890]/40 text-[#16B890] dark:text-[#34D399]'
+              : scanNotice.type === 'error'
+              ? 'bg-[#FFE9EC] dark:bg-red-950/20 border-red-200 text-red-600 dark:text-red-400'
+              : 'bg-blue-50 dark:bg-blue-950/20 border-blue-200 text-blue-700 dark:text-blue-300'
+          }`}>
+            {scanNotice.type === 'success' ? (
+              <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5" />
+            ) : (
+              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+            )}
+            <span className="flex-1">{scanNotice.message}</span>
+            <button type="button" onClick={() => setScanNotice(null)} className="text-xs font-bold px-1">✕</button>
+          </div>
+        )}
+
+        {/* Duplicate Warning Alert Box */}
+        {potentialDuplicate && (
+          <div className="mt-3 p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/25 border-2 border-amber-300 dark:border-amber-700/50 space-y-2.5 animate-in fade-in">
+            <div className="flex items-start space-x-2.5">
+              <AlertTriangle className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+              <div>
+                <h4 className="text-xs font-black text-amber-900 dark:text-amber-200">
+                  Possible Duplicate Expense Detected
+                </h4>
+                <p className="text-[11px] text-amber-800 dark:text-amber-300 mt-0.5">
+                  A similar expense <strong>"{potentialDuplicate.title}"</strong> ({potentialDuplicate.currency} {Number(potentialDuplicate.amount).toLocaleString()}) was recorded on {potentialDuplicate.date} by {potentialDuplicate.payerName}.
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center justify-end space-x-2 pt-1">
+              <button
+                type="button"
+                onClick={() => setPotentialDuplicate(null)}
+                className="clay-btn-secondary px-3 py-1.5 text-xs font-bold"
+              >
+                Review & Edit
+              </button>
+              <button
+                type="button"
+                onClick={() => handleSubmit(undefined, true)}
+                className="px-3.5 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold shadow-sm"
+              >
+                Proceed Anyway
+              </button>
+            </div>
+          </div>
+        )}
 
         {errorMessage && (
           <div className="mt-4 p-3.5 rounded-2xl bg-[#FFE9EC] dark:bg-red-950/20 border border-red-200 dark:border-red-900/40 flex items-start space-x-2.5 text-xs text-red-600 dark:text-red-400 font-medium">

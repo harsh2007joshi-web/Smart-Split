@@ -16,6 +16,8 @@ import {
   Receipt,
   HelpCircle,
   Lightbulb,
+  Mic,
+  MicOff,
 } from 'lucide-react';
 
 interface ChatMessage {
@@ -37,6 +39,67 @@ export const AIAssistantPage: React.FC = () => {
   const [selectedParsedExpenseForEdit, setSelectedParsedExpenseForEdit] = useState<any>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Voice Input States
+  const [isListening, setIsListening] = useState(false);
+  const [voiceNotice, setVoiceNotice] = useState<string | null>(null);
+  const recognitionRef = useRef<any>(null);
+
+  const toggleVoiceInput = () => {
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      setVoiceNotice('Voice recognition is not supported in this browser. Please use text entry.');
+      setTimeout(() => setVoiceNotice(null), 4000);
+      return;
+    }
+
+    if (isListening) {
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+      }
+      setIsListening(false);
+      return;
+    }
+
+    try {
+      const recognition = new SpeechRecognition();
+      recognitionRef.current = recognition;
+      recognition.continuous = false;
+      recognition.interimResults = true;
+      recognition.lang = 'en-IN'; // Indian English / global English support
+
+      recognition.onstart = () => {
+        setIsListening(true);
+        setVoiceNotice('Listening... Speak your expense clearly.');
+      };
+
+      recognition.onresult = (event: any) => {
+        const transcript = Array.from(event.results)
+          .map((result: any) => result[0].transcript)
+          .join('');
+        setInputText(transcript);
+      };
+
+      recognition.onerror = (event: any) => {
+        console.warn('Speech recognition error:', event.error);
+        setIsListening(false);
+        setVoiceNotice(event.error === 'not-allowed' ? 'Microphone permission denied.' : 'Voice recognition ended.');
+        setTimeout(() => setVoiceNotice(null), 4000);
+      };
+
+      recognition.onend = () => {
+        setIsListening(false);
+        setVoiceNotice(null);
+      };
+
+      recognition.start();
+    } catch (e) {
+      console.error('Failed to start speech recognition:', e);
+      setIsListening(false);
+      setVoiceNotice('Could not start microphone. Please use text entry.');
+      setTimeout(() => setVoiceNotice(null), 4000);
+    }
+  };
 
   useEffect(() => {
     // Load groups
@@ -123,10 +186,13 @@ export const AIAssistantPage: React.FC = () => {
     }
   };
 
-  const handleConfirmExpense = async (msgId: string, parsed: AIParsedExpense) => {
+  const handleConfirmExpense = async (msgId: string, parsed: AIParsedExpense, bypassDuplicate: boolean = false) => {
     try {
-      // Pick target group
-      const targetGroup = groups[0];
+      // Pick target group based on AI detection or first group
+      const targetGroup = (parsed as any).groupId
+        ? (groups.find(g => g.id === (parsed as any).groupId) || groups[0])
+        : groups[0];
+
       if (!targetGroup) {
         alert('Please create a group first.');
         return;
@@ -150,7 +216,7 @@ export const AIAssistantPage: React.FC = () => {
              parsed.payerName.toLowerCase().includes(m.name.toLowerCase())
       ) || targetGroup.members[0];
 
-      await api.addExpense(targetGroup.id, {
+      const res = await api.addExpense(targetGroup.id, {
         title: parsed.title,
         amount: parsed.amount,
         currency: parsed.currency,
@@ -161,7 +227,15 @@ export const AIAssistantPage: React.FC = () => {
         splitType: 'EQUAL',
         participants,
         notes: parsed.notes,
+        allowDuplicate: bypassDuplicate,
       });
+
+      if (res.warning === 'POTENTIAL_DUPLICATE' && !bypassDuplicate) {
+        if (window.confirm(`Possible Duplicate Detected:\n"${res.duplicateExpense.title}" (${res.duplicateExpense.currency} ${res.duplicateExpense.amount}) was already recorded on ${res.duplicateExpense.date}.\n\nDo you want to proceed and save this expense anyway?`)) {
+          handleConfirmExpense(msgId, parsed, true);
+        }
+        return;
+      }
 
       // Update message state
       setMessages(prev =>
@@ -351,6 +425,14 @@ export const AIAssistantPage: React.FC = () => {
           <div ref={messagesEndRef} />
         </div>
 
+        {/* Voice Notice Popup if active or error */}
+        {voiceNotice && (
+          <div className="px-4 py-2 bg-blue-50 dark:bg-[#141414] border-t border-[#BFE9FF] dark:border-[#303030] text-center text-xs font-semibold text-[#1685F8] dark:text-[#2589FF] animate-in fade-in flex items-center justify-center space-x-2">
+            {isListening && <div className="w-2.5 h-2.5 rounded-full bg-red-500 animate-ping" />}
+            <span>{voiceNotice}</span>
+          </div>
+        )}
+
         {/* Input Bar */}
         <div className="p-4 bg-white dark:bg-[#080808] border-t border-[#D8E9FA] dark:border-[#303030] transition-colors">
           <form
@@ -358,15 +440,32 @@ export const AIAssistantPage: React.FC = () => {
               e.preventDefault();
               handleSend();
             }}
-            className="flex items-center space-x-3 max-w-4xl mx-auto"
+            className="flex items-center space-x-2.5 max-w-4xl mx-auto"
           >
             <input
               type="text"
-              placeholder="e.g. Rahul paid ₹2,400 for dinner with Priya and Aman..."
+              placeholder={isListening ? 'Listening to speech...' : 'e.g. Rahul paid ₹2,400 for dinner with Priya and Aman...'}
               value={inputText}
               onChange={e => setInputText(e.target.value)}
-              className="clay-input flex-1 px-4 py-3 text-xs sm:text-sm font-medium"
+              className={`clay-input flex-1 px-4 py-3 text-xs sm:text-sm font-medium ${
+                isListening ? 'border-[#1685F8] ring-2 ring-[#1685F8]/20 bg-blue-50/20' : ''
+              }`}
             />
+
+            {/* Voice Input Button */}
+            <button
+              type="button"
+              onClick={toggleVoiceInput}
+              title={isListening ? 'Stop listening' : 'Voice-based expense entry'}
+              className={`p-3 rounded-2xl border transition-all ${
+                isListening
+                  ? 'bg-red-500 text-white border-red-600 animate-pulse shadow-md'
+                  : 'clay-btn-secondary text-[#1685F8] dark:text-[#2589FF]'
+              }`}
+            >
+              {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+            </button>
+
             <button
               type="submit"
               disabled={!inputText.trim() || isLoading}

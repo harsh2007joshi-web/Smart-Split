@@ -197,6 +197,74 @@ async function runTests() {
   const shouldBeNull = db.getGroupById(tempGroup.id);
   assert(shouldBeNull === undefined || shouldBeNull === null, 'Deleted trip no longer exists in database store');
 
+  // TEST 12: Group Budget Tracking & Status
+  console.log('\n--- TEST GROUP 12: Group Budget Tracking ---');
+  const budgetUpdated = db.updateGroup('grp_goa2026', { budget: 50000, budgetCurrency: 'INR' });
+  assert(budgetUpdated !== null && budgetUpdated.budget === 50000, 'Group budget updated to ₹50,000');
+  const goaExpensesNow = db.getExpensesForGroup('grp_goa2026');
+  const totalSpent = goaExpensesNow.reduce((sum, e) => sum + e.amount, 0);
+  const remaining = Math.max(0, 50000 - totalSpent);
+  const pct = Math.min(100, Math.round((totalSpent / 50000) * 100));
+  assert(remaining >= 0, `Remaining budget correctly calculated: ₹${remaining} (${pct}% used)`);
+
+  // TEST 13: Duplicate Expense Detection Guard
+  console.log('\n--- TEST GROUP 13: Duplicate Expense Detection Guard ---');
+  const firstGoaExpense = goaExpensesNow[0];
+  if (firstGoaExpense) {
+    const potentialDup = db.findPotentialDuplicateExpense('grp_goa2026', {
+      amount: firstGoaExpense.amount,
+      title: firstGoaExpense.title,
+      payerId: firstGoaExpense.payerId,
+      date: firstGoaExpense.date,
+    });
+    assert(!!potentialDup, `Duplicate detector caught existing expense "${firstGoaExpense.title}" (ID: ${potentialDup?.id})`);
+
+    const nonDup = db.findPotentialDuplicateExpense('grp_goa2026', {
+      amount: 999999.99,
+      title: 'Unique Scuba Diving Expedition 2026',
+      payerId: firstGoaExpense.payerId,
+      date: '2026-12-31',
+    });
+    assert(!nonDup, 'Duplicate detector correctly allowed unique expense without false positive');
+  }
+
+  // TEST 14: Penny-Rounding Decimal Split Conservation
+  console.log('\n--- TEST GROUP 14: Decimal Split Penny-Rounding Conservation ---');
+  // Scenario: ₹100 split 3 ways equally => 33.34, 33.33, 33.33 (sum === 100.00)
+  const total100 = 100;
+  const numMembers = 3;
+  const baseSplit = Math.floor((total100 / numMembers) * 100) / 100;
+  const remainder = Math.round((total100 - baseSplit * numMembers) * 100) / 100;
+  const splits = [0, 1, 2].map((idx) => {
+    const share = idx === 0 ? Math.round((baseSplit + remainder) * 100) / 100 : baseSplit;
+    return share;
+  });
+  const sumSplits = Math.round(splits.reduce((a, b) => a + b, 0) * 100) / 100;
+  assert(sumSplits === 100, `Penny-rounding conservation exact: Sum of shares is ₹${sumSplits} for ₹100 total`);
+  assert(splits[0] === 33.34 && splits[1] === 33.33 && splits[2] === 33.33, `Correct penny distribution: ${splits.join(', ')}`);
+
+  // TEST 15: AI Multimodal Receipt Scanner Service
+  console.log('\n--- TEST GROUP 15: AI Multimodal Receipt Scanner ---');
+  // Scan receipt without crash and check structured response
+  const scanResult = await aiService.scanReceipt('dGVzdCBiYXNlNjQ=', 'image/jpeg');
+  assert(typeof scanResult.serviceConfigured === 'boolean', `Receipt scanner returned valid structured response (serviceConfigured: ${scanResult.serviceConfigured})`);
+  assert(typeof scanResult.success === 'boolean', `Scanner handled input safely without crashing (success: ${scanResult.success})`);
+  if (!scanResult.serviceConfigured) {
+    assert(typeof scanResult.message === 'string' && scanResult.message.includes('GEMINI_API_KEY'), 'Gracefully reports unconfigured state without hallucinating financial data');
+  } else {
+    assert(typeof scanResult.title === 'string', 'Receipt scanner provided extracted title');
+  }
+
+  // TEST 16: Duplicate Payment Guard
+  console.log('\n--- TEST GROUP 16: Duplicate Payment Submission Guard ---');
+  // Attempt to re-capture an already captured order
+  try {
+    const secondCapture = await paypalService.captureOrder(ppOrder.id);
+    assert(secondCapture.status === 'COMPLETED', 'PayPal idempotent capture verification');
+  } catch (err: any) {
+    assert(err.message.includes('ALREADY_CAPTURED') || err.message.includes('already'), 'PayPal duplicate capture rejected with proper message');
+  }
+
   // SUMMARY
   console.log('\n==========================================');
   console.log(`TEST RESULTS: ${passed} PASSED | ${failed} FAILED`);

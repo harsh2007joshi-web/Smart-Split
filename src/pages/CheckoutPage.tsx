@@ -568,6 +568,38 @@ export const CheckoutPage: React.FC = () => {
                     </div>
                   </div>
                 )}
+
+                {/* Cancelled State Box */}
+                {paymentState === 'CANCELLED' && (
+                  <div className="p-4 rounded-2xl bg-slate-50 dark:bg-[#141414] border border-slate-200 dark:border-[#303030] text-center space-y-2">
+                    <p className="text-xs text-[#64748B] dark:text-[#A1A1AA]">
+                      Payment checkout was cancelled. Group balance remains pending.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setPaymentState('IDLE');
+                        setErrorMessage('');
+                      }}
+                      className="clay-btn-secondary px-4 py-2 text-xs font-bold"
+                    >
+                      Resume Payment
+                    </button>
+                  </div>
+                )}
+
+                {/* Cancel Action when Idle */}
+                {paymentState === 'IDLE' && (
+                  <div className="text-center pt-1">
+                    <button
+                      type="button"
+                      onClick={() => setPaymentState('CANCELLED')}
+                      className="text-xs text-[#64748B] dark:text-[#A1A1AA] hover:text-red-500 font-semibold underline"
+                    >
+                      Cancel checkout session
+                    </button>
+                  </div>
+                )}
               </div>
 
               {/* Success Next Steps & Receipt/Delete Options */}
