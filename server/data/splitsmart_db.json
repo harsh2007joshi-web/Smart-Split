@@ -1,0 +1,810 @@
+{
+  "users": [
+    {
+      "id": "usr_rahul",
+      "name": "Rahul Sharma",
+      "email": "rahul@example.com",
+      "passwordHash": "$2a$10$XRykmJQbtYFfmPGk.dSjSubM7p/SUalTd3ndfa7kO4Bwr/ai.9Xjq",
+      "avatarUrl": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80",
+      "isEmailVerified": true,
+      "createdAt": "2026-09-29T07:15:51.539Z",
+      "updatedAt": "2026-10-29T07:15:51.541Z"
+    },
+    {
+      "id": "usr_priya",
+      "name": "Priya Patel",
+      "email": "priya@example.com",
+      "passwordHash": "$2a$10$XRykmJQbtYFfmPGk.dSjSubM7p/SUalTd3ndfa7kO4Bwr/ai.9Xjq",
+      "avatarUrl": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80",
+      "isEmailVerified": true,
+      "createdAt": "2026-10-01T07:15:51.541Z",
+      "updatedAt": "2026-10-29T07:15:51.541Z"
+    },
+    {
+      "id": "usr_aman",
+      "name": "Aman Gupta",
+      "email": "aman@example.com",
+      "passwordHash": "$2a$10$XRykmJQbtYFfmPGk.dSjSubM7p/SUalTd3ndfa7kO4Bwr/ai.9Xjq",
+      "avatarUrl": "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=150&auto=format&fit=crop&q=80",
+      "isEmailVerified": true,
+      "createdAt": "2026-10-04T07:15:51.541Z",
+      "updatedAt": "2026-10-29T07:15:51.541Z"
+    },
+    {
+      "id": "usr_sneha",
+      "name": "Sneha Roy",
+      "email": "sneha@example.com",
+      "passwordHash": "$2a$10$XRykmJQbtYFfmPGk.dSjSubM7p/SUalTd3ndfa7kO4Bwr/ai.9Xjq",
+      "avatarUrl": "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&auto=format&fit=crop&q=80",
+      "isEmailVerified": true,
+      "createdAt": "2026-10-09T07:15:51.541Z",
+      "updatedAt": "2026-10-29T07:15:51.541Z"
+    },
+    {
+      "name": "Test Hackathon Judge",
+      "email": "judge@paypal-hackathon.com",
+      "passwordHash": "$2a$10$gr7L1RT1za5ahfaNljaI2.OSCxeOTAxNHvmmLSSv3xTRCwTRxxIG6",
+      "isEmailVerified": true,
+      "id": "usr_t4xvek9",
+      "createdAt": "2026-10-29T07:15:51.613Z",
+      "updatedAt": "2026-10-29T07:15:51.699Z"
+    },
+    {
+      "name": "Deepak Verma",
+      "email": "deepak.traveler@example.com",
+      "passwordHash": "dummyhash",
+      "isEmailVerified": true,
+      "id": "usr_bcbzxe9",
+      "createdAt": "2026-10-29T07:15:51.744Z",
+      "updatedAt": "2026-10-29T07:15:51.744Z"
+    },
+    {
+      "name": "Harsh Joshi",
+      "email": "harsh2007joshi@gmail.com",
+      "phoneNumber": "9136274875",
+      "isPhoneVerified": false,
+      "passwordHash": "$2a$10$uVWWr9Gsalnqa//x2Rwiye.9xjxl0SuTsyRuvbvMg653ZGpv5dzNW",
+      "isEmailVerified": true,
+      "id": "usr_vvipphb",
+      "createdAt": "2026-10-29T07:18:07.468Z",
+      "updatedAt": "2026-10-29T07:18:19.505Z"
+    },
+    {
+      "name": "Mono",
+      "email": "hatergames697@gmail.com",
+      "phoneNumber": "9136271875",
+      "isPhoneVerified": false,
+      "passwordHash": "$2a$10$z25udu/4r/G1FBGe5XzPmOct8ToXfkRDV/uUHJbco7dmKia03COsC",
+      "isEmailVerified": true,
+      "id": "usr_o04owwn",
+      "createdAt": "2026-10-29T10:31:37.568Z",
+      "updatedAt": "2026-10-29T10:31:53.595Z"
+    }
+  ],
+  "verificationTokens": [
+    {
+      "id": "tok_smt7bzj",
+      "userId": "usr_2cp7ldr",
+      "email": "harsh2007joshi@gmail.com",
+      "code": "989946",
+      "expiresAt": 1793258613167,
+      "attempts": 1
+    }
+  ],
+  "phoneVerifications": [
+    {
+      "id": "pv_mv7kprz",
+      "phone": "9876543210",
+      "otp": "849201",
+      "sessionId": "session_2factor_test_xyz",
+      "expiresAt": 1793258751723,
+      "verified": true
+    },
+    {
+      "id": "pv_d3px9av",
+      "phone": "9136274875",
+      "otp": "181294",
+      "sessionId": "2F_SESSION_1793258287473",
+      "expiresAt": 1793258887473,
+      "verified": false
+    },
+    {
+      "id": "pv_qsimp60",
+      "phone": "9136271875",
+      "otp": "305886",
+      "sessionId": "2F_SESSION_1793269897574",
+      "expiresAt": 1793270497574,
+      "verified": false
+    }
+  ],
+  "invitations": [
+    {
+      "id": "invit_8da45x0",
+      "groupId": "grp_goa2026",
+      "groupName": "Goa Trip 2026",
+      "inviterName": "Rahul Sharma",
+      "email": "deepak.traveler@example.com",
+      "token": "inv_y9k8nmb4ismvt78ylg",
+      "status": "ACCEPTED",
+      "createdAt": "2026-10-29T07:05:57.028Z"
+    },
+    {
+      "id": "invit_8c1b46m",
+      "groupId": "grp_goa2026",
+      "groupName": "Goa Trip 2026",
+      "inviterName": "Rahul Sharma",
+      "email": "deepak.traveler@example.com",
+      "token": "inv_6fakg0hca6mvt79ei9",
+      "status": "ACCEPTED",
+      "createdAt": "2026-10-29T07:06:17.649Z"
+    },
+    {
+      "id": "invit_fz23biu",
+      "groupId": "grp_goa2026",
+      "groupName": "Goa Trip 2026",
+      "inviterName": "Rahul Sharma",
+      "email": "deepak.traveler@example.com",
+      "token": "inv_em50me0lx8mvt7lpgw",
+      "status": "ACCEPTED",
+      "createdAt": "2026-10-29T07:15:51.728Z"
+    }
+  ],
+  "resetChallenges": [],
+  "groups": [
+    {
+      "id": "grp_goa2026",
+      "name": "Goa Trip 2026",
+      "description": "Annual beach vacation and adventures with college gang",
+      "category": "Travel",
+      "currency": "INR",
+      "creatorId": "usr_rahul",
+      "createdAt": "2026-10-15T07:15:51.541Z",
+      "updatedAt": "2026-10-29T07:15:51.746Z",
+      "members": [
+        {
+          "id": "gm_1",
+          "groupId": "grp_goa2026",
+          "userId": "usr_rahul",
+          "name": "Rahul Sharma",
+          "email": "rahul@example.com",
+          "role": "ADMIN",
+          "joinedAt": "2026-10-15T07:15:51.541Z"
+        },
+        {
+          "id": "gm_2",
+          "groupId": "grp_goa2026",
+          "userId": "usr_priya",
+          "name": "Priya Patel",
+          "email": "priya@example.com",
+          "role": "MEMBER",
+          "joinedAt": "2026-10-15T07:15:51.541Z"
+        },
+        {
+          "id": "gm_3",
+          "groupId": "grp_goa2026",
+          "userId": "usr_aman",
+          "name": "Aman Gupta",
+          "email": "aman@example.com",
+          "role": "MEMBER",
+          "joinedAt": "2026-10-15T07:15:51.541Z"
+        },
+        {
+          "id": "gm_4",
+          "groupId": "grp_goa2026",
+          "userId": "usr_sneha",
+          "name": "Sneha Roy",
+          "email": "sneha@example.com",
+          "role": "MEMBER",
+          "joinedAt": "2026-10-16T07:15:51.541Z"
+        },
+        {
+          "id": "gm_1bl9e99",
+          "groupId": "grp_goa2026",
+          "userId": "usr_bcbzxe9",
+          "name": "Deepak Verma",
+          "email": "deepak.traveler@example.com",
+          "role": "MEMBER",
+          "joinedAt": "2026-10-29T07:15:51.746Z"
+        }
+      ]
+    },
+    {
+      "id": "grp_college",
+      "name": "College Friends",
+      "description": "Weekend hangouts, dinners, movies & treats",
+      "category": "Entertainment",
+      "currency": "INR",
+      "creatorId": "usr_rahul",
+      "createdAt": "2026-09-14T07:15:51.541Z",
+      "updatedAt": "2026-10-29T07:15:51.541Z",
+      "members": [
+        {
+          "id": "gm_5",
+          "groupId": "grp_college",
+          "userId": "usr_rahul",
+          "name": "Rahul Sharma",
+          "email": "rahul@example.com",
+          "role": "ADMIN",
+          "joinedAt": "2026-09-14T07:15:51.541Z"
+        },
+        {
+          "id": "gm_6",
+          "groupId": "grp_college",
+          "userId": "usr_priya",
+          "name": "Priya Patel",
+          "email": "priya@example.com",
+          "role": "MEMBER",
+          "joinedAt": "2026-09-14T07:15:51.541Z"
+        },
+        {
+          "id": "gm_7",
+          "groupId": "grp_college",
+          "userId": "usr_aman",
+          "name": "Aman Gupta",
+          "email": "aman@example.com",
+          "role": "MEMBER",
+          "joinedAt": "2026-09-14T07:15:51.541Z"
+        }
+      ]
+    },
+    {
+      "id": "grp_roommates",
+      "name": "Roommates Flat 402",
+      "description": "Rent, groceries, high-speed WiFi, electricity & maintenance",
+      "category": "Utilities",
+      "currency": "INR",
+      "creatorId": "usr_aman",
+      "createdAt": "2026-08-30T07:15:51.541Z",
+      "updatedAt": "2026-10-29T07:15:51.541Z",
+      "members": [
+        {
+          "id": "gm_8",
+          "groupId": "grp_roommates",
+          "userId": "usr_rahul",
+          "name": "Rahul Sharma",
+          "email": "rahul@example.com",
+          "role": "MEMBER",
+          "joinedAt": "2026-08-30T07:15:51.541Z"
+        },
+        {
+          "id": "gm_9",
+          "groupId": "grp_roommates",
+          "userId": "usr_aman",
+          "name": "Aman Gupta",
+          "email": "aman@example.com",
+          "role": "ADMIN",
+          "joinedAt": "2026-08-30T07:15:51.541Z"
+        }
+      ]
+    }
+  ],
+  "expenses": [
+    {
+      "id": "exp_1",
+      "groupId": "grp_goa2026",
+      "title": "Beach Resort Villa Booking",
+      "amount": 14000,
+      "currency": "INR",
+      "payerId": "usr_rahul",
+      "payerName": "Rahul Sharma",
+      "category": "Accommodation",
+      "date": "2026-10-24",
+      "splitType": "EQUAL",
+      "splits": [
+        {
+          "id": "s_1",
+          "expenseId": "exp_1",
+          "userId": "usr_rahul",
+          "userName": "Rahul Sharma",
+          "shareAmount": 3500
+        },
+        {
+          "id": "s_2",
+          "expenseId": "exp_1",
+          "userId": "usr_priya",
+          "userName": "Priya Patel",
+          "shareAmount": 3500
+        },
+        {
+          "id": "s_3",
+          "expenseId": "exp_1",
+          "userId": "usr_aman",
+          "userName": "Aman Gupta",
+          "shareAmount": 3500
+        },
+        {
+          "id": "s_4",
+          "expenseId": "exp_1",
+          "userId": "usr_sneha",
+          "userName": "Sneha Roy",
+          "shareAmount": 3500
+        }
+      ],
+      "notes": "3 nights stay near Baga Beach with breakfast included",
+      "createdAt": "2026-10-24T07:15:51.541Z",
+      "updatedAt": "2026-10-29T07:15:51.541Z"
+    },
+    {
+      "id": "exp_2",
+      "groupId": "grp_goa2026",
+      "title": "Seafood Shack Dinner & Drinks",
+      "amount": 4800,
+      "currency": "INR",
+      "payerId": "usr_priya",
+      "payerName": "Priya Patel",
+      "category": "Food",
+      "date": "2026-10-25",
+      "splitType": "EQUAL",
+      "splits": [
+        {
+          "id": "s_5",
+          "expenseId": "exp_2",
+          "userId": "usr_rahul",
+          "userName": "Rahul Sharma",
+          "shareAmount": 1200
+        },
+        {
+          "id": "s_6",
+          "expenseId": "exp_2",
+          "userId": "usr_priya",
+          "userName": "Priya Patel",
+          "shareAmount": 1200
+        },
+        {
+          "id": "s_7",
+          "expenseId": "exp_2",
+          "userId": "usr_aman",
+          "userName": "Aman Gupta",
+          "shareAmount": 1200
+        },
+        {
+          "id": "s_8",
+          "expenseId": "exp_2",
+          "userId": "usr_sneha",
+          "userName": "Sneha Roy",
+          "shareAmount": 1200
+        }
+      ],
+      "notes": "Candlelight dinner at Curlies Beach Shack",
+      "createdAt": "2026-10-25T07:15:51.541Z",
+      "updatedAt": "2026-10-29T07:15:51.541Z"
+    },
+    {
+      "id": "exp_3",
+      "groupId": "grp_goa2026",
+      "title": "Self-Drive Thar Rental & Fuel",
+      "amount": 6000,
+      "currency": "INR",
+      "payerId": "usr_aman",
+      "payerName": "Aman Gupta",
+      "category": "Travel",
+      "date": "2026-10-26",
+      "splitType": "EQUAL",
+      "splits": [
+        {
+          "id": "s_9",
+          "expenseId": "exp_3",
+          "userId": "usr_rahul",
+          "userName": "Rahul Sharma",
+          "shareAmount": 1500
+        },
+        {
+          "id": "s_10",
+          "expenseId": "exp_3",
+          "userId": "usr_priya",
+          "userName": "Priya Patel",
+          "shareAmount": 1500
+        },
+        {
+          "id": "s_11",
+          "expenseId": "exp_3",
+          "userId": "usr_aman",
+          "userName": "Aman Gupta",
+          "shareAmount": 1500
+        },
+        {
+          "id": "s_12",
+          "expenseId": "exp_3",
+          "userId": "usr_sneha",
+          "userName": "Sneha Roy",
+          "shareAmount": 1500
+        }
+      ],
+      "notes": "Airport pickup and north Goa cruising",
+      "createdAt": "2026-10-26T07:15:51.541Z",
+      "updatedAt": "2026-10-29T07:15:51.541Z"
+    },
+    {
+      "id": "exp_4",
+      "groupId": "grp_college",
+      "title": "Italian Bistro Weekend Celebration",
+      "amount": 3600,
+      "currency": "INR",
+      "payerId": "usr_rahul",
+      "payerName": "Rahul Sharma",
+      "category": "Food",
+      "date": "2026-10-27",
+      "splitType": "EQUAL",
+      "splits": [
+        {
+          "id": "s_13",
+          "expenseId": "exp_4",
+          "userId": "usr_rahul",
+          "userName": "Rahul Sharma",
+          "shareAmount": 1200
+        },
+        {
+          "id": "s_14",
+          "expenseId": "exp_4",
+          "userId": "usr_priya",
+          "userName": "Priya Patel",
+          "shareAmount": 1200
+        },
+        {
+          "id": "s_15",
+          "expenseId": "exp_4",
+          "userId": "usr_aman",
+          "userName": "Aman Gupta",
+          "shareAmount": 1200
+        }
+      ],
+      "notes": "Pizzas, pasta and tiramisu",
+      "createdAt": "2026-10-27T07:15:51.541Z",
+      "updatedAt": "2026-10-29T07:15:51.541Z"
+    },
+    {
+      "id": "exp_5",
+      "groupId": "grp_roommates",
+      "title": "High-Speed Fiber WiFi & Electricity",
+      "amount": 2400,
+      "currency": "INR",
+      "payerId": "usr_aman",
+      "payerName": "Aman Gupta",
+      "category": "Utilities",
+      "date": "2026-10-28",
+      "splitType": "EQUAL",
+      "splits": [
+        {
+          "id": "s_16",
+          "expenseId": "exp_5",
+          "userId": "usr_rahul",
+          "userName": "Rahul Sharma",
+          "shareAmount": 1200
+        },
+        {
+          "id": "s_17",
+          "expenseId": "exp_5",
+          "userId": "usr_aman",
+          "userName": "Aman Gupta",
+          "shareAmount": 1200
+        }
+      ],
+      "notes": "Monthly connection bill",
+      "createdAt": "2026-10-28T07:15:51.541Z",
+      "updatedAt": "2026-10-29T07:15:51.541Z"
+    }
+  ],
+  "settlements": [
+    {
+      "groupId": "grp_goa2026",
+      "fromUserId": "usr_rahul",
+      "fromUserName": "Rahul Sharma",
+      "toUserId": "usr_rahul",
+      "toUserName": "Rahul Sharma",
+      "amount": 6200,
+      "currency": "INR",
+      "status": "COMPLETED",
+      "paymentId": "pay_81t5bpy",
+      "completedAt": "2026-10-29T06:55:09.603Z",
+      "id": "set_yhxf3ab",
+      "createdAt": "2026-10-29T06:55:09.603Z"
+    },
+    {
+      "groupId": "grp_goa2026",
+      "fromUserId": "usr_rahul",
+      "fromUserName": "Rahul Sharma",
+      "toUserId": "usr_rahul",
+      "toUserName": "Rahul Sharma",
+      "amount": 6200,
+      "currency": "INR",
+      "status": "COMPLETED",
+      "paymentId": "pay_bcbekx2",
+      "completedAt": "2026-10-29T06:58:54.390Z",
+      "id": "set_tgwcofx",
+      "createdAt": "2026-10-29T06:58:54.390Z"
+    },
+    {
+      "groupId": "grp_goa2026",
+      "fromUserId": "usr_rahul",
+      "fromUserName": "Rahul Sharma",
+      "toUserId": "usr_rahul",
+      "toUserName": "Rahul Sharma",
+      "amount": 6200,
+      "currency": "INR",
+      "status": "COMPLETED",
+      "paymentId": "pay_tgml346",
+      "completedAt": "2026-10-29T09:33:09.446Z",
+      "id": "set_p40hppl",
+      "createdAt": "2026-10-29T09:33:09.446Z"
+    },
+    {
+      "groupId": "grp_goa2026",
+      "fromUserId": "usr_rahul",
+      "fromUserName": "Rahul Sharma",
+      "toUserId": "usr_rahul",
+      "toUserName": "Rahul Sharma",
+      "amount": 6200,
+      "currency": "INR",
+      "status": "COMPLETED",
+      "paymentId": "pay_pb6i26x",
+      "completedAt": "2026-10-29T09:33:55.689Z",
+      "id": "set_8qigl6w",
+      "createdAt": "2026-10-29T09:33:55.689Z"
+    }
+  ],
+  "payments": [
+    {
+      "settlementId": "sug_grp_eccj0cc_0",
+      "groupId": "grp_eccj0cc",
+      "payerId": "usr_vvipphb",
+      "payerName": "Harsh Joshi",
+      "recipientId": "usr_o04owwn",
+      "recipientName": "Mono",
+      "amount": 2500,
+      "currency": "INR",
+      "method": "CREDIT_CARD",
+      "status": "COMPLETED",
+      "reference": "SS-CRD-MVTEO2PG-7057",
+      "metadata": {
+        "receiptNumber": "REC-2026-393894",
+        "cardholderName": "Harsh Joshi",
+        "cardMasked": "•••• •••• •••• 4242",
+        "verifiedVia": "SplitSmart Secure Vault Gateway"
+      },
+      "id": "pay_x98inek",
+      "createdAt": "2026-10-29T10:33:39.508Z"
+    },
+    {
+      "settlementId": "sug_grp_goa2026_0",
+      "groupId": "grp_goa2026",
+      "payerId": "usr_rahul",
+      "payerName": "Rahul Sharma",
+      "recipientId": "usr_rahul",
+      "recipientName": "Rahul Sharma",
+      "amount": 6200,
+      "currency": "INR",
+      "method": "PAYPAL",
+      "status": "COMPLETED",
+      "reference": "PP-SBX-75318504",
+      "metadata": {
+        "receiptNumber": "REC-2026-796006",
+        "paypalOrderId": "PAYPAL-SANDBOX-TV47PDO0",
+        "payerEmail": "sb-buyer@business.example.com",
+        "isSandbox": true
+      },
+      "id": "pay_pb6i26x",
+      "createdAt": "2026-10-29T09:33:55.685Z"
+    },
+    {
+      "settlementId": "sug_grp_goa2026_0",
+      "groupId": "grp_goa2026",
+      "payerId": "usr_rahul",
+      "payerName": "Rahul Sharma",
+      "recipientId": "usr_rahul",
+      "recipientName": "Rahul Sharma",
+      "amount": 6200,
+      "currency": "INR",
+      "method": "PAYPAL",
+      "status": "COMPLETED",
+      "reference": "PP-SBX-46603192",
+      "metadata": {
+        "receiptNumber": "REC-2026-179047",
+        "paypalOrderId": "PAYPAL-SANDBOX-2RVVVYI7",
+        "payerEmail": "sb-buyer@business.example.com",
+        "isSandbox": true
+      },
+      "id": "pay_tgml346",
+      "createdAt": "2026-10-29T09:33:09.442Z"
+    },
+    {
+      "settlementId": "set_test_1",
+      "groupId": "grp_goa2026",
+      "payerId": "usr_rahul",
+      "payerName": "Rahul Sharma",
+      "recipientId": "usr_priya",
+      "recipientName": "Priya Patel",
+      "amount": 1200,
+      "currency": "INR",
+      "method": "CREDIT_CARD",
+      "status": "COMPLETED",
+      "reference": "SS-CRD-1793258151720",
+      "receiptNumber": "REC-1793258151720-CRD",
+      "metadata": {
+        "cardMasked": "•••• •••• •••• 4242",
+        "verified": true
+      },
+      "id": "pay_hegb7cb",
+      "createdAt": "2026-10-29T07:15:51.720Z"
+    },
+    {
+      "id": "pay_demo_1",
+      "settlementId": "set_demo_1",
+      "groupId": "grp_goa2026",
+      "payerId": "usr_sneha",
+      "payerName": "Sneha Roy",
+      "recipientId": "usr_rahul",
+      "recipientName": "Rahul Sharma",
+      "amount": 3500,
+      "currency": "INR",
+      "method": "PAYPAL",
+      "status": "COMPLETED",
+      "reference": "PP-TXN-88492019",
+      "createdAt": "2026-10-27T07:15:51.541Z",
+      "metadata": {
+        "note": "Villa booking share settled via PayPal Sandbox"
+      }
+    }
+  ],
+  "notifications": [
+    {
+      "id": "notif_1",
+      "userId": "usr_rahul",
+      "title": "Settlement Received",
+      "message": "Sneha Roy settled ₹3,500 for Beach Resort Villa Booking via PayPal Sandbox.",
+      "type": "PAYMENT",
+      "isRead": false,
+      "createdAt": "2026-10-27T07:15:51.541Z",
+      "link": "/transactions"
+    },
+    {
+      "id": "notif_2",
+      "userId": "usr_rahul",
+      "title": "New Expense Added",
+      "message": "Aman Gupta added \"High-Speed Fiber WiFi & Electricity\" (₹2,400) in Roommates Flat 402.",
+      "type": "EXPENSE",
+      "isRead": false,
+      "createdAt": "2026-10-28T07:15:51.541Z",
+      "link": "/groups/grp_roommates"
+    },
+    {
+      "id": "notif_3",
+      "userId": "usr_rahul",
+      "title": "AI Smart Insight",
+      "message": "Food and Accommodation account for 61% of your group spending this month.",
+      "type": "ALERT",
+      "isRead": true,
+      "createdAt": "2026-10-26T07:15:51.541Z",
+      "link": "/analytics"
+    },
+    {
+      "userId": "usr_vvipphb",
+      "title": "Group Created",
+      "message": "You created the group \"Goa\". Invite friends to start splitting expenses.",
+      "type": "INVITATION",
+      "link": "/groups/grp_t6xivym",
+      "id": "notif_dw6ecwm",
+      "isRead": true,
+      "createdAt": "2026-10-29T07:18:39.736Z"
+    },
+    {
+      "userId": "usr_vvipphb",
+      "title": "Group Created",
+      "message": "You created the group \"goa\". Invite friends to start splitting expenses.",
+      "type": "INVITATION",
+      "link": "/groups/grp_slhvvfg",
+      "id": "notif_ksfakxz",
+      "isRead": true,
+      "createdAt": "2026-10-29T08:18:47.771Z"
+    },
+    {
+      "userId": "usr_vvipphb",
+      "title": "Group Created",
+      "message": "You created the group \"odisha\". Invite friends to start splitting expenses.",
+      "type": "INVITATION",
+      "link": "/groups/grp_vegw3ax",
+      "id": "notif_6k7hhlf",
+      "isRead": true,
+      "createdAt": "2026-10-29T09:27:02.844Z"
+    },
+    {
+      "userId": "usr_vvipphb",
+      "title": "Group Created",
+      "message": "You created the group \"odisha\". Invite friends to start splitting expenses.",
+      "type": "INVITATION",
+      "link": "/groups/grp_1oael28",
+      "id": "notif_eu8esin",
+      "isRead": true,
+      "createdAt": "2026-10-29T09:30:25.316Z"
+    },
+    {
+      "userId": "usr_rahul",
+      "title": "Settlement Received 💰",
+      "message": "Rahul Sharma settled INR 6,200 with you via PayPal Sandbox. Ref: PP-SBX-46603192",
+      "type": "PAYMENT",
+      "link": "/transactions",
+      "id": "notif_j3ofs0t",
+      "isRead": false,
+      "createdAt": "2026-10-29T09:33:09.449Z"
+    },
+    {
+      "userId": "usr_rahul",
+      "title": "Settlement Received 💰",
+      "message": "Rahul Sharma settled INR 6,200 with you via PayPal Sandbox. Ref: PP-SBX-75318504",
+      "type": "PAYMENT",
+      "link": "/transactions",
+      "id": "notif_mcvl4kq",
+      "isRead": false,
+      "createdAt": "2026-10-29T09:33:55.692Z"
+    },
+    {
+      "userId": "usr_vvipphb",
+      "title": "Group Created",
+      "message": "You created the group \"manali\". Invite friends to start splitting expenses.",
+      "type": "INVITATION",
+      "link": "/groups/grp_mieekq1",
+      "id": "notif_rhq5s4j",
+      "isRead": true,
+      "createdAt": "2026-10-29T10:03:59.729Z"
+    },
+    {
+      "userId": "usr_vvipphb",
+      "title": "Group Created",
+      "message": "You created the group \"manali\". Invite friends to start splitting expenses.",
+      "type": "INVITATION",
+      "link": "/groups/grp_eccj0cc",
+      "id": "notif_d0ckj18",
+      "isRead": true,
+      "createdAt": "2026-10-29T10:29:04.878Z"
+    },
+    {
+      "userId": "usr_vvipphb",
+      "title": "New Expense Added",
+      "message": "Mono added \"Food\" (INR 5,000) in manali.",
+      "type": "EXPENSE",
+      "link": "/groups/grp_eccj0cc",
+      "id": "notif_l0vy4l2",
+      "isRead": true,
+      "createdAt": "2026-10-29T10:32:09.507Z"
+    },
+    {
+      "userId": "usr_o04owwn",
+      "title": "Settlement Payment Verified 🎉",
+      "message": "Harsh Joshi settled INR 2,500 with you using Credit Card. Ref: SS-CRD-MVTEO2PG-7057",
+      "type": "PAYMENT",
+      "link": "/transactions",
+      "id": "notif_ca4wkcz",
+      "isRead": false,
+      "createdAt": "2026-10-29T10:33:39.515Z"
+    },
+    {
+      "userId": "usr_vvipphb",
+      "title": "Group Created",
+      "message": "You created the group \"goa\". Invite friends to start splitting expenses.",
+      "type": "INVITATION",
+      "link": "/groups/grp_zy6jn32",
+      "id": "notif_ylv7l49",
+      "isRead": true,
+      "createdAt": "2026-10-29T11:14:39.759Z"
+    },
+    {
+      "userId": "usr_vvipphb",
+      "title": "Group Created",
+      "message": "You created the group \"manali\". Invite friends to start splitting expenses.",
+      "type": "INVITATION",
+      "link": "/groups/grp_a7ssmrp",
+      "id": "notif_8cdrq4l",
+      "isRead": true,
+      "createdAt": "2026-10-29T11:18:46.836Z"
+    },
+    {
+      "userId": "usr_vvipphb",
+      "title": "Group Created",
+      "message": "You created the group \"manaloi\". Invite friends to start splitting expenses.",
+      "type": "INVITATION",
+      "link": "/groups/grp_ovjewdq",
+      "id": "notif_372uujw",
+      "isRead": true,
+      "createdAt": "2026-10-29T11:20:53.978Z"
+    }
+  ]
+}
