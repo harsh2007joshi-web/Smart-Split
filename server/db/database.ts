@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import bcrypt from 'bcryptjs';
+import initialDbData from '../data/splitsmart_db.json';
 
 const isServerless = !!(
   process.env.VERCEL ||
@@ -303,7 +304,12 @@ class Database {
         };
       }
     } catch (e) {
-      console.error('Failed to load database file, creating fresh:', e);
+      console.warn('Reading DB_FILE failed, falling back to embedded store:', e);
+    }
+    if (initialDbData && typeof initialDbData === 'object') {
+      try {
+        return JSON.parse(JSON.stringify(initialDbData));
+      } catch {}
     }
     return JSON.parse(JSON.stringify(defaultSchema));
   }
