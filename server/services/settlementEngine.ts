@@ -6,7 +6,7 @@ export interface CalculatedBalance {
   email: string;
   totalPaid: number;
   totalOwed: number;
-  netBalance: number; // positive = should receive, negative = owes
+  netBalance: number;
 }
 
 export interface OptimizedTransfer {
@@ -19,10 +19,7 @@ export interface OptimizedTransfer {
 }
 
 export class SettlementEngine {
-  /**
-   * Calculates deterministic balances for every member in a group,
-   * accounting for all expenses and completed settlements.
-   */
+
   public static calculateBalances(
     group: StoredGroup,
     expenses: StoredExpense[],
@@ -36,7 +33,6 @@ export class SettlementEngine {
       totalOwed: number;
     }>();
 
-    // Initialize all group members with 0
     for (const member of group.members) {
       balanceMap.set(member.userId, {
         userId: member.userId,
@@ -47,7 +43,6 @@ export class SettlementEngine {
       });
     }
 
-    // Process expenses
     for (const expense of expenses) {
       const payerRecord = balanceMap.get(expense.payerId);
       if (payerRecord) {
@@ -57,7 +52,7 @@ export class SettlementEngine {
       for (const split of expense.splits) {
         let memberRecord = balanceMap.get(split.userId);
         if (!memberRecord) {
-          // External or unlisted member
+
           memberRecord = {
             userId: split.userId,
             userName: split.userName,
@@ -71,14 +66,13 @@ export class SettlementEngine {
       }
     }
 
-    // Account for completed settlements
     const settlementAdjustments = new Map<string, number>();
     for (const s of settlements) {
       if (s.status === 'COMPLETED') {
         const amt = Number(s.amount);
-        // Sender has paid their debt, so their effective net increases
+
         settlementAdjustments.set(s.fromUserId, (settlementAdjustments.get(s.fromUserId) || 0) + amt);
-        // Receiver has collected, so their effective claim decreases
+
         settlementAdjustments.set(s.toUserId, (settlementAdjustments.get(s.toUserId) || 0) - amt);
       }
     }
@@ -86,7 +80,7 @@ export class SettlementEngine {
     const results: CalculatedBalance[] = [];
     for (const record of balanceMap.values()) {
       const adjustment = settlementAdjustments.get(record.userId) || 0;
-      // Net = (totalPaid - totalOwed) + adjustment
+
       const net = Math.round((record.totalPaid - record.totalOwed + adjustment) * 100) / 100;
 
       results.push({
@@ -102,12 +96,8 @@ export class SettlementEngine {
     return results;
   }
 
-  /**
-   * Optimizes settlement transfers using a deterministic greedy netting algorithm.
-   * Minimizes the total number of transactions required to clear all debts.
-   */
   public static optimizeTransfers(balances: CalculatedBalance[], currency: string = 'INR'): OptimizedTransfer[] {
-    // Separate into debtors (negative net balance) and creditors (positive net balance)
+
     interface Participant {
       userId: string;
       userName: string;
@@ -126,19 +116,17 @@ export class SettlementEngine {
       }
     }
 
-    // Sort descending by amount to maximize debt clearing per transaction
     debtors.sort((a, b) => b.amount - a.amount);
     creditors.sort((a, b) => b.amount - a.amount);
 
     const transfers: OptimizedTransfer[] = [];
-    let i = 0; // debtor index
-    let j = 0; // creditor index
+    let i = 0;
+    let j = 0;
 
     while (i < debtors.length && j < creditors.length) {
       const debtor = debtors[i];
       const creditor = creditors[j];
 
-      // Settle min of what debtor owes and creditor is owed
       const settleAmount = Math.round(Math.min(debtor.amount, creditor.amount) * 100) / 100;
 
       if (settleAmount > 0.01) {

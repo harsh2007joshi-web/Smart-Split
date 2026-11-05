@@ -8,13 +8,11 @@ import { JWT_SECRET, AuthenticatedRequest, authenticateToken } from '../middlewa
 
 const router = Router();
 
-// Helper to generate JWT
 function generateUserToken(user: StoredUser, rememberMe: boolean = false): string {
   const expiresIn = rememberMe ? '30d' : '7d';
   return jwt.sign({ userId: user.id, email: user.email }, JWT_SECRET, { expiresIn });
 }
 
-// 0. SEND 2FACTOR.IN PHONE OTP (SMS)
 router.post('/send-phone-otp', async (req: Request, res: Response): Promise<void> => {
   try {
     const { phone } = req.body;
@@ -29,7 +27,6 @@ router.post('/send-phone-otp', async (req: Request, res: Response): Promise<void
       return;
     }
 
-    // Persist OTP locally as fallback
     db.savePhoneOtp(phone, smsRes.otp || '', smsRes.sessionId || '');
 
     res.json({
@@ -44,7 +41,6 @@ router.post('/send-phone-otp', async (req: Request, res: Response): Promise<void
   }
 });
 
-// 0.1 VERIFY 2FACTOR.IN PHONE OTP
 router.post('/verify-phone-otp', async (req: Request, res: Response): Promise<void> => {
   try {
     const { phone, otp, sessionId } = req.body;
@@ -59,7 +55,6 @@ router.post('/verify-phone-otp', async (req: Request, res: Response): Promise<vo
       return;
     }
 
-    // Try online 2factor.in verification
     const verifyRes = await twoFactorService.verifyOtp(sessionId, otp);
     if (verifyRes.success) {
       res.json({ success: true, message: verifyRes.message });
@@ -71,13 +66,23 @@ router.post('/verify-phone-otp', async (req: Request, res: Response): Promise<vo
   }
 });
 
-// 1. REGISTER
 router.post('/register', async (req: Request, res: Response): Promise<void> => {
   try {
     const { name, email, phoneNumber, password, confirmPassword, agreeTerms, otpMethod = 'PHONE' } = req.body;
 
-    if (!name || !email || !password) {
+    if (!name || !email || !password || !confirmPassword) {
       res.status(400).json({ error: 'Please fill in all required fields.' });
+      return;
+    }
+
+    if (!phoneNumber || !phoneNumber.toString().trim()) {
+      res.status(400).json({ error: 'Mobile phone number is mandatory to create an account.' });
+      return;
+    }
+
+    const cleanPhone = phoneNumber.toString().trim().replace(/\D/g, '');
+    if (cleanPhone.length < 10) {
+      res.status(400).json({ error: 'Please enter a valid 10-digit mobile phone number.' });
       return;
     }
 
@@ -103,6 +108,12 @@ router.post('/register', async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
+    const existingPhoneUser = db.findUserByPhone(cleanPhone);
+    if (existingPhoneUser) {
+      res.status(409).json({ error: 'An account with this mobile phone number already exists. Please log in.' });
+      return;
+    }
+
     const salt = bcrypt.genSaltSync(10);
     const passwordHash = bcrypt.hashSync(password, salt);
 
@@ -118,7 +129,6 @@ router.post('/register', async (req: Request, res: Response): Promise<void> => {
     let phoneDispatch = null;
     let emailResult = null;
 
-    // Send 2Factor.in Phone SMS OTP if phone provided
     if (phoneNumber && phoneNumber.trim()) {
       const smsRes = await twoFactorService.sendOtp(phoneNumber.trim());
       phoneDispatch = smsRes;
@@ -127,7 +137,6 @@ router.post('/register', async (req: Request, res: Response): Promise<void> => {
       }
     }
 
-    // Always generate and dispatch email verification code as well
     const code = db.createVerificationOtp(newUser.id, newUser.email);
     emailResult = await emailService.sendOtp({
       to: newUser.email,
@@ -142,6 +151,7 @@ router.post('/register', async (req: Request, res: Response): Promise<void> => {
         ? 'Account created successfully! 6-digit OTP code sent via 2Factor.in SMS and email.'
         : 'Account created successfully. A verification code has been sent to your email.',
       userId: newUser.id,
+      username: newUser.username,
       email: newUser.email,
       phoneNumber: newUser.phoneNumber,
       requiresVerification: true,
@@ -154,7 +164,6 @@ router.post('/register', async (req: Request, res: Response): Promise<void> => {
   }
 });
 
-// 2. VERIFY EMAIL OR PHONE OTP
 router.post('/verify-email', async (req: Request, res: Response): Promise<void> => {
   try {
     const { userId, code } = req.body;
@@ -170,10 +179,8 @@ router.post('/verify-email', async (req: Request, res: Response): Promise<void> 
       return;
     }
 
-    // Check email OTP first
     let verificationResult = db.verifyEmailOtp(userId, code);
 
-    // If not matched, check if it matches phone OTP via 2factor.in
     if (!verificationResult.success && user.phoneNumber) {
       const phoneCheck = db.verifyPhoneOtpLocally(user.phoneNumber, code);
       if (phoneCheck.success) {
@@ -196,7 +203,9 @@ router.post('/verify-email', async (req: Request, res: Response): Promise<void> 
       user: {
         id: user.id,
         name: user.name,
+        username: user.username,
         email: user.email,
+        gender: user.gender,
         avatarUrl: user.avatarUrl,
         isEmailVerified: user.isEmailVerified,
       },
@@ -206,7 +215,6 @@ router.post('/verify-email', async (req: Request, res: Response): Promise<void> 
   }
 });
 
-// 3. RESEND VERIFICATION OTP
 router.post('/resend-verification', async (req: Request, res: Response): Promise<void> => {
   try {
     const { userId } = req.body;
@@ -234,7 +242,6 @@ router.post('/resend-verification', async (req: Request, res: Response): Promise
   }
 });
 
-// 4. LOGIN
 router.post('/login', async (req: Request, res: Response): Promise<void> => {
   try {
     const { email, password, rememberMe } = req.body;
@@ -246,7 +253,6 @@ router.post('/login', async (req: Request, res: Response): Promise<void> => {
 
     const user = db.findUserByEmail(email);
     if (!user) {
-      // Generic error message for security
       res.status(401).json({ error: 'Invalid email or password. Please try again.' });
       return;
     }
@@ -258,7 +264,6 @@ router.post('/login', async (req: Request, res: Response): Promise<void> => {
     }
 
     if (!user.isEmailVerified) {
-      // Send a fresh OTP if unverified
       const code = db.createVerificationOtp(user.id, user.email);
       await emailService.sendOtp({
         to: user.email,
@@ -286,7 +291,9 @@ router.post('/login', async (req: Request, res: Response): Promise<void> => {
       user: {
         id: user.id,
         name: user.name,
+        username: user.username,
         email: user.email,
+        gender: user.gender,
         avatarUrl: user.avatarUrl,
         isEmailVerified: user.isEmailVerified,
       },
@@ -296,7 +303,6 @@ router.post('/login', async (req: Request, res: Response): Promise<void> => {
   }
 });
 
-// 5. FORGOT PASSWORD - REQUEST OTP (Supports Email OR Phone via 2factor.in)
 router.post('/forgot-password', async (req: Request, res: Response): Promise<void> => {
   try {
     const { email, phone } = req.body;
@@ -312,7 +318,6 @@ router.post('/forgot-password', async (req: Request, res: Response): Promise<voi
       ? db.findUserByPhone(targetIdentifier)
       : db.findUserByEmail(targetIdentifier);
 
-    // Create challenge
     const { challengeId, otp } = db.createPasswordResetChallenge(user ? user.email : targetIdentifier);
 
     let phoneDispatch = null;
@@ -347,7 +352,6 @@ router.post('/forgot-password', async (req: Request, res: Response): Promise<voi
   }
 });
 
-// 6. VERIFY RESET OTP
 router.post('/verify-reset-otp', async (req: Request, res: Response): Promise<void> => {
   try {
     const { challengeId, otp } = req.body;
@@ -372,7 +376,6 @@ router.post('/verify-reset-otp', async (req: Request, res: Response): Promise<vo
   }
 });
 
-// 7. RESET PASSWORD WITH TOKEN
 router.post('/reset-password', async (req: Request, res: Response): Promise<void> => {
   try {
     const { resetToken, newPassword, confirmPassword } = req.body;
@@ -409,14 +412,15 @@ router.post('/reset-password', async (req: Request, res: Response): Promise<void
   }
 });
 
-// 8. GET CURRENT USER
 router.get('/me', authenticateToken, (req: AuthenticatedRequest, res: Response): void => {
   const user = req.user!;
   res.json({
     user: {
       id: user.id,
       name: user.name,
+      username: user.username,
       email: user.email,
+      gender: user.gender,
       avatarUrl: user.avatarUrl,
       isEmailVerified: user.isEmailVerified,
       createdAt: user.createdAt,
@@ -424,31 +428,12 @@ router.get('/me', authenticateToken, (req: AuthenticatedRequest, res: Response):
   });
 });
 
-// 9. INSTANT DEMO LOGIN (For judges & hackathon evaluation)
-router.post('/demo-login', (req: Request, res: Response): void => {
-  const user = db.findUserByEmail('rahul@example.com') || db.getRawData().users[0];
-  if (!user) {
-    res.status(404).json({ error: 'Demo user not found. Please reset demo data.' });
-    return;
-  }
-  const token = generateUserToken(user, true);
-  res.json({
-    message: 'Logged in as Demo User (Rahul Sharma)',
-    token,
-    user: {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      avatarUrl: user.avatarUrl,
-      isEmailVerified: user.isEmailVerified,
-    },
-  });
+router.post('/demo-login', (_req: Request, res: Response): void => {
+  res.status(403).json({ error: 'Demo login has been disabled.' });
 });
 
-// 10. RESET DEMO DATA
-router.post('/reset-demo', (req: Request, res: Response): void => {
-  db.resetDemoData();
-  res.json({ message: 'Demo database has been successfully reset to initial hackathon state.' });
+router.post('/reset-demo', (_req: Request, res: Response): void => {
+  res.status(403).json({ error: 'Demo reset has been disabled.' });
 });
 
 export default router;

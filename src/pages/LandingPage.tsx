@@ -15,34 +15,29 @@ import {
   PieChart,
   Bot,
   Zap,
+  LogIn,
 } from 'lucide-react';
 
 export const LandingPage: React.FC = () => {
-  const { demoLogin } = useAuth();
   const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-[#F1F9FF] dark:bg-[#080808] text-[#10274A] dark:text-[#F5F5F5] flex flex-col justify-between">
       <Navbar />
 
-      {/* ================= HERO SECTION (MATCHES REFERENCE 1) ================= */}
       <section className="relative pt-8 pb-20 sm:pt-14 sm:pb-28 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-            {/* Left Column (55%) */}
             <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
-              {/* Headline (Exact reference match) */}
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-[#10274A] dark:text-[#F5F5F5] leading-[1.12]">
                 Split Expenses. <br />
                 <span className="text-[#1685F8] dark:text-[#2589FF]">Smarter Together.</span>
               </h1>
 
-              {/* Supporting Text */}
               <p className="text-base sm:text-lg text-[#64748B] dark:text-[#A1A1AA] max-w-xl mx-auto lg:mx-0 leading-relaxed">
                 AI-powered expense splitting with real payments via PayPal. Plan, track, and settle with ease — for trips, roommates, and more.
               </p>
 
-              {/* Primary CTA and Demo Action */}
               <div className="pt-2 flex flex-col sm:flex-row items-center justify-center lg:justify-start space-y-3 sm:space-y-0 sm:space-x-4">
                 <Link
                   to="/signup"
@@ -52,20 +47,15 @@ export const LandingPage: React.FC = () => {
                   <ArrowRight className="w-5 h-5" />
                 </Link>
 
-                <button
-                  type="button"
-                  onClick={async () => {
-                    await demoLogin();
-                    navigate('/dashboard');
-                  }}
+                <Link
+                  to="/login"
                   className="clay-btn-secondary px-6 py-4 text-base font-bold w-full sm:w-auto flex items-center justify-center space-x-2 dark:text-[#2589FF]"
                 >
-                  <Sparkles className="w-5 h-5 text-[#1685F8] dark:text-[#2589FF]" />
-                  <span>Explore Demo Workspace</span>
-                </button>
+                  <LogIn className="w-5 h-5 text-[#1685F8] dark:text-[#2589FF]" />
+                  <span>Log In to Account</span>
+                </Link>
               </div>
 
-              {/* Three Feature Indicators */}
               <div className="pt-6 border-t border-[#D8E9FA]/80 dark:border-[#303030] flex flex-wrap items-center justify-center lg:justify-start gap-6 sm:gap-8 text-xs sm:text-sm font-bold text-[#10274A] dark:text-[#F5F5F5]">
                 <div className="flex items-center space-x-2">
                   <div className="w-6 h-6 rounded-full bg-[#E9F5FE] dark:bg-[#2589FF]/10 text-[#1685F8] dark:text-[#2589FF] flex items-center justify-center">
@@ -90,7 +80,6 @@ export const LandingPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Right Column (Hero 3D Illustration) */}
             <div className="lg:col-span-5 flex justify-center">
               <HeroIllustration />
             </div>
@@ -98,7 +87,6 @@ export const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* ================= CLAY FEATURES SECTION ================= */}
       <section id="features" className="py-16 sm:py-24 bg-white/60 dark:bg-[#0B0B0B] border-y border-[#D8E9FA] dark:border-[#303030]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-16">
@@ -114,7 +102,6 @@ export const LandingPage: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Feature 1 */}
             <div className="clay-card-hover p-8 bg-white dark:bg-[#101010] dark:border dark:border-[#303030] flex flex-col justify-between">
               <div>
                 <div className="w-14 h-14 rounded-2xl bg-[#E9F5FE] dark:bg-[#2589FF]/10 text-[#1685F8] dark:text-[#2589FF] flex items-center justify-center mb-6 shadow-sm">
@@ -131,7 +118,6 @@ export const LandingPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Feature 2 */}
             <div className="clay-card-hover p-8 bg-white dark:bg-[#101010] dark:border dark:border-[#303030] flex flex-col justify-between">
               <div>
                 <div className="w-14 h-14 rounded-2xl bg-[#DDF8EE] dark:bg-[#0D1F17] text-[#16B890] dark:text-[#34D399] flex items-center justify-center mb-6 shadow-sm">
@@ -148,7 +134,6 @@ export const LandingPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Feature 3 */}
             <div className="clay-card-hover p-8 bg-white dark:bg-[#101010] dark:border dark:border-[#303030] flex flex-col justify-between">
               <div>
                 <div className="w-14 h-14 rounded-2xl bg-[#FFE9EC] dark:bg-[#2589FF]/10 text-[#EF4444] dark:text-[#2589FF] flex items-center justify-center mb-6 shadow-sm">
@@ -168,7 +153,6 @@ export const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* ================= HOW IT WORKS ================= */}
       <section id="how-it-works" className="py-20 sm:py-28">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-16">
@@ -217,7 +201,6 @@ export const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* ================= CALL TO ACTION BANNER ================= */}
       <section className="py-16 sm:py-20 bg-gradient-to-tr from-[#10274A] to-[#1685F8] dark:from-[#0B0B0B] dark:to-[#162740] text-white dark:border-y dark:border-[#303030]">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 text-center space-y-6">
           <h2 className="text-3xl sm:text-5xl font-black tracking-tight">
@@ -243,7 +226,6 @@ export const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* ================= FOOTER ================= */}
       <footer className="bg-white dark:bg-[#080808] border-t border-[#D8E9FA] dark:border-[#303030] py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6">
           <div className="flex items-center space-x-3">

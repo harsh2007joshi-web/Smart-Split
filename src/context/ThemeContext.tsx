@@ -5,7 +5,7 @@ export type Theme = 'light' | 'dark';
 interface ThemeContextType {
   theme: Theme;
   isDark: boolean;
-  toggleTheme: () => void;
+  toggleTheme: (event?: React.MouseEvent<any> | MouseEvent) => void;
   setTheme: (theme: Theme) => void;
 }
 
@@ -38,8 +38,67 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     } catch {}
   }, [theme]);
 
-  const toggleTheme = () => {
-    setThemeState(prev => (prev === 'dark' ? 'light' : 'dark'));
+  const toggleTheme = (event?: React.MouseEvent<any> | MouseEvent) => {
+    const nextTheme: Theme = theme === 'dark' ? 'light' : 'dark';
+
+    if (
+      typeof document !== 'undefined' &&
+      'startViewTransition' in document &&
+      !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ) {
+      let x = window.innerWidth / 2;
+      let y = 0;
+
+      if (event && 'clientX' in event && typeof event.clientX === 'number' && event.clientX > 0) {
+        x = event.clientX;
+        y = event.clientY;
+      } else {
+        const activeEl = document.activeElement as HTMLElement | null;
+        if (activeEl && typeof activeEl.getBoundingClientRect === 'function') {
+          const rect = activeEl.getBoundingClientRect();
+          x = rect.left + rect.width / 2;
+          y = rect.top + rect.height / 2;
+        }
+      }
+
+      const endRadius = Math.hypot(
+        Math.max(x, window.innerWidth - x),
+        Math.max(y, window.innerHeight - y)
+      );
+
+      try {
+        const transition = (document as any).startViewTransition(() => {
+          setThemeState(nextTheme);
+        });
+
+        transition.ready.then(() => {
+          document.documentElement.animate(
+            {
+              clipPath: [
+                `circle(0px at ${x}px ${y}px)`,
+                `circle(${endRadius}px at ${x}px ${y}px)`,
+              ],
+            },
+            {
+              duration: 500,
+              easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)',
+              pseudoElement: '::view-transition-new(root)',
+            }
+          );
+        }).catch(() => {
+          setThemeState(nextTheme);
+        });
+      } catch {
+        setThemeState(nextTheme);
+      }
+    } else {
+      const root = document.documentElement;
+      root.classList.add('theme-transitioning');
+      setThemeState(nextTheme);
+      setTimeout(() => {
+        root.classList.remove('theme-transitioning');
+      }, 450);
+    }
   };
 
   const setTheme = (newTheme: Theme) => {

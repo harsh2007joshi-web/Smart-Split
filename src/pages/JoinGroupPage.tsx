@@ -18,7 +18,7 @@ import {
 export const JoinGroupPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { isAuthenticated, user, demoLogin } = useAuth();
+  const { isAuthenticated, user } = useAuth();
 
   const token = searchParams.get('token') || '';
   const groupId = searchParams.get('groupId') || '';
@@ -53,7 +53,6 @@ export const JoinGroupPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#F1F9FF] dark:bg-[#080808] text-[#10274A] dark:text-[#F5F5F5] flex flex-col justify-between selection:bg-[#BFE9FF] dark:selection:bg-[#2589FF]/30">
-      {/* Header */}
       <header className="px-6 sm:px-12 py-6 flex items-center justify-between">
         <Link to="/" className="flex items-center space-x-3">
           <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#1685F8] to-[#0E6FD8] text-white flex items-center justify-center shadow-clay-btn">
@@ -66,7 +65,6 @@ export const JoinGroupPage: React.FC = () => {
         <ThemeToggle />
       </header>
 
-      {/* Main Join Card */}
       <main className="max-w-md mx-auto px-4 py-8 sm:py-12 w-full flex-1 flex items-center justify-center">
         <div className="w-full bg-white dark:bg-[#101010] rounded-[28px] p-8 sm:p-10 shadow-clay-card border border-[#D8E9FA] dark:border-[#303030] text-center space-y-6">
           <div className="flex justify-center">
@@ -92,7 +90,6 @@ export const JoinGroupPage: React.FC = () => {
             </div>
           )}
 
-          {/* If already joined */}
           {joinedGroup ? (
             <div className="space-y-4">
               <div className="p-4 rounded-2xl bg-[#DDF8EE] dark:bg-[#0D1F17] border border-[#16B890]/40 dark:border-[#34D399]/40 text-left flex items-start space-x-3">

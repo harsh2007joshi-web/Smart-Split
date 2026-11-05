@@ -55,9 +55,6 @@ export class PayPalService {
     }
   }
 
-  /**
-   * Create PayPal Order v2
-   */
   public async createOrder(options: {
     amount: number;
     currency: string;
@@ -67,7 +64,6 @@ export class PayPalService {
     const { amount, currency, description, customId } = options;
     const token = await this.getAccessToken();
 
-    // If real sandbox token is available:
     if (token) {
       try {
         const res = await fetch(`${this.baseUrl}/v2/checkout/orders`, {
@@ -82,7 +78,7 @@ export class PayPalService {
               custom_id: customId,
               description: description.substring(0, 127),
               amount: {
-                currency_code: currency === 'INR' ? 'USD' : currency, // PayPal Sandbox supports USD/EUR universally
+                currency_code: currency === 'INR' ? 'USD' : currency,
                 value: amount.toFixed(2),
               },
             }],
@@ -111,7 +107,6 @@ export class PayPalService {
       }
     }
 
-    // PayPal Sandbox Simulator Mode
     const mockOrderId = 'PAYPAL-SANDBOX-' + Math.random().toString(36).substring(2, 10).toUpperCase();
     return {
       id: mockOrderId,
@@ -127,9 +122,6 @@ export class PayPalService {
     };
   }
 
-  /**
-   * Capture PayPal Order v2
-   */
   public async captureOrder(orderId: string): Promise<PayPalCaptureResponse> {
     const token = await this.getAccessToken();
 
@@ -161,7 +153,6 @@ export class PayPalService {
       }
     }
 
-    // Verified Sandbox Demo Capture
     return {
       id: orderId,
       status: 'COMPLETED',

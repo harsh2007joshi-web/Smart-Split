@@ -84,9 +84,6 @@ class EmailService {
     return { ready: false, provider: 'Development Console (Log only)' };
   }
 
-  /**
-   * Unified delivery pipeline: Tries SMTP (if configured) or Resend API, with fallback to dev console
-   */
   private async dispatchHtmlEmail(options: {
     to: string;
     subject: string;
@@ -96,7 +93,6 @@ class EmailService {
     const { to, subject, html, textFallback } = options;
     const fromAddress = process.env.SMTP_FROM || process.env.EMAIL_FROM || 'SplitSmart AI <no-reply@splitsmart.ai>';
 
-    // 1. Try SMTP Transporter first if configured (No recipient domain restrictions!)
     if (this.isSmtpConfigured && this.transporter) {
       try {
         await this.transporter.sendMail({
@@ -113,7 +109,6 @@ class EmailService {
       }
     }
 
-    // 2. Try Resend REST API if key provided
     if (this.resendApiKey) {
       try {
         const response = await fetch('https://api.resend.com/emails', {
@@ -159,7 +154,6 @@ class EmailService {
       }
     }
 
-    // 3. Dev Mode Logging
     console.log('\n============================================================');
     console.log(`📨 [DEV EMAIL DISPATCH - CONSOLE FALLBACK]`);
     console.log(`📬 To: ${to}`);

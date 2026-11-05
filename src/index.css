@@ -11,7 +11,6 @@
   }
 }
 
-/* Claymorphic & Custom Utilities */
 @layer components {
   .clay-card {
     background: #FFFFFF;
@@ -101,7 +100,6 @@
   }
 }
 
-/* 3D Payment Card Styles */
 .card-perspective-container {
   perspective: 1200px;
 }
@@ -132,7 +130,6 @@
   transform: rotateY(180deg);
 }
 
-/* Custom Scrollbars */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -148,7 +145,6 @@
   background: #1685F8;
 }
 
-/* Minimalist Dark Mode Palette inspired by SHAGGA reference */
 @layer base {
   html.dark body {
     background-color: #080808;
@@ -160,7 +156,6 @@
   color-scheme: dark;
 }
 
-/* Dark mode styling for custom clay components */
 .dark .clay-card {
   background: #101010;
   border: 1px solid #303030;
@@ -248,7 +243,6 @@
   border: 1px solid rgba(251, 113, 133, 0.25);
 }
 
-/* Custom Scrollbars in Dark Mode */
 .dark ::-webkit-scrollbar-track {
   background: #080808;
 }
@@ -262,7 +256,28 @@
   background: #383838;
 }
 
-/* Reduced Motion Accessibility */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-old(root) {
+  z-index: 1;
+}
+
+::view-transition-new(root) {
+  z-index: 999999;
+}
+
+html.theme-transitioning,
+html.theme-transitioning *,
+html.theme-transitioning *::before,
+html.theme-transitioning *::after {
+  transition: background-color 0.4s ease, border-color 0.4s ease, color 0.35s ease, box-shadow 0.4s ease, fill 0.35s ease !important;
+  transition-delay: 0s !important;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, ::before, ::after {
     animation-duration: 0.01ms !important;

@@ -61,7 +61,6 @@ export const SettlementsPage: React.FC = () => {
         <Topbar onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
 
         <main className="p-4 sm:p-8 space-y-8 max-w-7xl w-full mx-auto">
-          {/* Header */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
               <h1 className="text-2xl sm:text-3xl font-black text-[#10274A] dark:text-[#F5F5F5] tracking-tight">
@@ -78,7 +77,6 @@ export const SettlementsPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Smart Netting Explainer Card */}
           <div className="clay-card p-6 bg-gradient-to-r from-blue-500/10 via-blue-50/60 to-emerald-50/30 dark:from-[#101010] dark:via-[#141414] dark:to-[#101010] border-[#BFE9FF] dark:border-[#303030] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex items-center space-x-4">
               <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#1685F8] to-[#0E6FD8] text-white flex items-center justify-center shadow-clay-btn shrink-0">
@@ -95,7 +93,6 @@ export const SettlementsPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Pending Suggested Settlements */}
           <div className="space-y-4">
             <div className="flex justify-between items-center">
               <h2 className="text-lg font-bold text-[#10274A] dark:text-[#F5F5F5]">
@@ -199,7 +196,6 @@ export const SettlementsPage: React.FC = () => {
             )}
           </div>
 
-          {/* Completed Settlements Section */}
           <div className="clay-card p-6 bg-white dark:bg-[#101010] dark:border-[#303030] space-y-4">
             <h3 className="text-base font-bold text-[#10274A] dark:text-[#F5F5F5]">
               Verified Completed Settlements ({completedSettlements.length})

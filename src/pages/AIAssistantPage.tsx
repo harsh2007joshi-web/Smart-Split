@@ -5,6 +5,7 @@ import { RobotIllustration } from '../components/illustrations/RobotIllustration
 import { AddExpenseModal } from '../components/expenses/AddExpenseModal';
 import { Group, AIParsedExpense } from '../types';
 import { api } from '../services/api';
+import { useAuth } from '../context/AuthContext';
 import {
   Bot,
   Send,
@@ -31,6 +32,15 @@ interface ChatMessage {
 }
 
 export const AIAssistantPage: React.FC = () => {
+  const { user } = useAuth();
+  const firstName = user?.name?.split(' ')[0] || 'Harsh';
+  const isFemale =
+    user?.gender === 'female' ||
+    ['priya', 'sneha', 'ananya', 'pooja', 'neha', 'riya', 'shreya', 'divya', 'sarah', 'emily', 'emma'].includes(
+      (user?.name || '').trim().split(' ')[0].toLowerCase()
+    );
+  const title = isFemale ? 'madam' : 'sir';
+
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [groups, setGroups] = useState<Group[]>([]);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -40,7 +50,6 @@ export const AIAssistantPage: React.FC = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Voice Input States
   const [isListening, setIsListening] = useState(false);
   const [voiceNotice, setVoiceNotice] = useState<string | null>(null);
   const recognitionRef = useRef<any>(null);
@@ -66,11 +75,11 @@ export const AIAssistantPage: React.FC = () => {
       recognitionRef.current = recognition;
       recognition.continuous = false;
       recognition.interimResults = true;
-      recognition.lang = 'en-IN'; // Indian English / global English support
+      recognition.lang = 'en-IN';
 
       recognition.onstart = () => {
         setIsListening(true);
-        setVoiceNotice('Listening... Speak your expense clearly.');
+        setVoiceNotice('Listening... Speak clearly.');
       };
 
       recognition.onresult = (event: any) => {
@@ -102,25 +111,25 @@ export const AIAssistantPage: React.FC = () => {
   };
 
   useEffect(() => {
-    // Load groups
+
     api.getGroups().then(res => setGroups(res.groups || []));
 
-    // Initial greeting
     setMessages([
       {
         id: 'msg_welcome',
         sender: 'ASSISTANT',
-        text: "Hi! I'm your SplitSmart AI Assistant. You can describe an expense in plain English to split it automatically, or ask questions about your group spending, balances, and debts.",
+        text: `Hello ${title} ${firstName}! 👋 I'm your SplitSmart AI Assistant.\n\nYou can ask me absolutely any question—whether about your group expenses, balances, and debts, or any general topic (science, coding, history, math, or everyday life), or describe an expense to split automatically!`,
         suggestedFollowUps: [
-          'Yesterday Rahul paid ₹2,400 for dinner with Priya and Aman',
           'Who owes me money?',
           'How much did we spend on food?',
-          'Summarize Goa Trip 2026',
+          'What is quantum computing?',
+          'Write a Python script to reverse a string',
+          'Yesterday Rahul paid ₹2,400 for dinner with Priya and Aman',
         ],
         time: 'Just now',
       },
     ]);
-  }, []);
+  }, [firstName, title]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -142,25 +151,30 @@ export const AIAssistantPage: React.FC = () => {
     setIsLoading(true);
 
     try {
-      // Check if user is describing an expense to add vs asking a question
-      const isExpenseDescription =
-        /paid|split|spent|bill|bought|dinner|lunch|flight|resort|uber|rent/i.test(query) &&
-        /\d+/.test(query);
+      const cleanQ = query.trim();
 
-      if (isExpenseDescription) {
+      const isQuestion =
+        /^(who|what|where|when|why|how|can|could|would|should|is|are|does|do|did|tell|explain|calculate|solve|give|hi+|hello|hey|namaste)\b/i.test(cleanQ) ||
+        cleanQ.endsWith('?');
+
+      const isExplicitExpenseAction =
+        !isQuestion &&
+        /paid|split|spent|bill|bought|dinner|lunch|flight|resort|uber|rent/i.test(cleanQ) &&
+        /\d+/.test(cleanQ);
+
+      if (isExplicitExpenseAction) {
         const res = await api.parseExpenseWithAI(query);
         const parsed = res.parsedExpense;
 
         const assistantMsg: ChatMessage = {
           id: 'ast_' + Date.now(),
           sender: 'ASSISTANT',
-          text: `I extracted the expense details for you. Please review and confirm to save it:`,
+          text: `Hello ${title} ${firstName}! I extracted the expense details for you. Please review and confirm to save it:`,
           parsedExpense: parsed,
           time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         };
         setMessages(prev => [...prev, assistantMsg]);
       } else {
-        // Financial question
         const res = await api.askAIAssistant(query);
         const assistantMsg: ChatMessage = {
           id: 'ast_' + Date.now(),
@@ -177,7 +191,7 @@ export const AIAssistantPage: React.FC = () => {
         {
           id: 'err_' + Date.now(),
           sender: 'ASSISTANT',
-          text: 'Sorry, I encountered an issue while processing your request. Please try again.',
+          text: `Hello ${title} ${firstName}! I encountered a momentary issue while processing your request. Please try again.`,
           time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         },
       ]);
@@ -188,7 +202,6 @@ export const AIAssistantPage: React.FC = () => {
 
   const handleConfirmExpense = async (msgId: string, parsed: AIParsedExpense, bypassDuplicate: boolean = false) => {
     try {
-      // Pick target group based on AI detection or first group
       const targetGroup = (parsed as any).groupId
         ? (groups.find(g => g.id === (parsed as any).groupId) || groups[0])
         : groups[0];
@@ -198,7 +211,6 @@ export const AIAssistantPage: React.FC = () => {
         return;
       }
 
-      // Map participant names to userIds in target group
       const participants = parsed.splits.map(s => {
         const member = targetGroup.members.find(
           m => m.name.toLowerCase().includes(s.userName.toLowerCase()) ||
@@ -237,18 +249,16 @@ export const AIAssistantPage: React.FC = () => {
         return;
       }
 
-      // Update message state
       setMessages(prev =>
         prev.map(m => (m.id === msgId ? { ...m, isConfirmed: true } : m))
       );
 
-      // Add assistant confirmation response
       setMessages(prev => [
         ...prev,
         {
           id: 'ast_conf_' + Date.now(),
           sender: 'ASSISTANT',
-          text: `✅ Done! "${parsed.title}" (${parsed.currency} ${parsed.amount.toLocaleString()}) has been recorded in ${targetGroup.name}. Group balances have been updated.`,
+          text: `✅ Done, ${title} ${firstName}! "${parsed.title}" (${parsed.currency} ${parsed.amount.toLocaleString()}) has been recorded in ${targetGroup.name}. Group balances have been updated.`,
           suggestedFollowUps: ['Who owes me money?', 'How much did we spend on food?'],
           time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         },
@@ -265,7 +275,6 @@ export const AIAssistantPage: React.FC = () => {
       <div className="flex-1 flex flex-col md:pl-64 min-w-0 h-screen">
         <Topbar onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
 
-        {/* Chat Header */}
         <div className="px-6 py-4 bg-white dark:bg-[#080808] border-b border-[#D8E9FA] dark:border-[#303030] flex items-center justify-between transition-colors">
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 rounded-2xl bg-[#E9F5FE] text-[#1685F8] dark:bg-[#141414] dark:text-[#2589FF] dark:border dark:border-[#303030] flex items-center justify-center shadow-sm">
@@ -278,12 +287,11 @@ export const AIAssistantPage: React.FC = () => {
                   Online
                 </span>
               </h2>
-              <p className="text-xs text-[#64748B] dark:text-[#737373]">Natural language expenses & real financial queries</p>
+              <p className="text-xs text-[#64748B] dark:text-[#737373]">Natural language expenses, real financial queries & universal Q&A</p>
             </div>
           </div>
         </div>
 
-        {/* Messages Scroll Area */}
         <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-5">
           {messages.map(msg => (
             <div
@@ -297,7 +305,6 @@ export const AIAssistantPage: React.FC = () => {
               )}
 
               <div className="max-w-2xl space-y-2">
-                {/* Text Bubble */}
                 <div
                   className={`p-4 sm:p-5 rounded-3xl text-sm leading-relaxed ${
                     msg.sender === 'USER'
@@ -305,10 +312,9 @@ export const AIAssistantPage: React.FC = () => {
                       : 'clay-card bg-white dark:bg-[#101010] text-[#10274A] dark:text-[#F5F5F5] dark:border-[#303030] rounded-tl-none'
                   }`}
                 >
-                  <p className="whitespace-pre-line">{msg.text}</p>
+                  <p className="whitespace-pre-line font-medium">{msg.text}</p>
                 </div>
 
-                {/* Parsed Expense Confirmation Card */}
                 {msg.parsedExpense && (
                   <div className="clay-card p-5 bg-white dark:bg-[#101010] border-[#BFE9FF] dark:border-[#303030] space-y-3 animate-in fade-in zoom-in-95">
                     <div className="flex items-center justify-between pb-2 border-b border-[#D8E9FA]/60 dark:border-[#303030]">
@@ -342,7 +348,6 @@ export const AIAssistantPage: React.FC = () => {
                       </div>
                     </div>
 
-                    {/* Shares Breakdown */}
                     <div className="p-2.5 rounded-xl bg-[#F1F9FF] dark:bg-[#141414] border border-[#D8E9FA] dark:border-[#303030] space-y-1">
                       <div className="text-[11px] font-bold text-[#64748B] dark:text-[#737373]">Proposed Equal Shares:</div>
                       <div className="flex flex-wrap gap-1.5">
@@ -357,7 +362,6 @@ export const AIAssistantPage: React.FC = () => {
                       </div>
                     </div>
 
-                    {/* Preview Action Buttons */}
                     {!msg.isConfirmed ? (
                       <div className="pt-2 flex items-center justify-end space-x-2.5">
                         <button
@@ -390,7 +394,6 @@ export const AIAssistantPage: React.FC = () => {
                   </div>
                 )}
 
-                {/* Suggested Follow-Ups */}
                 {msg.suggestedFollowUps && (
                   <div className="flex flex-wrap gap-1.5 pt-1">
                     {msg.suggestedFollowUps.map((chip, idx) => (
@@ -425,7 +428,6 @@ export const AIAssistantPage: React.FC = () => {
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Voice Notice Popup if active or error */}
         {voiceNotice && (
           <div className="px-4 py-2 bg-blue-50 dark:bg-[#141414] border-t border-[#BFE9FF] dark:border-[#303030] text-center text-xs font-semibold text-[#1685F8] dark:text-[#2589FF] animate-in fade-in flex items-center justify-center space-x-2">
             {isListening && <div className="w-2.5 h-2.5 rounded-full bg-red-500 animate-ping" />}
@@ -433,7 +435,6 @@ export const AIAssistantPage: React.FC = () => {
           </div>
         )}
 
-        {/* Input Bar */}
         <div className="p-4 bg-white dark:bg-[#080808] border-t border-[#D8E9FA] dark:border-[#303030] transition-colors">
           <form
             onSubmit={e => {
@@ -444,7 +445,7 @@ export const AIAssistantPage: React.FC = () => {
           >
             <input
               type="text"
-              placeholder={isListening ? 'Listening to speech...' : 'e.g. Rahul paid ₹2,400 for dinner with Priya and Aman...'}
+              placeholder={isListening ? 'Listening to speech...' : 'e.g. Rahul paid ₹2,400 for dinner with Priya and Aman, or ask any question...'}
               value={inputText}
               onChange={e => setInputText(e.target.value)}
               className={`clay-input flex-1 px-4 py-3 text-xs sm:text-sm font-medium ${
@@ -452,11 +453,10 @@ export const AIAssistantPage: React.FC = () => {
               }`}
             />
 
-            {/* Voice Input Button */}
             <button
               type="button"
               onClick={toggleVoiceInput}
-              title={isListening ? 'Stop listening' : 'Voice-based expense entry'}
+              title={isListening ? 'Stop listening' : 'Voice-based entry'}
               className={`p-3 rounded-2xl border transition-all ${
                 isListening
                   ? 'bg-red-500 text-white border-red-600 animate-pulse shadow-md'
@@ -478,7 +478,6 @@ export const AIAssistantPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Edit Modal if user wants to tweak before confirming */}
       {selectedParsedExpenseForEdit && (
         <AddExpenseModal
           isOpen={isEditModalOpen}

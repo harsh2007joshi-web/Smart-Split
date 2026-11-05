@@ -6,7 +6,6 @@ import { aiService } from '../services/aiService';
 const router = Router();
 router.use(authenticateToken);
 
-// 1. NATURAL LANGUAGE EXPENSE PARSING
 router.post('/expense-parse', async (req: AuthenticatedRequest, res: Response): Promise<void> => {
   try {
     const { prompt } = req.body;
@@ -31,10 +30,9 @@ router.post('/expense-parse', async (req: AuthenticatedRequest, res: Response): 
   }
 });
 
-// 2. FINANCIAL ASSISTANT Q&A
 router.post('/ask', async (req: AuthenticatedRequest, res: Response): Promise<void> => {
   try {
-    const { question } = req.body;
+    const { question, history } = req.body;
 
     if (!question || !question.trim()) {
       res.status(400).json({ error: 'Question cannot be empty.' });
@@ -44,7 +42,7 @@ router.post('/ask', async (req: AuthenticatedRequest, res: Response): Promise<vo
     const user = req.user!;
     const userGroups = db.getGroupsForUser(user.id);
 
-    const response = await aiService.answerFinancialQuestion(question, user, userGroups);
+    const response = await aiService.answerFinancialQuestion(question, user, userGroups, history);
 
     res.json(response);
   } catch (err: any) {
@@ -53,7 +51,6 @@ router.post('/ask', async (req: AuthenticatedRequest, res: Response): Promise<vo
   }
 });
 
-// 3. RECEIPT OCR / MULTIMODAL SCANNING
 router.post('/scan-receipt', async (req: AuthenticatedRequest, res: Response): Promise<void> => {
   try {
     const { imageBase64, mimeType } = req.body;
@@ -69,6 +66,20 @@ router.post('/scan-receipt', async (req: AuthenticatedRequest, res: Response): P
     console.error('Receipt scan error:', err);
     res.status(500).json({ error: 'Failed to process receipt image.' });
   }
+});
+
+router.get('/status', (req: AuthenticatedRequest, res: Response): void => {
+  res.json(aiService.getStatus());
+});
+
+router.post('/configure-key', (req: AuthenticatedRequest, res: Response): void => {
+  const { apiKey } = req.body;
+  if (!apiKey || typeof apiKey !== 'string' || apiKey.trim().length < 10) {
+    res.status(400).json({ error: 'Please provide a valid Google Gemini API key.' });
+    return;
+  }
+  aiService.setGeminiApiKey(apiKey.trim());
+  res.json({ success: true, status: aiService.getStatus() });
 });
 
 export default router;

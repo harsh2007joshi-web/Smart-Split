@@ -24,14 +24,12 @@ export const TransactionsPage: React.FC = () => {
   const [groups, setGroups] = useState<Group[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Filters
   const [statusFilter, setStatusFilter] = useState('ALL');
   const [methodFilter, setMethodFilter] = useState('ALL');
   const [dateFilter, setDateFilter] = useState('ALL');
   const [groupFilter, setGroupFilter] = useState('ALL');
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Receipt Modal State
   const [selectedReceipt, setSelectedReceipt] = useState<ReceiptData | null>(null);
   const [isReceiptOpen, setIsReceiptOpen] = useState(false);
 
@@ -62,7 +60,7 @@ export const TransactionsPage: React.FC = () => {
         setIsReceiptOpen(true);
       }
     } catch (e) {
-      // Fallback to transaction data
+
       setSelectedReceipt({
         receiptNumber: t.metadata?.receiptNumber || `REC-2026-${t.id.slice(-6).toUpperCase()}`,
         date: t.createdAt,
@@ -85,7 +83,6 @@ export const TransactionsPage: React.FC = () => {
     const matchesMethod = methodFilter === 'ALL' || t.method === methodFilter;
     const matchesGroup = groupFilter === 'ALL' || t.groupId === groupFilter || t.groupName === groupFilter;
 
-    // Date filtering
     let matchesDate = true;
     const tTime = new Date(t.createdAt).getTime();
     const now = Date.now();
@@ -116,7 +113,6 @@ export const TransactionsPage: React.FC = () => {
         <Topbar onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
 
         <main className="p-4 sm:p-8 space-y-6 max-w-7xl w-full mx-auto">
-          {/* Header */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
               <h1 className="text-2xl sm:text-3xl font-black text-[#10274A] dark:text-[#F5F5F5] tracking-tight">
@@ -128,7 +124,6 @@ export const TransactionsPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Filter Bar */}
           <div className="clay-card p-4 bg-white dark:bg-[#101010] dark:border dark:border-[#303030] flex flex-col sm:flex-row items-center justify-between gap-3">
             <div className="relative w-full sm:w-72">
               <Search className="w-4 h-4 text-[#64748B] dark:text-[#737373] absolute left-3 top-1/2 -translate-y-1/2" />
@@ -190,7 +185,6 @@ export const TransactionsPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Transactions Table / List */}
           <div className="clay-card bg-white dark:bg-[#101010] dark:border dark:border-[#303030] overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse text-xs">
@@ -289,7 +283,6 @@ export const TransactionsPage: React.FC = () => {
         </main>
       </div>
 
-      {/* Printable Receipt Modal */}
       <ReceiptModal
         isOpen={isReceiptOpen}
         onClose={() => setIsReceiptOpen(false)}

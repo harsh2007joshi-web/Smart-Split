@@ -21,6 +21,8 @@ import {
   CheckCircle2,
   AlertCircle,
   ChevronRight,
+  Copy,
+  Check,
 } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 
@@ -34,6 +36,7 @@ export const DashboardPage: React.FC = () => {
   const [allGroups, setAllGroups] = useState<Group[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isAddExpenseOpen, setIsAddExpenseOpen] = useState(false);
+  const [copiedUser, setCopiedUser] = useState(false);
 
   const fetchDashboard = async () => {
     try {
@@ -54,7 +57,6 @@ export const DashboardPage: React.FC = () => {
     fetchDashboard();
   }, []);
 
-  // Format currency helper
   const fmt = (val?: number) => {
     if (val === undefined || isNaN(val)) return '0';
     return val.toLocaleString();
@@ -62,10 +64,8 @@ export const DashboardPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#F1F9FF] dark:bg-[#080808] text-[#10274A] dark:text-[#F5F5F5] flex transition-colors">
-      {/* Left Sidebar */}
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-      {/* Main Content Area */}
       <div className="flex-1 flex flex-col md:pl-64 min-w-0">
         <Topbar
           onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
@@ -73,12 +73,29 @@ export const DashboardPage: React.FC = () => {
         />
 
         <main className="p-4 sm:p-8 space-y-8 max-w-7xl w-full mx-auto">
-          {/* Welcome Greeting Section */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <h1 className="text-2xl sm:text-3xl font-black text-[#10274A] dark:text-[#F5F5F5] tracking-tight">
-                Good Morning, {user?.name?.split(' ')[0] || 'Friend'} 👋
-              </h1>
+              <div className="flex items-center space-x-3">
+                <h1 className="text-2xl sm:text-3xl font-black text-[#10274A] dark:text-[#F5F5F5] tracking-tight">
+                  Good Morning, {user?.name?.split(' ')[0] || 'Friend'} 👋
+                </h1>
+                {user?.username && (
+                  <span className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-[#E9F5FE] dark:bg-[#141414] text-[#1685F8] dark:text-[#2589FF] font-mono text-xs font-bold border border-[#D8E9FA] dark:border-[#303030]">
+                    <span>{user.username}</span>
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText(user.username);
+                        setCopiedUser(true);
+                        setTimeout(() => setCopiedUser(false), 2000);
+                      }}
+                      className="hover:opacity-75"
+                      title="Copy username"
+                    >
+                      {copiedUser ? <Check className="w-3 h-3 text-emerald-500" /> : <Copy className="w-3 h-3" />}
+                    </button>
+                  </span>
+                )}
+              </div>
               <p className="text-xs sm:text-sm text-[#64748B] dark:text-[#A1A1AA] mt-0.5">
                 Here's your real-time financial overview and group settlements.
               </p>
@@ -103,9 +120,7 @@ export const DashboardPage: React.FC = () => {
             </div>
           </div>
 
-          {/* ================= 4 SUMMARY CARDS ================= */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {/* 1. Total Spent */}
             <div className="clay-card-hover p-6 bg-white dark:bg-[#101010] flex flex-col justify-between">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold uppercase tracking-wider text-[#64748B] dark:text-[#737373]">
@@ -126,7 +141,6 @@ export const DashboardPage: React.FC = () => {
               </div>
             </div>
 
-            {/* 2. You Owe */}
             <div className="clay-card-hover p-6 bg-white dark:bg-[#101010] flex flex-col justify-between">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold uppercase tracking-wider text-[#64748B] dark:text-[#737373]">
@@ -152,7 +166,6 @@ export const DashboardPage: React.FC = () => {
               </div>
             </div>
 
-            {/* 3. You Are Owed */}
             <div className="clay-card-hover p-6 bg-white dark:bg-[#101010] flex flex-col justify-between">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold uppercase tracking-wider text-[#64748B] dark:text-[#737373]">
@@ -178,7 +191,6 @@ export const DashboardPage: React.FC = () => {
               </div>
             </div>
 
-            {/* 4. Active Groups */}
             <div className="clay-card-hover p-6 bg-white dark:bg-[#101010] flex flex-col justify-between">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold uppercase tracking-wider text-[#64748B] dark:text-[#737373]">
@@ -201,9 +213,7 @@ export const DashboardPage: React.FC = () => {
             </div>
           </div>
 
-          {/* ================= MIDDLE GRID: RECENT GROUPS & SPENDING CHART ================= */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            {/* Left Column: Recent Groups (7 cols) */}
             <div className="lg:col-span-7 space-y-4">
               <div className="flex items-center justify-between">
                 <div>
@@ -267,7 +277,6 @@ export const DashboardPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Right Column: Spending by Category Donut Chart (5 cols) */}
             <div className="lg:col-span-5 space-y-4">
               <div>
                 <h3 className="text-lg font-bold text-[#10274A] dark:text-[#F5F5F5]">Spending by Category</h3>
@@ -307,7 +316,6 @@ export const DashboardPage: React.FC = () => {
                         </PieChart>
                       </ResponsiveContainer>
 
-                      {/* Center Donut Total */}
                       <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
                         <span className="text-[11px] font-semibold text-[#64748B] dark:text-[#737373]">Total</span>
                         <span className="text-base sm:text-lg font-black text-[#10274A] dark:text-[#F5F5F5]">
@@ -316,7 +324,6 @@ export const DashboardPage: React.FC = () => {
                       </div>
                     </div>
 
-                    {/* Donut Legend */}
                     <div className="w-full grid grid-cols-2 gap-2 pt-3 border-t border-[#D8E9FA]/60 dark:border-[#303030] text-xs">
                       {dashboardData.categorySpending.map(cat => (
                         <div key={cat.category} className="flex items-center space-x-2">
@@ -340,7 +347,6 @@ export const DashboardPage: React.FC = () => {
             </div>
           </div>
 
-          {/* ================= AI INSIGHT CARD ================= */}
           <div className="p-6 sm:p-7 rounded-[26px] bg-[#DDF8EE] dark:bg-[#101010] border border-[#16B890]/30 dark:border-[#303030] shadow-clay-card dark:shadow-none flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 transition-colors">
             <div className="flex items-start space-x-4">
               <div className="w-12 h-12 rounded-2xl bg-white dark:bg-[#141414] text-[#16B890] dark:text-[#34D399] dark:border dark:border-[#303030] flex items-center justify-center shadow-sm shrink-0">
@@ -372,7 +378,6 @@ export const DashboardPage: React.FC = () => {
             </Link>
           </div>
 
-          {/* ================= RECENT ACTIVITY TIMELINE ================= */}
           <div className="clay-card p-6 bg-white dark:bg-[#101010] dark:border-[#303030] space-y-4">
             <div className="flex items-center justify-between">
               <div>
@@ -417,7 +422,6 @@ export const DashboardPage: React.FC = () => {
         </main>
       </div>
 
-      {/* Add Expense Modal */}
       <AddExpenseModal
         isOpen={isAddExpenseOpen}
         onClose={() => setIsAddExpenseOpen(false)}

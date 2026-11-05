@@ -1,7 +1,9 @@
 export interface User {
   id: string;
   name: string;
+  username: string;
   email: string;
+  gender?: 'male' | 'female' | 'other';
   avatarUrl?: string;
   isEmailVerified: boolean;
   createdAt: string;
@@ -71,7 +73,7 @@ export interface MemberBalance {
   avatarUrl?: string;
   totalPaid: number;
   totalShare: number;
-  netBalance: number; // Positive = gets back, Negative = owes
+  netBalance: number;
 }
 
 export interface SuggestedSettlement {
@@ -115,10 +117,11 @@ export interface InAppNotification {
   userId: string;
   title: string;
   message: string;
-  type: 'INVITATION' | 'EXPENSE' | 'SETTLEMENT' | 'PAYMENT' | 'ALERT';
+  type: 'INVITATION' | 'EXPENSE' | 'SETTLEMENT' | 'PAYMENT' | 'ALERT' | 'FRIEND_REQUEST' | 'MESSAGE';
   isRead: boolean;
   createdAt: string;
   link?: string;
+  metadata?: Record<string, any>;
 }
 
 export interface AIParsedExpense {
@@ -186,4 +189,73 @@ export interface SpendingPrediction {
   budgetOverrunRisk: boolean;
   budgetRiskMessage: string;
   disclaimer: string;
+}
+
+export interface FriendRequest {
+  id: string;
+  senderId: string;
+  senderName: string;
+  senderUsername: string;
+  senderAvatarUrl?: string;
+  receiverId: string;
+  receiverName: string;
+  receiverUsername: string;
+  receiverAvatarUrl?: string;
+  status: 'PENDING' | 'ACCEPTED' | 'DECLINED';
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ContactItem {
+  contactRecordId: string;
+  user: {
+    id: string;
+    name: string;
+    username: string;
+    email: string;
+    avatarUrl?: string;
+  };
+  addedAt: string;
+  nickname?: string;
+}
+
+export interface ChatAttachment {
+  id: string;
+  filename: string;
+  originalName: string;
+  mimeType: string;
+  size: number;
+  uploadedAt: string;
+}
+
+export interface ChatReceipt {
+  paymentId?: string;
+  reference: string;
+  amount: number;
+  currency: string;
+  groupName: string;
+  date: string;
+  status: string;
+  payerName: string;
+  recipientName: string;
+  receiptNumber?: string;
+}
+
+export interface ChatMessage {
+  id: string;
+  conversationId: string;
+  senderId: string;
+  senderName: string;
+  senderUsername: string;
+  senderAvatarUrl?: string;
+  receiverId: string;
+  receiverName: string;
+  receiverUsername: string;
+  receiverAvatarUrl?: string;
+  type: 'TEXT' | 'IMAGE' | 'FILE' | 'RECEIPT';
+  text?: string;
+  attachment?: ChatAttachment;
+  receipt?: ChatReceipt;
+  createdAt: string;
+  isRead: boolean;
 }

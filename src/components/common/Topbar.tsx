@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useNotifications } from '../../context/NotificationContext';
-import { Search, Bell, Menu, Plus, CheckCircle, ExternalLink, X, Share2 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Search, Bell, Menu, Plus, CheckCircle, ExternalLink, X, Share2, Check, UserCheck } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 import { ShareLinkModal } from './ShareLinkModal';
 import { ThemeToggle } from './ThemeToggle';
+import { api } from '../../services/api';
 
 interface TopbarProps {
   onToggleSidebar?: () => void;
@@ -13,14 +14,43 @@ interface TopbarProps {
 
 export const Topbar: React.FC<TopbarProps> = ({ onToggleSidebar, onOpenAddExpense }) => {
   const { user } = useAuth();
-  const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
+  const { notifications, unreadCount, markAsRead, markAllAsRead, fetchNotifications } = useNotifications();
+  const navigate = useNavigate();
   const [showNotifications, setShowNotifications] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const [actionLoadingId, setActionLoadingId] = useState<string | null>(null);
+
+  const handleAcceptRequest = async (e: React.MouseEvent, requestId: string, notifId: string) => {
+    e.stopPropagation();
+    try {
+      setActionLoadingId(notifId);
+      await api.acceptFriendRequest(requestId);
+      await markAsRead(notifId);
+      await fetchNotifications();
+    } catch (err: any) {
+      alert(err.message || 'Failed to accept friend request');
+    } finally {
+      setActionLoadingId(null);
+    }
+  };
+
+  const handleDeclineRequest = async (e: React.MouseEvent, requestId: string, notifId: string) => {
+    e.stopPropagation();
+    try {
+      setActionLoadingId(notifId);
+      await api.declineFriendRequest(requestId);
+      await markAsRead(notifId);
+      await fetchNotifications();
+    } catch (err: any) {
+      alert(err.message || 'Failed to decline friend request');
+    } finally {
+      setActionLoadingId(null);
+    }
+  };
 
   return (
     <header className="sticky top-0 z-30 h-20 bg-white/90 dark:bg-[#080808]/95 backdrop-blur-md border-b border-[#D8E9FA] dark:border-[#303030] px-4 sm:px-8 flex items-center justify-between transition-colors">
-      {/* Left: Mobile Toggle & Global Search */}
       <div className="flex items-center space-x-4 flex-1 max-w-md">
         <button
           onClick={onToggleSidebar}
@@ -41,9 +71,7 @@ export const Topbar: React.FC<TopbarProps> = ({ onToggleSidebar, onOpenAddExpens
         </div>
       </div>
 
-      {/* Right: Actions, Notifications, ThemeToggle & Profile Pill */}
       <div className="flex items-center space-x-2.5 sm:space-x-3.5">
-        {/* Share Public Link / Email to Friend Button */}
         <button
           onClick={() => setShowShareModal(true)}
           className="clay-btn-secondary px-3 py-2 text-xs font-bold flex items-center space-x-1.5"
@@ -63,10 +91,8 @@ export const Topbar: React.FC<TopbarProps> = ({ onToggleSidebar, onOpenAddExpens
           </button>
         )}
 
-        {/* Minimalist Theme Toggle in Top Right */}
         <ThemeToggle />
 
-        {/* Notifications Icon & Dropdown */}
         <div className="relative">
           <button
             onClick={() => setShowNotifications(!showNotifications)}
@@ -81,7 +107,6 @@ export const Topbar: React.FC<TopbarProps> = ({ onToggleSidebar, onOpenAddExpens
             )}
           </button>
 
-          {/* Notifications Flyout */}
           {showNotifications && (
             <div className="absolute right-0 mt-3 w-80 sm:w-96 bg-white dark:bg-[#101010] rounded-3xl shadow-clay-float dark:shadow-2xl border border-[#D8E9FA] dark:border-[#303030] overflow-hidden z-50">
               <div className="p-4 border-b border-[#D8E9FA]/60 dark:border-[#303030] flex items-center justify-between bg-[#F1F9FF] dark:bg-[#0B0B0B]">
@@ -112,7 +137,13 @@ export const Topbar: React.FC<TopbarProps> = ({ onToggleSidebar, onOpenAddExpens
                   notifications.map(n => (
                     <div
                       key={n.id}
-                      onClick={() => markAsRead(n.id)}
+                      onClick={() => {
+                        markAsRead(n.id);
+                        if (n.link) {
+                          setShowNotifications(false);
+                          navigate(n.link);
+                        }
+                      }}
                       className={`p-3.5 hover:bg-[#F1F9FF] dark:hover:bg-[#141414] transition-colors cursor-pointer ${
                         !n.isRead ? 'bg-blue-50/40 dark:bg-[#2589FF]/10' : ''
                       }`}
@@ -124,6 +155,26 @@ export const Topbar: React.FC<TopbarProps> = ({ onToggleSidebar, onOpenAddExpens
                         </span>
                       </div>
                       <p className="text-xs text-[#64748B] dark:text-[#A1A1AA] mt-1 line-clamp-2">{n.message}</p>
+
+                      {n.type === 'FRIEND_REQUEST' && n.metadata?.friendRequestId && !n.isRead && (
+                        <div className="mt-2.5 flex items-center space-x-2" onClick={e => e.stopPropagation()}>
+                          <button
+                            onClick={e => handleAcceptRequest(e, n.metadata!.friendRequestId, n.id)}
+                            disabled={actionLoadingId === n.id}
+                            className="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#1685F8] dark:bg-[#2589FF] text-white hover:opacity-90 flex items-center space-x-1"
+                          >
+                            <Check className="w-3 h-3" />
+                            <span>Accept</span>
+                          </button>
+                          <button
+                            onClick={e => handleDeclineRequest(e, n.metadata!.friendRequestId, n.id)}
+                            disabled={actionLoadingId === n.id}
+                            className="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-gray-100 hover:bg-gray-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-[#64748B] dark:text-[#A1A1AA]"
+                          >
+                            Decline
+                          </button>
+                        </div>
+                      )}
                     </div>
                   ))
                 )}
@@ -141,7 +192,6 @@ export const Topbar: React.FC<TopbarProps> = ({ onToggleSidebar, onOpenAddExpens
           )}
         </div>
 
-        {/* User Pill */}
         <Link
           to="/profile"
           className="flex items-center space-x-2.5 p-1.5 sm:pr-3 rounded-2xl border border-[#D8E9FA] dark:border-[#303030] bg-white dark:bg-[#101010] hover:bg-[#F1F9FF] dark:hover:bg-[#141414] transition-colors"
@@ -156,7 +206,9 @@ export const Topbar: React.FC<TopbarProps> = ({ onToggleSidebar, onOpenAddExpens
             <div className="text-xs font-bold text-[#10274A] dark:text-[#F5F5F5] leading-tight">
               {user?.name || 'Rahul Sharma'}
             </div>
-            <div className="text-[10px] text-[#16B890] dark:text-[#34D399] font-semibold">Active Member</div>
+            <div className="text-[10px] text-[#1685F8] dark:text-[#2589FF] font-mono font-medium">
+              {user?.username || '@user'}
+            </div>
           </div>
         </Link>
       </div>

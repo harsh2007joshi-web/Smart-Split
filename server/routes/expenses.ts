@@ -5,7 +5,6 @@ import { AuthenticatedRequest, authenticateToken } from '../middleware/auth';
 const router = Router();
 router.use(authenticateToken);
 
-// 0. CHECK FOR POTENTIAL DUPLICATE EXPENSE
 router.post('/check-duplicate', (req: AuthenticatedRequest, res: Response): void => {
   try {
     const { groupId, title, amount, payerId, date } = req.body;
@@ -33,7 +32,6 @@ router.post('/check-duplicate', (req: AuthenticatedRequest, res: Response): void
   }
 });
 
-// 1. ADD EXPENSE TO GROUP
 router.post('/group/:groupId', (req: AuthenticatedRequest, res: Response): void => {
   try {
     const groupId = (Array.isArray(req.params.groupId) ? req.params.groupId[0] : req.params.groupId) as string;
@@ -46,7 +44,7 @@ router.post('/group/:groupId', (req: AuthenticatedRequest, res: Response): void 
       category = 'Others',
       date = new Date().toISOString().split('T')[0],
       splitType = 'EQUAL',
-      participants, // array of { userId, userName, shareAmount?, percentage? }
+      participants,
       notes,
       taxAmount,
       receiptUrl,
@@ -78,7 +76,6 @@ router.post('/group/:groupId', (req: AuthenticatedRequest, res: Response): void 
     }
     db.syncUserWithGroups(req.user!);
 
-    // Duplicate expense guard
     if (!allowDuplicate) {
       const existingMatch = db.findPotentialDuplicateExpense(groupId, {
         title: title.trim(),
@@ -108,7 +105,7 @@ router.post('/group/:groupId', (req: AuthenticatedRequest, res: Response): void 
       const count = participants.length;
       const baseShare = Math.round((numAmount / count) * 100) / 100;
       calculatedSplits = participants.map((p, idx) => {
-        // Adjust last participant for penny rounding
+
         const share = idx === count - 1
           ? Math.round((numAmount - baseShare * (count - 1)) * 100) / 100
           : baseShare;
@@ -149,7 +146,6 @@ router.post('/group/:groupId', (req: AuthenticatedRequest, res: Response): void 
         };
       });
     } else {
-      // CUSTOM SPLIT
       let totalCustom = 0;
       for (const p of participants) {
         totalCustom += Number(p.shareAmount || 0);
@@ -185,7 +181,6 @@ router.post('/group/:groupId', (req: AuthenticatedRequest, res: Response): void 
       receiptUrl: receiptUrl || undefined,
     });
 
-    // Notify other members
     for (const member of group.members) {
       if (member.userId !== req.user!.id) {
         db.createNotification({
@@ -198,7 +193,6 @@ router.post('/group/:groupId', (req: AuthenticatedRequest, res: Response): void 
       }
     }
 
-    // Smart Budget Alerts Check
     if (group.budget && group.budget > 0) {
       const allGroupExpenses = db.getExpensesForGroup(groupId);
       const totalGroupSpent = allGroupExpenses.reduce((sum, e) => sum + Number(e.amount), 0);
@@ -236,7 +230,6 @@ router.post('/group/:groupId', (req: AuthenticatedRequest, res: Response): void 
   }
 });
 
-// 2. UPDATE EXPENSE
 router.put('/:id', (req: AuthenticatedRequest, res: Response): void => {
   try {
     const expenseId = (Array.isArray(req.params.id) ? req.params.id[0] : req.params.id) as string;
@@ -256,7 +249,6 @@ router.put('/:id', (req: AuthenticatedRequest, res: Response): void => {
 
     const updated = db.updateExpense(expenseId, updates);
 
-    // Notify other group members
     const group = db.getGroupById(existing.groupId);
     if (group) {
       for (const member of group.members) {
@@ -278,7 +270,6 @@ router.put('/:id', (req: AuthenticatedRequest, res: Response): void => {
   }
 });
 
-// 3. DELETE EXPENSE
 router.delete('/:id', (req: AuthenticatedRequest, res: Response): void => {
   try {
     const expenseId = (Array.isArray(req.params.id) ? req.params.id[0] : req.params.id) as string;

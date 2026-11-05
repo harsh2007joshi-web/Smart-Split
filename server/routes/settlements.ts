@@ -6,7 +6,6 @@ import { SettlementEngine } from '../services/settlementEngine';
 const router = Router();
 router.use(authenticateToken);
 
-// GET ALL SETTLEMENTS (SUGGESTED AND COMPLETED)
 router.get('/', (req: AuthenticatedRequest, res: Response): void => {
   try {
     const userId = req.user!.id;
@@ -58,7 +57,6 @@ router.get('/', (req: AuthenticatedRequest, res: Response): void => {
   }
 });
 
-// REMIND A MEMBER TO SETTLE
 router.post('/remind', (req: AuthenticatedRequest, res: Response): void => {
   try {
     const { toUserId, amount, currency = 'INR', groupName } = req.body;

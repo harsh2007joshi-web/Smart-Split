@@ -126,7 +126,6 @@ export const ShareLinkModal: React.FC<ShareLinkModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
       <div className="w-full max-w-lg bg-white dark:bg-[#101010] rounded-3xl p-6 sm:p-8 shadow-clay-card border border-[#D8E9FA] dark:border-[#303030] relative max-h-[92vh] overflow-y-auto">
-        {/* Close Button */}
         <button
           onClick={onClose}
           className="absolute top-5 right-5 p-2 rounded-xl text-[#64748B] dark:text-[#A1A1AA] hover:text-[#10274A] dark:hover:text-[#F5F5F5] hover:bg-[#F1F9FF] dark:hover:bg-[#141414] transition-colors"
@@ -134,7 +133,6 @@ export const ShareLinkModal: React.FC<ShareLinkModalProps> = ({
           <X className="w-5 h-5" />
         </button>
 
-        {/* Header */}
         <div className="flex items-center space-x-3 mb-6">
           <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#1685F8] to-[#0E6FD8] text-white flex items-center justify-center shadow-clay-btn">
             <Share2 className="w-6 h-6 text-white" />
@@ -145,7 +143,6 @@ export const ShareLinkModal: React.FC<ShareLinkModalProps> = ({
           </div>
         </div>
 
-        {/* API Status Pill */}
         <div className="mb-5 p-3 rounded-2xl bg-[#F1F9FF] dark:bg-[#0D0D0D] border border-[#D8E9FA] dark:border-[#303030] flex items-center justify-between">
           <div className="flex items-center space-x-2 text-xs">
             <div
@@ -168,7 +165,6 @@ export const ShareLinkModal: React.FC<ShareLinkModalProps> = ({
           )}
         </div>
 
-        {/* Section 1: Direct Link & Copy */}
         <div className="space-y-2 mb-6">
           <label className="text-xs font-bold text-[#10274A] dark:text-[#F5F5F5] flex items-center justify-between">
             <span>Direct Public Link</span>
@@ -200,7 +196,6 @@ export const ShareLinkModal: React.FC<ShareLinkModalProps> = ({
             </button>
           </div>
 
-          {/* WhatsApp & Telegram Quick Share */}
           <div className="flex items-center gap-2 pt-1">
             <a
               href={`https://api.whatsapp.com/send?text=${encodeURIComponent(`Hey! Here is the SplitSmart AI link: ${shareableUrl}`)}`}
@@ -211,7 +206,7 @@ export const ShareLinkModal: React.FC<ShareLinkModalProps> = ({
               <span>💬 WhatsApp Friend</span>
             </a>
             <a
-              href={`https://t.me/share/url?url=${encodeURIComponent(shareableUrl)}&text=${encodeURIComponent(`SplitSmart AI Link:`)}`}
+              href={`https://api.whatsapp.com/send?text=${encodeURIComponent(`Hey! Here is the SplitSmart AI link: ${shareableUrl}`)}`}//t.me/share/url?url=${encodeURIComponent(shareableUrl)}&text=${encodeURIComponent(`SplitSmart AI Link:`)}`}
               target="_blank"
               rel="noopener noreferrer"
               className="flex-1 py-2 px-3 rounded-xl bg-[#0088cc]/10 hover:bg-[#0088cc]/20 text-[#0088cc] dark:text-[#2589FF] text-xs font-bold flex items-center justify-center space-x-1.5 transition-colors border border-[#0088cc]/20"
@@ -220,7 +215,6 @@ export const ShareLinkModal: React.FC<ShareLinkModalProps> = ({
             </a>
           </div>
 
-          {/* Localhost / Domain Alert & Public Domain Connector */}
           <div className="p-3.5 rounded-2xl bg-amber-50/90 dark:bg-[#14120B] border border-amber-200 dark:border-amber-800/40 text-xs text-amber-900 dark:text-amber-200 space-y-3">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
               <div className="leading-snug">
@@ -272,7 +266,6 @@ export const ShareLinkModal: React.FC<ShareLinkModalProps> = ({
           </div>
         </div>
 
-        {/* Section 2: Send Link to Friend's Email */}
         <form onSubmit={handleSendEmail} className="space-y-4 pt-4 border-t border-[#D8E9FA] dark:border-[#303030]">
           <div className="flex items-center space-x-2">
             <Mail className="w-4 h-4 text-[#1685F8] dark:text-[#2589FF]" />

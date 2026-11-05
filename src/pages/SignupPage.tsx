@@ -24,7 +24,6 @@ export const SignupPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const returnTo = searchParams.get('returnTo');
 
-  // Registration state
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -35,7 +34,6 @@ export const SignupPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
-  // Email/Phone verification state
   const [isVerifying, setIsVerifying] = useState(false);
   const [verificationUserId, setVerificationUserId] = useState('');
   const [verificationEmail, setVerificationEmail] = useState('');
@@ -44,7 +42,6 @@ export const SignupPage: React.FC = () => {
   const [verificationMessage, setVerificationMessage] = useState('');
   const [resendCooldown, setResendCooldown] = useState(0);
 
-  // Check URL query parameters
   useEffect(() => {
     const queryEmail = searchParams.get('verifyEmail');
     const queryUserId = searchParams.get('userId');
@@ -55,7 +52,6 @@ export const SignupPage: React.FC = () => {
     }
   }, [searchParams]);
 
-  // Handle countdown timer
   useEffect(() => {
     if (resendCooldown > 0) {
       const timer = setTimeout(() => setResendCooldown(resendCooldown - 1), 1000);
@@ -67,8 +63,14 @@ export const SignupPage: React.FC = () => {
     e.preventDefault();
     setErrorMessage('');
 
-    if (!name.trim() || !email.trim() || !password || !confirmPassword) {
-      setErrorMessage('Please fill in all required fields.');
+    const cleanPhone = phoneNumber.trim().replace(/\D/g, '');
+    if (!name.trim() || !email.trim() || !password || !confirmPassword || !cleanPhone) {
+      setErrorMessage('Please fill in all required fields. Mobile phone number is mandatory.');
+      return;
+    }
+
+    if (cleanPhone.length !== 10) {
+      setErrorMessage('Please enter a valid 10-digit mobile phone number.');
       return;
     }
 
@@ -92,7 +94,7 @@ export const SignupPage: React.FC = () => {
       const data = await register({
         name: name.trim(),
         email: email.trim(),
-        phoneNumber: phoneNumber.trim(),
+        phoneNumber: cleanPhone,
         password,
         confirmPassword,
         agreeTerms,
@@ -119,7 +121,6 @@ export const SignupPage: React.FC = () => {
     newDigits[index] = value.slice(-1);
     setOtpDigits(newDigits);
 
-    // Auto-advance
     if (value && index < 5) {
       const nextInput = document.getElementById(`otp-input-${index + 1}`);
       nextInput?.focus();
@@ -180,7 +181,7 @@ export const SignupPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#F1F9FF] dark:bg-[#080808] text-[#10274A] dark:text-[#F5F5F5] flex flex-col justify-between selection:bg-[#BFE9FF] selection:text-[#10274A] dark:selection:bg-[#2589FF]/30 dark:selection:text-[#F5F5F5] transition-colors">
-      {/* Top Header */}
+      {}
       <header className="px-6 sm:px-12 py-6 flex items-center justify-between">
         <Link to="/" className="flex items-center space-x-3 group">
           <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#1685F8] to-[#0E6FD8] text-white flex items-center justify-center shadow-clay-btn group-hover:scale-105 transition-transform">
@@ -204,10 +205,10 @@ export const SignupPage: React.FC = () => {
         </div>
       </header>
 
-      {/* Main Container */}
+      {}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8 flex-1 flex items-center">
         <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center">
-          {/* ================= LEFT SIDE (55% WIDTH) ================= */}
+          {}
           <div className="lg:col-span-7 flex flex-col items-center lg:items-start text-center lg:text-left space-y-6">
             <div className="w-full max-w-[500px]">
               <HeroIllustration compact={true} />
@@ -250,12 +251,12 @@ export const SignupPage: React.FC = () => {
             </div>
           </div>
 
-          {/* ================= RIGHT SIDE: SIGNUP OR OTP CARD ================= */}
+          {}
           <div className="lg:col-span-5 flex justify-center">
             <div className="w-full max-w-[440px] bg-white dark:bg-[#101010] rounded-[28px] p-8 sm:p-10 shadow-clay-card dark:shadow-none border border-[#D8E9FA] dark:border-[#303030] relative transition-colors">
               {!isVerifying ? (
                 <>
-                  {/* Signup Header */}
+                  {}
                   <div className="text-center mb-6">
                     <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#1685F8] to-[#0E6FD8] text-white shadow-clay-btn mb-3">
                       <Wallet className="w-6 h-6 text-white" />
@@ -276,7 +277,7 @@ export const SignupPage: React.FC = () => {
                   )}
 
                   <form onSubmit={handleRegisterSubmit} className="space-y-3.5">
-                    {/* Full Name */}
+                    {}
                     <div>
                       <label className="block text-xs font-bold text-[#10274A] dark:text-[#F5F5F5] mb-1">Full Name</label>
                       <input
@@ -289,7 +290,7 @@ export const SignupPage: React.FC = () => {
                       />
                     </div>
 
-                    {/* Email */}
+                    {}
                     <div>
                       <label className="block text-xs font-bold text-[#10274A] dark:text-[#F5F5F5] mb-1">Email Address</label>
                       <input
@@ -302,12 +303,14 @@ export const SignupPage: React.FC = () => {
                       />
                     </div>
 
-                    {/* Phone Number (2Factor.in SMS) */}
+                    {}
                     <div>
                       <div className="flex items-center justify-between mb-1">
-                        <label className="block text-xs font-bold text-[#10274A] dark:text-[#F5F5F5]">Mobile Number</label>
+                        <label className="block text-xs font-bold text-[#10274A] dark:text-[#F5F5F5]">
+                          Mobile Number <span className="text-red-500">*</span>
+                        </label>
                         <span className="text-[10px] font-semibold text-[#16B890] dark:text-[#34D399] bg-[#DDF8EE] dark:bg-[#34D399]/15 px-2 py-0.5 rounded-full">
-                          2Factor.in SMS
+                          Mandatory for OTP
                         </span>
                       </div>
                       <div className="relative">
@@ -316,18 +319,22 @@ export const SignupPage: React.FC = () => {
                         </div>
                         <input
                           type="tel"
+                          required
+                          minLength={10}
+                          maxLength={10}
+                          pattern="[0-9]{10}"
                           value={phoneNumber}
                           onChange={e => setPhoneNumber(e.target.value.replace(/[^\d]/g, '').slice(0, 10))}
-                          placeholder="9876543210 (for SMS OTP)"
+                          placeholder="9876543210 (10 digits required)"
                           className="clay-input w-full pl-12 pr-3.5 py-2.5 text-xs sm:text-sm font-mono"
                         />
                       </div>
                       <p className="text-[10px] text-[#64748B] dark:text-[#737373] mt-1">
-                        We send your instant 6-digit OTP via Indian SMS gateway 2Factor.in
+                        Mandatory: We send your 6-digit verification OTP to this phone number
                       </p>
                     </div>
 
-                    {/* Password */}
+                    {}
                     <div>
                       <label className="block text-xs font-bold text-[#10274A] dark:text-[#F5F5F5] mb-1">Password</label>
                       <div className="relative">
@@ -349,7 +356,7 @@ export const SignupPage: React.FC = () => {
                       </div>
                     </div>
 
-                    {/* Confirm Password */}
+                    {}
                     <div>
                       <label className="block text-xs font-bold text-[#10274A] dark:text-[#F5F5F5] mb-1">Confirm Password</label>
                       <input
@@ -362,7 +369,7 @@ export const SignupPage: React.FC = () => {
                       />
                     </div>
 
-                    {/* Agreement Checkbox */}
+                    {}
                     <div className="flex items-start space-x-2 pt-1 text-xs">
                       <input
                         type="checkbox"
@@ -400,7 +407,7 @@ export const SignupPage: React.FC = () => {
                   </div>
                 </>
               ) : (
-                /* ================= EMAIL VERIFICATION OTP SCREEN ================= */
+
                 <div>
                   <div className="text-center mb-6">
                     <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-[#DDF8EE] dark:bg-[#141414] text-[#16B890] dark:text-[#34D399] dark:border dark:border-[#303030] mb-3">
@@ -431,7 +438,7 @@ export const SignupPage: React.FC = () => {
                   )}
 
                   <form onSubmit={handleVerifySubmit} className="space-y-6">
-                    {/* 6 OTP Input Boxes */}
+                    {}
                     <div className="flex justify-between items-center gap-2">
                       {otpDigits.map((digit, idx) => (
                         <input

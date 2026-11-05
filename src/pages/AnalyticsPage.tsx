@@ -55,7 +55,6 @@ export const AnalyticsPage: React.FC = () => {
         <Topbar onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
 
         <main className="p-4 sm:p-8 space-y-8 max-w-7xl w-full mx-auto">
-          {/* Header */}
           <div>
             <h1 className="text-2xl sm:text-3xl font-black text-[#10274A] dark:text-[#F5F5F5] tracking-tight">
               Financial Analytics
@@ -65,7 +64,6 @@ export const AnalyticsPage: React.FC = () => {
             </p>
           </div>
 
-          {/* Quick Stat Highlights */}
           <div className="grid grid-cols-1 sm:grid-cols-4 gap-5">
             <div className="clay-card p-5 bg-white dark:bg-[#101010] dark:border dark:border-[#303030]">
               <span className="text-xs font-bold text-[#64748B] dark:text-[#A1A1AA]">Total Group Volume</span>
@@ -108,7 +106,6 @@ export const AnalyticsPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Monthly Spending Trend Area Chart */}
           <div className="clay-card p-6 bg-white dark:bg-[#101010] dark:border dark:border-[#303030] space-y-4">
             <div className="flex items-center justify-between">
               <div>
@@ -131,7 +128,13 @@ export const AnalyticsPage: React.FC = () => {
                     </linearGradient>
                   </defs>
                   <XAxis dataKey="month" stroke={isDark ? '#737373' : '#64748B'} fontSize={11} tickLine={false} />
-                  <YAxis stroke={isDark ? '#737373' : '#64748B'} fontSize={11} tickLine={false} tickFormatter={v => `₹${v}`} />
+                  <YAxis
+                    stroke={isDark ? '#737373' : '#64748B'}
+                    fontSize={11}
+                    tickLine={false}
+                    tickFormatter={v => `₹${Number(v).toLocaleString()}`}
+                    domain={[0, (dataMax: number) => (dataMax > 0 ? Math.ceil(dataMax * 1.15) : 1000)]}
+                  />
                   <Tooltip
                     contentStyle={{
                       backgroundColor: isDark ? '#101010' : '#ffffff',
@@ -157,7 +160,6 @@ export const AnalyticsPage: React.FC = () => {
             </div>
           </div>
 
-          {/* AI Spending Predictions & Forecast Card */}
           {prediction && (
             <div className="clay-card p-6 bg-white dark:bg-[#101010] dark:border dark:border-[#303030] space-y-4">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
@@ -188,12 +190,11 @@ export const AnalyticsPage: React.FC = () => {
                   }`}>
                     {prediction.trend === 'INCREASING' && '↗ Projected Upward Trend'}
                     {prediction.trend === 'DECREASING' && '↘ Projected Downward Trend'}
-                    {prediction.trend === 'STABLE' && '→ Projected Stable Velocity'}
+                    {prediction.trend === 'STABLE' && (prediction.currentMonthSpent === 0 ? '→ Zero Current Spending' : '→ Projected Stable Velocity')}
                   </span>
                 </div>
               </div>
 
-              {/* 3 Metric Pills */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-1">
                 <div className="p-4 rounded-2xl bg-[#F8FCFF] dark:bg-[#0D0D0D] border border-[#D8E9FA] dark:border-[#303030]">
                   <span className="text-xs font-semibold text-[#64748B] dark:text-[#737373]">Estimated Month-End Spending</span>
@@ -226,7 +227,6 @@ export const AnalyticsPage: React.FC = () => {
                 </div>
               </div>
 
-              {/* Budget Overrun Warning if applicable */}
               {prediction.budgetOverrunRisk && (
                 <div className="p-3.5 rounded-2xl bg-amber-50 dark:bg-amber-950/20 border border-amber-300 dark:border-amber-700/40 flex items-start space-x-2.5 text-xs text-amber-800 dark:text-amber-300 font-medium">
                   <AlertTriangle className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
@@ -234,7 +234,6 @@ export const AnalyticsPage: React.FC = () => {
                 </div>
               )}
 
-              {/* Disclaimer */}
               <div className="text-[11px] text-[#64748B] dark:text-[#737373] flex items-center space-x-1.5 pt-1 border-t border-[#D8E9FA]/50 dark:border-[#303030]">
                 <Info className="w-3.5 h-3.5 shrink-0 text-[#1685F8] dark:text-[#2589FF]" />
                 <span>{prediction.disclaimer}</span>
@@ -242,9 +241,7 @@ export const AnalyticsPage: React.FC = () => {
             </div>
           )}
 
-          {/* 2 Columns: Category Breakdown & Spending by Group */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            {/* Category Donut */}
             <div className="lg:col-span-6 clay-card p-6 bg-white dark:bg-[#101010] dark:border dark:border-[#303030] space-y-4">
               <h3 className="text-base font-bold text-[#10274A] dark:text-[#F5F5F5]">Category Breakdown</h3>
               <div className="w-full h-56 flex items-center justify-center">
@@ -290,7 +287,6 @@ export const AnalyticsPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Spending by Group Bar Chart */}
             <div className="lg:col-span-6 clay-card p-6 bg-white dark:bg-[#101010] dark:border dark:border-[#303030] space-y-4">
               <h3 className="text-base font-bold text-[#10274A] dark:text-[#F5F5F5]">Spending Across Groups</h3>
               <div className="w-full h-56">

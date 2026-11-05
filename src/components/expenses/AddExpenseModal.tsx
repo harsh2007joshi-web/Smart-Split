@@ -41,17 +41,14 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
-  // Receipt Scanner & AI Quick Fill states
   const receiptFileRef = useRef<HTMLInputElement>(null);
   const [isScanningReceipt, setIsScanningReceipt] = useState(false);
   const [scanNotice, setScanNotice] = useState<{ type: 'success' | 'info' | 'error'; message: string } | null>(null);
   const [taxAmount, setTaxAmount] = useState<number | undefined>(initialData?.taxAmount);
   const [receiptUrl, setReceiptUrl] = useState<string | undefined>(initialData?.receiptUrl);
 
-  // Duplicate detection state
   const [potentialDuplicate, setPotentialDuplicate] = useState<any>(null);
 
-  // AI Quick Fill toggle & state
   const [showQuickFill, setShowQuickFill] = useState(false);
   const [quickFillPrompt, setQuickFillPrompt] = useState('');
   const [isQuickFilling, setIsQuickFilling] = useState(false);
@@ -66,7 +63,6 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({
       setPayerId(defaultPayerId);
       setSelectedMemberIds(allIds);
 
-      // Default shares for percentage or custom
       const numAmt = parseFloat(amount) || 0;
       const count = allIds.length;
       if (count > 0) {
@@ -86,7 +82,7 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({
 
   const toggleMemberSelection = (userId: string) => {
     if (selectedMemberIds.includes(userId)) {
-      if (selectedMemberIds.length === 1) return; // Keep at least one
+      if (selectedMemberIds.length === 1) return;
       setSelectedMemberIds(selectedMemberIds.filter(id => id !== userId));
     } else {
       setSelectedMemberIds([...selectedMemberIds, userId]);
@@ -212,7 +208,6 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({
       return;
     }
 
-    // Prepare participants array
     const participants = selectedMemberIds.map(uid => {
       const member = currentGroup.members.find(m => m.userId === uid);
       return {
@@ -223,7 +218,6 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({
       };
     });
 
-    // Client-side split validations
     if (splitType === 'CUSTOM') {
       const sum = participants.reduce((acc, p) => acc + (p.shareAmount || 0), 0);
       if (Math.abs(sum - numAmt) > 0.05) {
@@ -277,7 +271,6 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
       <div className="relative w-full max-w-lg bg-white dark:bg-[#101010] rounded-3xl shadow-clay-float border border-[#D8E9FA] dark:border-[#303030] p-6 sm:p-8 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-        {/* Top Header */}
         <div className="flex items-center justify-between pb-4 border-b border-[#D8E9FA]/60 dark:border-[#303030]">
           <div className="flex items-center space-x-2.5">
             <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#1685F8] to-[#0E6FD8] text-white flex items-center justify-center shadow-clay-btn">
@@ -296,7 +289,6 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({
           </button>
         </div>
 
-        {/* Action Row: Scan Receipt & AI Quick Fill */}
         <div className="mt-3 flex items-center justify-between gap-2">
           <input
             type="file"
@@ -334,7 +326,6 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({
           </button>
         </div>
 
-        {/* AI Quick Fill Input Box */}
         {showQuickFill && (
           <div className="mt-3 p-3 rounded-2xl bg-[#E9F5FE] dark:bg-[#141414] border border-[#BFE9FF] dark:border-[#303030] space-y-2 animate-in fade-in">
             <div className="text-[11px] font-bold text-[#10274A] dark:text-[#F5F5F5] flex items-center space-x-1">
@@ -362,7 +353,6 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({
           </div>
         )}
 
-        {/* Scan / Quick-Fill Notice */}
         {scanNotice && (
           <div className={`mt-3 p-3 rounded-2xl text-xs font-medium flex items-start space-x-2 border ${
             scanNotice.type === 'success'
@@ -381,7 +371,6 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({
           </div>
         )}
 
-        {/* Duplicate Warning Alert Box */}
         {potentialDuplicate && (
           <div className="mt-3 p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/25 border-2 border-amber-300 dark:border-amber-700/50 space-y-2.5 animate-in fade-in">
             <div className="flex items-start space-x-2.5">
@@ -421,9 +410,7 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({
           </div>
         )}
 
-        {/* Expense Form */}
         <form onSubmit={handleSubmit} className="mt-5 space-y-4">
-          {/* Select Group */}
           <div>
             <label className="block text-xs font-bold text-[#10274A] dark:text-[#F5F5F5] mb-1.5">Group</label>
             <select
@@ -439,7 +426,6 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({
             </select>
           </div>
 
-          {/* Title & Amount Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
             <div>
               <label className="block text-xs font-bold text-[#10274A] dark:text-[#F5F5F5] mb-1.5">Expense Title</label>
@@ -467,7 +453,6 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({
             </div>
           </div>
 
-          {/* Category & Date */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
             <div>
               <label className="block text-xs font-bold text-[#10274A] dark:text-[#F5F5F5] mb-1.5">Category</label>
@@ -497,7 +482,6 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({
             </div>
           </div>
 
-          {/* Paid By */}
           <div>
             <label className="block text-xs font-bold text-[#10274A] dark:text-[#F5F5F5] mb-1.5">Paid By</label>
             <select
@@ -513,7 +497,6 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({
             </select>
           </div>
 
-          {/* Split Method Tabs */}
           <div>
             <label className="block text-xs font-bold text-[#10274A] dark:text-[#F5F5F5] mb-1.5">Split Method</label>
             <div className="grid grid-cols-3 gap-2 p-1 bg-[#F1F9FF] dark:bg-[#0D0D0D] rounded-2xl border border-[#D8E9FA] dark:border-[#303030]">
@@ -536,7 +519,6 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({
             </div>
           </div>
 
-          {/* Split Participants List */}
           <div className="space-y-2 pt-1">
             <div className="flex justify-between items-center text-xs font-bold text-[#10274A] dark:text-[#F5F5F5]">
               <span>Split Between</span>
@@ -610,7 +592,6 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({
             </div>
           </div>
 
-          {/* Action Buttons */}
           <div className="pt-3 flex items-center justify-end space-x-3">
             <button
               type="button"

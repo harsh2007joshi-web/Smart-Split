@@ -6,7 +6,6 @@ import { paypalService } from '../services/paypalService';
 const router = Router();
 router.use(authenticateToken);
 
-// 1. CREATE PAYPAL ORDER
 router.post('/paypal/create-order', async (req: AuthenticatedRequest, res: Response): Promise<void> => {
   try {
     const { amount, currency = 'INR', groupId, recipientId, recipientName, settlementId } = req.body;
@@ -46,7 +45,6 @@ router.post('/paypal/create-order', async (req: AuthenticatedRequest, res: Respo
   }
 });
 
-// 2. CAPTURE PAYPAL ORDER & VERIFY
 router.post('/paypal/capture-order', async (req: AuthenticatedRequest, res: Response): Promise<void> => {
   try {
     const { orderId, groupId, recipientId, recipientName, amount, currency = 'INR', settlementId } = req.body;
@@ -56,7 +54,6 @@ router.post('/paypal/capture-order', async (req: AuthenticatedRequest, res: Resp
       return;
     }
 
-    // Guard against duplicate submission
     const existingPaymentForOrder = db.getAllPayments().find(
       p => p.metadata?.paypalOrderId === orderId && p.status === 'COMPLETED'
     );
@@ -78,7 +75,6 @@ router.post('/paypal/capture-order', async (req: AuthenticatedRequest, res: Resp
       }
     }
 
-    // Capture & verify on backend
     const captureResult = await paypalService.captureOrder(orderId);
 
     if (captureResult.status !== 'COMPLETED') {
@@ -91,7 +87,6 @@ router.post('/paypal/capture-order', async (req: AuthenticatedRequest, res: Resp
 
     const receiptNumber = `REC-${new Date().getFullYear()}-${Math.floor(100000 + Math.random() * 900000)}`;
 
-    // Record verified payment in database
     const payment = db.createPayment({
       settlementId: settlementId || undefined,
       groupId: groupId || undefined,
@@ -127,7 +122,6 @@ router.post('/paypal/capture-order', async (req: AuthenticatedRequest, res: Resp
       verifiedStamp: 'VERIFIED BY PAYPAL SANDBOX',
     };
 
-    // Create or complete settlement record
     if (groupId) {
       db.createSettlement({
         groupId,
@@ -143,7 +137,6 @@ router.post('/paypal/capture-order', async (req: AuthenticatedRequest, res: Resp
       });
     }
 
-    // Notify recipient
     if (recipientId) {
       db.createNotification({
         userId: recipientId,
@@ -166,7 +159,6 @@ router.post('/paypal/capture-order', async (req: AuthenticatedRequest, res: Resp
   }
 });
 
-// 3. CARD CHECKOUT (CREDIT OR DEBIT)
 router.post('/card-checkout', async (req: AuthenticatedRequest, res: Response): Promise<void> => {
   try {
     const {
@@ -176,7 +168,7 @@ router.post('/card-checkout', async (req: AuthenticatedRequest, res: Response): 
       recipientId,
       recipientName,
       settlementId,
-      cardType = 'CREDIT_CARD', // 'CREDIT_CARD' | 'DEBIT_CARD'
+      cardType = 'CREDIT_CARD',
       cardholderName,
       cardNumber,
       expiry,
@@ -204,7 +196,6 @@ router.post('/card-checkout', async (req: AuthenticatedRequest, res: Response): 
       return;
     }
 
-    // Clean card number
     const cleanNumber = (cardNumber || '').replace(/\s+/g, '');
     if (cleanNumber.length < 13 || cleanNumber.length > 19) {
       res.status(400).json({ error: 'Please enter a valid 16-digit card number.' });
@@ -221,15 +212,12 @@ router.post('/card-checkout', async (req: AuthenticatedRequest, res: Response): 
       return;
     }
 
-    // Mask card for storage (PCI-DSS compliance — never store raw card numbers or CVV!)
     const last4 = cleanNumber.slice(-4);
     const maskedNumber = `•••• •••• •••• ${last4}`;
 
-    // Generate cryptographic transaction reference
     const txnRef = `SS-${cardType === 'DEBIT_CARD' ? 'DBT' : 'CRD'}-${Date.now().toString(36).toUpperCase()}-${Math.floor(1000 + Math.random() * 9000)}`;
     const receiptNumber = `REC-${new Date().getFullYear()}-${Math.floor(100000 + Math.random() * 900000)}`;
 
-    // Create payment
     const payment = db.createPayment({
       settlementId: settlementId || undefined,
       groupId: groupId || undefined,
@@ -266,7 +254,6 @@ router.post('/card-checkout', async (req: AuthenticatedRequest, res: Response): 
       cardMasked: maskedNumber,
     };
 
-    // Create or complete settlement record
     if (groupId) {
       db.createSettlement({
         groupId,
@@ -282,7 +269,6 @@ router.post('/card-checkout', async (req: AuthenticatedRequest, res: Response): 
       });
     }
 
-    // Notify recipient
     if (recipientId) {
       db.createNotification({
         userId: recipientId,
@@ -305,7 +291,6 @@ router.post('/card-checkout', async (req: AuthenticatedRequest, res: Response): 
   }
 });
 
-// 3.1 GOOGLE PAY SETTLEMENT CHECKOUT
 router.post('/google-pay', async (req: AuthenticatedRequest, res: Response): Promise<void> => {
   try {
     const { amount, currency = 'INR', groupId, recipientId, recipientName, settlementId } = req.body;
@@ -399,7 +384,6 @@ router.post('/google-pay', async (req: AuthenticatedRequest, res: Response): Pro
   }
 });
 
-// 3.2 GET DETAILED RECEIPT BY TRANSACTION REFERENCE
 router.get('/receipt/:reference', (req: AuthenticatedRequest, res: Response): void => {
   try {
     const reference = (Array.isArray(req.params.reference) ? req.params.reference[0] : req.params.reference) as string;
@@ -434,13 +418,11 @@ router.get('/receipt/:reference', (req: AuthenticatedRequest, res: Response): vo
   }
 });
 
-// 4. GET TRANSACTIONS
 router.get('/transactions', (req: AuthenticatedRequest, res: Response): void => {
   try {
     const userId = req.user!.id;
     const allPayments = db.getAllPayments();
 
-    // User is authorized to see transactions where they are payer OR recipient
     const userPayments = allPayments.filter(p => p.payerId === userId || p.recipientId === userId);
 
     res.json({

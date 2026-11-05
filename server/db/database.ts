@@ -2,18 +2,30 @@ import fs from 'fs';
 import path from 'path';
 import bcrypt from 'bcryptjs';
 
-const DATA_DIR = path.resolve(process.cwd(), 'server/data');
-const DB_FILE = path.join(DATA_DIR, 'splitsmart_db.json');
+const isVercel = !!process.env.VERCEL;
+const BASE_DATA_DIR = path.resolve(process.cwd(), 'server/data');
+const BASE_DB_FILE = path.join(BASE_DATA_DIR, 'splitsmart_db.json');
 
-// Ensure data directory exists
+const DATA_DIR = isVercel ? path.join('/tmp', 'splitsmart_data') : BASE_DATA_DIR;
+const DB_FILE = isVercel ? path.join(DATA_DIR, 'splitsmart_db.json') : BASE_DB_FILE;
+
 if (!fs.existsSync(DATA_DIR)) {
   fs.mkdirSync(DATA_DIR, { recursive: true });
+}
+
+if (isVercel && !fs.existsSync(DB_FILE) && fs.existsSync(BASE_DB_FILE)) {
+  try {
+    fs.copyFileSync(BASE_DB_FILE, DB_FILE);
+  } catch (e) {
+  }
 }
 
 export interface StoredUser {
   id: string;
   name: string;
+  username?: string;
   email: string;
+  gender?: 'male' | 'female' | 'other';
   phoneNumber?: string;
   isPhoneVerified?: boolean;
   passwordHash: string;
@@ -152,10 +164,75 @@ export interface StoredNotification {
   userId: string;
   title: string;
   message: string;
-  type: 'INVITATION' | 'EXPENSE' | 'SETTLEMENT' | 'PAYMENT' | 'ALERT';
+  type: 'INVITATION' | 'EXPENSE' | 'SETTLEMENT' | 'PAYMENT' | 'ALERT' | 'FRIEND_REQUEST' | 'MESSAGE';
   isRead: boolean;
   link?: string;
+  metadata?: Record<string, any>;
   createdAt: string;
+}
+
+export interface StoredFriendRequest {
+  id: string;
+  senderId: string;
+  senderName: string;
+  senderUsername: string;
+  senderAvatarUrl?: string;
+  receiverId: string;
+  receiverName: string;
+  receiverUsername: string;
+  receiverAvatarUrl?: string;
+  status: 'PENDING' | 'ACCEPTED' | 'DECLINED';
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface StoredContact {
+  id: string;
+  userId: string;
+  contactUserId: string;
+  nickname?: string;
+  createdAt: string;
+}
+
+export interface StoredChatAttachment {
+  id: string;
+  filename: string;
+  originalName: string;
+  mimeType: string;
+  size: number;
+  uploadedAt: string;
+}
+
+export interface StoredChatReceipt {
+  paymentId?: string;
+  reference: string;
+  amount: number;
+  currency: string;
+  groupName: string;
+  date: string;
+  status: string;
+  payerName: string;
+  recipientName: string;
+  receiptNumber?: string;
+}
+
+export interface StoredChatMessage {
+  id: string;
+  conversationId: string;
+  senderId: string;
+  senderName: string;
+  senderUsername: string;
+  senderAvatarUrl?: string;
+  receiverId: string;
+  receiverName: string;
+  receiverUsername: string;
+  receiverAvatarUrl?: string;
+  type: 'TEXT' | 'IMAGE' | 'FILE' | 'RECEIPT';
+  text?: string;
+  attachment?: StoredChatAttachment;
+  receipt?: StoredChatReceipt;
+  createdAt: string;
+  isRead: boolean;
 }
 
 export interface DatabaseSchema {
@@ -169,6 +246,9 @@ export interface DatabaseSchema {
   settlements: StoredSettlement[];
   payments: StoredPayment[];
   notifications: StoredNotification[];
+  friendRequests: StoredFriendRequest[];
+  contacts: StoredContact[];
+  chatMessages: StoredChatMessage[];
 }
 
 const defaultSchema: DatabaseSchema = {
@@ -182,6 +262,9 @@ const defaultSchema: DatabaseSchema = {
   settlements: [],
   payments: [],
   notifications: [],
+  friendRequests: [],
+  contacts: [],
+  chatMessages: [],
 };
 
 class Database {
@@ -189,6 +272,7 @@ class Database {
 
   constructor() {
     this.data = this.load();
+    this.migrateUsernames();
     this.initDemoDataIfNeeded();
   }
 
@@ -202,6 +286,9 @@ class Database {
           ...parsed,
           phoneVerifications: parsed.phoneVerifications || [],
           invitations: parsed.invitations || [],
+          friendRequests: parsed.friendRequests || [],
+          contacts: parsed.contacts || [],
+          chatMessages: parsed.chatMessages || [],
         };
       }
     } catch (e) {
@@ -224,7 +311,42 @@ class Database {
     return this.data;
   }
 
-  // --- Users ---
+  public generateUniqueUsername(name: string): string {
+    let base = (name || 'user')
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9]/g, '');
+    if (!base) base = 'user';
+    let suffix = Math.floor(100 + Math.random() * 900);
+    let candidate = `@${base}_${suffix}`;
+    let attempts = 0;
+    while (this.data.users && this.data.users.some(u => u.username && u.username.toLowerCase() === candidate.toLowerCase())) {
+      suffix = Math.floor(100 + Math.random() * 900);
+      candidate = `@${base}_${suffix}`;
+      attempts++;
+      if (attempts > 60) {
+        candidate = `@${base}_${Date.now().toString().slice(-4)}`;
+        break;
+      }
+    }
+    return candidate;
+  }
+
+  public migrateUsernames(): void {
+    if (!this.data.users) return;
+    let changed = false;
+    for (const user of this.data.users) {
+      if (!user.username) {
+        user.username = this.generateUniqueUsername(user.name);
+        changed = true;
+      }
+    }
+    if (changed) {
+      this.save();
+      console.log('✅ Safely migrated existing users with unique usernames.');
+    }
+  }
+
   public findUserByEmail(email: string): StoredUser | undefined {
     return this.data.users.find(u => u.email.toLowerCase().trim() === email.toLowerCase().trim());
   }
@@ -233,9 +355,34 @@ class Database {
     return this.data.users.find(u => u.id === id);
   }
 
-  public createUser(user: Omit<StoredUser, 'id' | 'createdAt' | 'updatedAt'>): StoredUser {
+  public findUserByUsername(username: string): StoredUser | undefined {
+    if (!username) return undefined;
+    const clean = username.trim().toLowerCase().replace(/^@/, '');
+    return this.data.users.find(u => {
+      if (!u.username) return false;
+      return u.username.toLowerCase().replace(/^@/, '') === clean;
+    });
+  }
+
+  public searchUsers(query: string, currentUserId?: string): StoredUser[] {
+    if (!query || !query.trim()) return [];
+    const clean = query.trim().toLowerCase().replace(/^@/, '');
+    return this.data.users
+      .filter(u => {
+        if (currentUserId && u.id === currentUserId) return false;
+        const matchUsername = u.username && u.username.toLowerCase().replace(/^@/, '').includes(clean);
+        const matchName = u.name.toLowerCase().includes(clean);
+        const matchEmail = u.email.toLowerCase().includes(clean);
+        return matchUsername || matchName || matchEmail;
+      })
+      .slice(0, 15);
+  }
+
+  public createUser(user: Omit<StoredUser, 'id' | 'createdAt' | 'updatedAt' | 'username'> & { username?: string }): StoredUser {
+    const assignedUsername = user.username || this.generateUniqueUsername(user.name);
     const newUser: StoredUser = {
       ...user,
+      username: assignedUsername,
       id: 'usr_' + Math.random().toString(36).substring(2, 9),
       email: user.email.toLowerCase().trim(),
       createdAt: new Date().toISOString(),
@@ -261,7 +408,6 @@ class Database {
             if (user.name) member.name = user.name;
             changed = true;
 
-            // Sync any existing expenses in this group
             for (const expense of this.data.expenses) {
               if (expense.groupId === group.id) {
                 if (expense.payerId === oldUserId) {
@@ -279,7 +425,6 @@ class Database {
               }
             }
 
-            // Sync settlements
             for (const s of this.data.settlements) {
               if (s.groupId === group.id) {
                 if (s.fromUserId === oldUserId) {
@@ -321,7 +466,7 @@ class Database {
       phone: cleaned,
       otp,
       sessionId,
-      expiresAt: Date.now() + 10 * 60 * 1000, // 10 minutes
+      expiresAt: Date.now() + 10 * 60 * 1000,
       verified: false,
     });
     this.save();
@@ -351,17 +496,15 @@ class Database {
     return user;
   }
 
-  // --- Email Verification ---
   public createVerificationOtp(userId: string, email: string): string {
     const code = Math.floor(100000 + Math.random() * 900000).toString();
-    // remove existing tokens for this user
     this.data.verificationTokens = this.data.verificationTokens.filter(t => t.userId !== userId);
     this.data.verificationTokens.push({
       id: 'tok_' + Math.random().toString(36).substring(2, 9),
       userId,
       email: email.toLowerCase().trim(),
       code,
-      expiresAt: Date.now() + 15 * 60 * 1000, // 15 mins
+      expiresAt: Date.now() + 15 * 60 * 1000,
       attempts: 0,
     });
     this.save();
@@ -388,14 +531,12 @@ class Database {
       this.save();
       return { success: false, message: 'Incorrect verification code. Please check and try again.' };
     }
-    // Mark user verified
     this.updateUser(userId, { isEmailVerified: true });
     this.data.verificationTokens = this.data.verificationTokens.filter(t => t.id !== token.id);
     this.save();
     return { success: true, message: 'Email successfully verified!' };
   }
 
-  // --- Password Reset Challenges ---
   public createPasswordResetChallenge(email: string): { challengeId: string; otp: string } {
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     const challengeId = 'res_' + Math.random().toString(36).substring(2, 11);
@@ -404,7 +545,7 @@ class Database {
       id: challengeId,
       email: email.toLowerCase().trim(),
       otp,
-      expiresAt: Date.now() + 10 * 60 * 1000, // 10 minutes
+      expiresAt: Date.now() + 10 * 60 * 1000,
       attempts: 0,
       verified: false,
     });
@@ -447,13 +588,11 @@ class Database {
     }
     user.passwordHash = newPasswordHash;
     user.updatedAt = new Date().toISOString();
-    // Invalidate challenge
     this.data.resetChallenges = this.data.resetChallenges.filter(c => c.id !== challenge.id);
     this.save();
     return { success: true, message: 'Password has been successfully updated.' };
   }
 
-  // --- Groups ---
   public getGroupsForUser(userId: string): StoredGroup[] {
     const user = this.findUserById(userId);
     if (user) {
@@ -571,8 +710,7 @@ class Database {
     }
 
     const userEmail = user.email.toLowerCase().trim();
-    // Check if user is already in group by userId or email
-    const existingMember = group.members.find(m => 
+    const existingMember = group.members.find(m =>
       m.userId === user.id || (m.email && m.email.toLowerCase().trim() === userEmail)
     );
 
@@ -605,21 +743,16 @@ class Database {
       return { success: false, message: 'Group not found or already deleted.' };
     }
 
-    // Check if requester is creator/admin or member
     const member = group.members.find(m => m.userId === userId);
     if (!member) {
       return { success: false, message: 'You are not a member of this group.' };
     }
 
-    // Clean up expenses
     this.data.expenses = this.data.expenses.filter(e => e.groupId !== groupId);
-    // Clean up settlements
     this.data.settlements = this.data.settlements.filter(s => s.groupId !== groupId);
-    // Clean up invitations
     if (this.data.invitations) {
       this.data.invitations = this.data.invitations.filter(i => i.groupId !== groupId);
     }
-    // Remove group
     this.data.groups = this.data.groups.filter(g => g.id !== groupId);
     this.save();
 
@@ -646,30 +779,25 @@ class Database {
     const targetTime = data.date ? new Date(data.date).getTime() : Date.now();
 
     return expenses.find(e => {
-      // Amount closeness: within 1% or within 50 paise
       const diff = Math.abs(Number(e.amount) - targetAmount);
       const isAmountClose = diff <= 0.5 || (targetAmount > 0 && diff / targetAmount < 0.015);
       if (!isAmountClose) return false;
 
-      // Title similarity
       const eTitle = e.title.trim().toLowerCase();
       const isTitleMatch =
         eTitle === targetTitle ||
         (targetTitle.length > 3 && eTitle.includes(targetTitle)) ||
         (eTitle.length > 3 && targetTitle.includes(eTitle));
 
-      // Date similarity: within 3 days
       const eTime = new Date(e.date).getTime();
       const isDateClose = Math.abs(eTime - targetTime) <= 3 * 86400000;
 
-      // Same payer if provided
       const isPayerMatch = !data.payerId || e.payerId === data.payerId;
 
       return isAmountClose && isTitleMatch && isDateClose && isPayerMatch;
     });
   }
 
-  // --- Expenses ---
   public getExpensesForGroup(groupId: string): StoredExpense[] {
     return this.data.expenses.filter(e => e.groupId === groupId).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   }
@@ -708,7 +836,6 @@ class Database {
     return false;
   }
 
-  // --- Settlements ---
   public getSettlementsForGroup(groupId: string): StoredSettlement[] {
     return this.data.settlements.filter(s => s.groupId === groupId);
   }
@@ -739,7 +866,6 @@ class Database {
     return settlement;
   }
 
-  // --- Payments ---
   public createPayment(payment: Omit<StoredPayment, 'id' | 'createdAt'>): StoredPayment {
     const newPayment: StoredPayment = {
       ...payment,
@@ -775,7 +901,6 @@ class Database {
     return this.data.payments.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
   }
 
-  // --- Notifications ---
   public getNotificationsForUser(userId: string): StoredNotification[] {
     return this.data.notifications.filter(n => n.userId === userId).sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
   }
@@ -807,7 +932,359 @@ class Database {
     this.save();
   }
 
-  // --- Demo Seed Data Initialization ---
+  public createFriendRequest(senderId: string, receiverIdentifier: string): { success: boolean; message: string; request?: StoredFriendRequest } {
+    const sender = this.findUserById(senderId);
+    if (!sender) return { success: false, message: 'Sender not found.' };
+
+    let receiver = this.findUserByUsername(receiverIdentifier);
+    if (!receiver) {
+      receiver = this.findUserById(receiverIdentifier);
+    }
+    if (!receiver) {
+      return { success: false, message: `No registered user found matching "${receiverIdentifier}".` };
+    }
+
+    if (receiver.id === sender.id) {
+      return { success: false, message: 'You cannot send a friend request to yourself.' };
+    }
+
+    if (this.areFriends(sender.id, receiver.id)) {
+      return { success: false, message: `${receiver.name} is already in your contacts.` };
+    }
+
+    if (!this.data.friendRequests) this.data.friendRequests = [];
+
+    const existingPending = this.data.friendRequests.find(
+      r => r.status === 'PENDING' &&
+        ((r.senderId === sender.id && r.receiverId === receiver.id) ||
+         (r.senderId === receiver.id && r.receiverId === sender.id))
+    );
+
+    if (existingPending) {
+      if (existingPending.senderId === sender.id) {
+        return { success: false, message: 'Friend request is already pending.' };
+      } else {
+        return { success: false, message: `${receiver.name} has already sent you a friend request. You can accept it in Contacts or Notifications!` };
+      }
+    }
+
+    const newRequest: StoredFriendRequest = {
+      id: 'freq_' + Math.random().toString(36).substring(2, 9),
+      senderId: sender.id,
+      senderName: sender.name,
+      senderUsername: sender.username || this.generateUniqueUsername(sender.name),
+      senderAvatarUrl: sender.avatarUrl,
+      receiverId: receiver.id,
+      receiverName: receiver.name,
+      receiverUsername: receiver.username || this.generateUniqueUsername(receiver.name),
+      receiverAvatarUrl: receiver.avatarUrl,
+      status: 'PENDING',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+
+    this.data.friendRequests.push(newRequest);
+
+    this.createNotification({
+      userId: receiver.id,
+      title: 'New Friend Request 👋',
+      message: `${sender.name} (${newRequest.senderUsername}) sent you a friend request.`,
+      type: 'FRIEND_REQUEST',
+      link: '/contacts',
+      metadata: {
+        friendRequestId: newRequest.id,
+        senderId: sender.id,
+        senderName: sender.name,
+        senderUsername: newRequest.senderUsername,
+      },
+    });
+
+    this.save();
+    return { success: true, message: 'Friend request sent successfully.', request: newRequest };
+  }
+
+  public getFriendRequestById(id: string): StoredFriendRequest | undefined {
+    return (this.data.friendRequests || []).find(r => r.id === id);
+  }
+
+  public getPendingIncomingRequests(userId: string): StoredFriendRequest[] {
+    return (this.data.friendRequests || []).filter(r => r.receiverId === userId && r.status === 'PENDING');
+  }
+
+  public getSentRequests(userId: string): StoredFriendRequest[] {
+    return (this.data.friendRequests || []).filter(r => r.senderId === userId);
+  }
+
+  public acceptFriendRequest(requestId: string, userId: string): { success: boolean; message: string; friendRequest?: StoredFriendRequest } {
+    const req = this.getFriendRequestById(requestId);
+    if (!req) return { success: false, message: 'Friend request not found.' };
+    if (req.receiverId !== userId) return { success: false, message: 'You are not authorized to accept this friend request.' };
+    if (req.status !== 'PENDING') return { success: false, message: `This friend request has already been ${req.status.toLowerCase()}.` };
+
+    req.status = 'ACCEPTED';
+    req.updatedAt = new Date().toISOString();
+
+    this.addContact(req.senderId, req.receiverId);
+    this.addContact(req.receiverId, req.senderId);
+
+    const receiver = this.findUserById(userId);
+    const receiverName = receiver?.name || req.receiverName;
+    const receiverUsername = receiver?.username || req.receiverUsername;
+
+    this.createNotification({
+      userId: req.senderId,
+      title: 'Friend Request Accepted 🎉',
+      message: `${receiverName} (${receiverUsername}) accepted your friend request. You can now chat privately!`,
+      type: 'FRIEND_REQUEST',
+      link: '/contacts',
+      metadata: {
+        friendRequestId: req.id,
+        acceptedUserId: userId,
+      },
+    });
+
+    const notif = this.data.notifications.find(n => n.userId === userId && n.metadata?.friendRequestId === req.id);
+    if (notif) notif.isRead = true;
+
+    this.save();
+    return { success: true, message: 'Friend request accepted successfully.', friendRequest: req };
+  }
+
+  public declineFriendRequest(requestId: string, userId: string): { success: boolean; message: string } {
+    const req = this.getFriendRequestById(requestId);
+    if (!req) return { success: false, message: 'Friend request not found.' };
+    if (req.receiverId !== userId) return { success: false, message: 'You are not authorized to decline this friend request.' };
+    if (req.status !== 'PENDING') return { success: false, message: `This friend request has already been ${req.status.toLowerCase()}.` };
+
+    req.status = 'DECLINED';
+    req.updatedAt = new Date().toISOString();
+
+    const notif = this.data.notifications.find(n => n.userId === userId && n.metadata?.friendRequestId === req.id);
+    if (notif) notif.isRead = true;
+
+    this.save();
+    return { success: true, message: 'Friend request declined.' };
+  }
+
+  public addContact(userId: string, contactUserId: string, nickname?: string): StoredContact {
+    if (!this.data.contacts) this.data.contacts = [];
+    const existing = this.data.contacts.find(c => c.userId === userId && c.contactUserId === contactUserId);
+    if (existing) {
+      if (nickname) existing.nickname = nickname;
+      return existing;
+    }
+    const newContact: StoredContact = {
+      id: 'cnt_' + Math.random().toString(36).substring(2, 9),
+      userId,
+      contactUserId,
+      nickname,
+      createdAt: new Date().toISOString(),
+    };
+    this.data.contacts.push(newContact);
+    this.save();
+    return newContact;
+  }
+
+  public areFriends(userId1: string, userId2: string): boolean {
+    if (!userId1 || !userId2 || userId1 === userId2) return false;
+    return (this.data.contacts || []).some(c => c.userId === userId1 && c.contactUserId === userId2);
+  }
+
+  public getContactsForUser(userId: string): Array<{
+    contactRecordId: string;
+    user: { id: string; name: string; username: string; email: string; avatarUrl?: string };
+    addedAt: string;
+    nickname?: string;
+  }> {
+    if (!this.data.contacts) this.data.contacts = [];
+    const userContacts = this.data.contacts.filter(c => c.userId === userId);
+    const result = [];
+    for (const c of userContacts) {
+      const u = this.findUserById(c.contactUserId);
+      if (u) {
+        result.push({
+          contactRecordId: c.id,
+          user: {
+            id: u.id,
+            name: u.name,
+            username: u.username || this.generateUniqueUsername(u.name),
+            email: u.email,
+            avatarUrl: u.avatarUrl,
+          },
+          addedAt: c.createdAt,
+          nickname: c.nickname,
+        });
+      }
+    }
+    return result.sort((a, b) => a.user.name.localeCompare(b.user.name));
+  }
+
+  public removeContact(userId: string, contactUserId: string): boolean {
+    if (!this.data.contacts) this.data.contacts = [];
+    const initialLen = this.data.contacts.length;
+    this.data.contacts = this.data.contacts.filter(
+      c => !( (c.userId === userId && c.contactUserId === contactUserId) ||
+              (c.userId === contactUserId && c.contactUserId === userId) )
+    );
+    const changed = this.data.contacts.length !== initialLen;
+    if (changed) this.save();
+    return changed;
+  }
+
+  public getConversationId(userId1: string, userId2: string): string {
+    return [userId1, userId2].sort().join(':');
+  }
+
+  public getChatMessages(userId1: string, userId2: string): StoredChatMessage[] {
+    if (!this.data.chatMessages) this.data.chatMessages = [];
+    const convId = this.getConversationId(userId1, userId2);
+    const msgs = this.data.chatMessages.filter(m => m.conversationId === convId);
+
+    let readChanged = false;
+    for (const m of msgs) {
+      if (m.receiverId === userId1 && !m.isRead) {
+        m.isRead = true;
+        readChanged = true;
+      }
+    }
+    if (readChanged) {
+      this.save();
+    }
+
+    return msgs.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+  }
+
+  public sendTextMessage(senderId: string, receiverId: string, text: string): StoredChatMessage {
+    const sender = this.findUserById(senderId);
+    const receiver = this.findUserById(receiverId);
+    if (!sender || !receiver) throw new Error('User not found.');
+    if (!this.areFriends(senderId, receiverId)) {
+      throw new Error('You can only send private messages to accepted contacts.');
+    }
+
+    const convId = this.getConversationId(senderId, receiverId);
+    const msg: StoredChatMessage = {
+      id: 'msg_' + Math.random().toString(36).substring(2, 11),
+      conversationId: convId,
+      senderId: sender.id,
+      senderName: sender.name,
+      senderUsername: sender.username || this.generateUniqueUsername(sender.name),
+      senderAvatarUrl: sender.avatarUrl,
+      receiverId: receiver.id,
+      receiverName: receiver.name,
+      receiverUsername: receiver.username || this.generateUniqueUsername(receiver.name),
+      receiverAvatarUrl: receiver.avatarUrl,
+      type: 'TEXT',
+      text: text.trim(),
+      createdAt: new Date().toISOString(),
+      isRead: false,
+    };
+
+    if (!this.data.chatMessages) this.data.chatMessages = [];
+    this.data.chatMessages.push(msg);
+
+    this.createNotification({
+      userId: receiver.id,
+      title: `New Message from ${sender.name}`,
+      message: text.length > 80 ? text.substring(0, 77) + '...' : text,
+      type: 'MESSAGE',
+      link: `/contacts?chat=${sender.id}`,
+    });
+
+    this.save();
+    return msg;
+  }
+
+  public sendFileMessage(senderId: string, receiverId: string, attachment: StoredChatAttachment, isImage: boolean): StoredChatMessage {
+    const sender = this.findUserById(senderId);
+    const receiver = this.findUserById(receiverId);
+    if (!sender || !receiver) throw new Error('User not found.');
+    if (!this.areFriends(senderId, receiverId)) {
+      throw new Error('You can only send files to accepted contacts.');
+    }
+
+    const convId = this.getConversationId(senderId, receiverId);
+    const msg: StoredChatMessage = {
+      id: 'msg_' + Math.random().toString(36).substring(2, 11),
+      conversationId: convId,
+      senderId: sender.id,
+      senderName: sender.name,
+      senderUsername: sender.username || this.generateUniqueUsername(sender.name),
+      senderAvatarUrl: sender.avatarUrl,
+      receiverId: receiver.id,
+      receiverName: receiver.name,
+      receiverUsername: receiver.username || this.generateUniqueUsername(receiver.name),
+      receiverAvatarUrl: receiver.avatarUrl,
+      type: isImage ? 'IMAGE' : 'FILE',
+      attachment,
+      createdAt: new Date().toISOString(),
+      isRead: false,
+    };
+
+    if (!this.data.chatMessages) this.data.chatMessages = [];
+    this.data.chatMessages.push(msg);
+
+    this.createNotification({
+      userId: receiver.id,
+      title: `New File from ${sender.name}`,
+      message: `${sender.name} sent you ${isImage ? 'an image' : 'a file'}: ${attachment.originalName}`,
+      type: 'MESSAGE',
+      link: `/contacts?chat=${sender.id}`,
+    });
+
+    this.save();
+    return msg;
+  }
+
+  public sendReceiptMessage(senderId: string, receiverId: string, receipt: StoredChatReceipt): StoredChatMessage {
+    const sender = this.findUserById(senderId);
+    const receiver = this.findUserById(receiverId);
+    if (!sender || !receiver) throw new Error('User not found.');
+    if (!this.areFriends(senderId, receiverId)) {
+      throw new Error('You can only share receipts with accepted contacts.');
+    }
+
+    const convId = this.getConversationId(senderId, receiverId);
+    const msg: StoredChatMessage = {
+      id: 'msg_' + Math.random().toString(36).substring(2, 11),
+      conversationId: convId,
+      senderId: sender.id,
+      senderName: sender.name,
+      senderUsername: sender.username || this.generateUniqueUsername(sender.name),
+      senderAvatarUrl: sender.avatarUrl,
+      receiverId: receiver.id,
+      receiverName: receiver.name,
+      receiverUsername: receiver.username || this.generateUniqueUsername(receiver.name),
+      receiverAvatarUrl: receiver.avatarUrl,
+      type: 'RECEIPT',
+      receipt,
+      createdAt: new Date().toISOString(),
+      isRead: false,
+    };
+
+    if (!this.data.chatMessages) this.data.chatMessages = [];
+    this.data.chatMessages.push(msg);
+
+    this.createNotification({
+      userId: receiver.id,
+      title: `Payment Receipt Shared by ${sender.name}`,
+      message: `${sender.name} shared a settlement receipt for ${receipt.currency} ${receipt.amount.toLocaleString()} (${receipt.groupName}).`,
+      type: 'PAYMENT',
+      link: `/contacts?chat=${sender.id}`,
+    });
+
+    this.save();
+    return msg;
+  }
+
+  public getAttachmentMessage(attachmentId: string): StoredChatMessage | undefined {
+    return (this.data.chatMessages || []).find(m => m.attachment?.id === attachmentId);
+  }
+
+  public getUnreadMessageCount(userId: string): number {
+    return (this.data.chatMessages || []).filter(m => m.receiverId === userId && !m.isRead).length;
+  }
+
   public initDemoDataIfNeeded(force: boolean = false): void {
     if (!force && this.data.users.length > 0) {
       return;
@@ -817,11 +1294,12 @@ class Database {
     const salt = bcrypt.genSaltSync(10);
     const demoPasswordHash = bcrypt.hashSync('Password@123', salt);
 
-    // Create realistic users
     const rahul: StoredUser = {
       id: 'usr_rahul',
       name: 'Rahul Sharma',
+      username: '@rahulsharma_101',
       email: 'rahul@example.com',
+      gender: 'male',
       passwordHash: demoPasswordHash,
       isEmailVerified: true,
       createdAt: new Date(Date.now() - 30 * 86400000).toISOString(),
@@ -831,7 +1309,9 @@ class Database {
     const priya: StoredUser = {
       id: 'usr_priya',
       name: 'Priya Patel',
+      username: '@priyapatel_204',
       email: 'priya@example.com',
+      gender: 'female',
       passwordHash: demoPasswordHash,
       avatarUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80',
       isEmailVerified: true,
@@ -842,7 +1322,9 @@ class Database {
     const aman: StoredUser = {
       id: 'usr_aman',
       name: 'Aman Gupta',
+      username: '@amangupta_305',
       email: 'aman@example.com',
+      gender: 'male',
       passwordHash: demoPasswordHash,
       avatarUrl: 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=150&auto=format&fit=crop&q=80',
       isEmailVerified: true,
@@ -853,7 +1335,9 @@ class Database {
     const sneha: StoredUser = {
       id: 'usr_sneha',
       name: 'Sneha Roy',
+      username: '@sneharoy_402',
       email: 'sneha@example.com',
+      gender: 'female',
       passwordHash: demoPasswordHash,
       avatarUrl: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&auto=format&fit=crop&q=80',
       isEmailVerified: true,
@@ -863,7 +1347,6 @@ class Database {
 
     this.data.users = [rahul, priya, aman, sneha];
 
-    // Groups
     const goaTrip: StoredGroup = {
       id: 'grp_goa2026',
       name: 'Goa Trip 2026',
@@ -915,7 +1398,6 @@ class Database {
 
     this.data.groups = [goaTrip, collegeFriends, roommates];
 
-    // Expenses
     const exp1: StoredExpense = {
       id: 'exp_1',
       groupId: 'grp_goa2026',
@@ -1025,7 +1507,6 @@ class Database {
 
     this.data.expenses = [exp1, exp2, exp3, exp4, exp5];
 
-    // Historical Payments & Transactions
     const pay1: StoredPayment = {
       id: 'pay_demo_1',
       settlementId: 'set_demo_1',
@@ -1045,7 +1526,6 @@ class Database {
 
     this.data.payments = [pay1];
 
-    // Notifications
     this.data.notifications = [
       {
         id: 'notif_1',
@@ -1076,6 +1556,107 @@ class Database {
         isRead: true,
         createdAt: new Date(Date.now() - 3 * 86400000).toISOString(),
         link: '/analytics',
+      }
+    ];
+
+    this.data.contacts = [
+      { id: 'cnt_1', userId: rahul.id, contactUserId: priya.id, createdAt: new Date(Date.now() - 25 * 86400000).toISOString() },
+      { id: 'cnt_2', userId: priya.id, contactUserId: rahul.id, createdAt: new Date(Date.now() - 25 * 86400000).toISOString() },
+      { id: 'cnt_3', userId: rahul.id, contactUserId: aman.id, createdAt: new Date(Date.now() - 20 * 86400000).toISOString() },
+      { id: 'cnt_4', userId: aman.id, contactUserId: rahul.id, createdAt: new Date(Date.now() - 20 * 86400000).toISOString() },
+    ];
+
+    const demoReqId = 'freq_demo_sneha';
+    this.data.friendRequests = [
+      {
+        id: demoReqId,
+        senderId: sneha.id,
+        senderName: sneha.name,
+        senderUsername: sneha.username!,
+        senderAvatarUrl: sneha.avatarUrl,
+        receiverId: rahul.id,
+        receiverName: rahul.name,
+        receiverUsername: rahul.username!,
+        status: 'PENDING',
+        createdAt: new Date(Date.now() - 2 * 3600000).toISOString(),
+        updatedAt: new Date(Date.now() - 2 * 3600000).toISOString(),
+      }
+    ];
+
+    this.data.notifications.push({
+      id: 'notif_demo_freq',
+      userId: rahul.id,
+      title: 'New Friend Request 👋',
+      message: `${sneha.name} (${sneha.username}) sent you a friend request.`,
+      type: 'FRIEND_REQUEST',
+      isRead: false,
+      createdAt: new Date(Date.now() - 2 * 3600000).toISOString(),
+      link: '/contacts',
+      metadata: {
+        friendRequestId: demoReqId,
+        senderId: sneha.id,
+        senderName: sneha.name,
+        senderUsername: sneha.username,
+      },
+    });
+
+    const rahulPriyaConv = this.getConversationId(rahul.id, priya.id);
+    this.data.chatMessages = [
+      {
+        id: 'msg_demo_1',
+        conversationId: rahulPriyaConv,
+        senderId: priya.id,
+        senderName: priya.name,
+        senderUsername: priya.username!,
+        senderAvatarUrl: priya.avatarUrl,
+        receiverId: rahul.id,
+        receiverName: rahul.name,
+        receiverUsername: rahul.username!,
+        type: 'TEXT',
+        text: 'Hey Rahul! Did you receive the settlement for Beach Resort Villa Booking?',
+        createdAt: new Date(Date.now() - 36 * 3600000).toISOString(),
+        isRead: true,
+      },
+      {
+        id: 'msg_demo_2',
+        conversationId: rahulPriyaConv,
+        senderId: rahul.id,
+        senderName: rahul.name,
+        senderUsername: rahul.username!,
+        receiverId: priya.id,
+        receiverName: priya.name,
+        receiverUsername: priya.username!,
+        receiverAvatarUrl: priya.avatarUrl,
+        type: 'TEXT',
+        text: 'Yes! All confirmed on PayPal Sandbox. Here is the verified payment receipt for your records:',
+        createdAt: new Date(Date.now() - 35 * 3600000).toISOString(),
+        isRead: true,
+      },
+      {
+        id: 'msg_demo_3',
+        conversationId: rahulPriyaConv,
+        senderId: rahul.id,
+        senderName: rahul.name,
+        senderUsername: rahul.username!,
+        receiverId: priya.id,
+        receiverName: priya.name,
+        receiverUsername: priya.username!,
+        receiverAvatarUrl: priya.avatarUrl,
+        type: 'RECEIPT',
+        receipt: {
+          paymentId: pay1.id,
+          reference: pay1.reference,
+          amount: pay1.amount,
+          currency: pay1.currency,
+          groupName: 'Goa Trip 2026',
+          date: pay1.createdAt,
+          status: pay1.status,
+          payerName: pay1.payerName,
+          recipientName: pay1.recipientName,
+          receiptNumber: pay1.metadata?.receiptNumber || 'REC-2026-88492',
+        },
+        createdAt: new Date(Date.now() - 34 * 3600000).toISOString(),
+        isRead: true,
       }
     ];
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useNotifications } from '../../context/NotificationContext';
@@ -14,7 +14,10 @@ import {
   LogOut,
   Wallet,
   Sparkles,
-  RefreshCcw,
+  Contact,
+  Copy,
+  Check,
+  X,
 } from 'lucide-react';
 import { api } from '../../services/api';
 
@@ -22,13 +25,15 @@ export const Sidebar: React.FC<{ isOpen?: boolean; onClose?: () => void }> = ({
   isOpen = false,
   onClose,
 }) => {
-  const { user, logout, demoLogin } = useAuth();
+  const { user, logout } = useAuth();
   const { unreadCount } = useNotifications();
   const navigate = useNavigate();
+  const [copied, setCopied] = useState(false);
 
   const navItems = [
     { label: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
     { label: 'My Groups', path: '/groups', icon: Users },
+    { label: 'Contacts', path: '/contacts', icon: Contact },
     { label: 'AI Assistant', path: '/ai-assistant', icon: Bot, badge: 'AI' },
     { label: 'Settlements', path: '/settlements', icon: Scale },
     { label: 'Transactions', path: '/transactions', icon: Receipt },
@@ -37,38 +42,44 @@ export const Sidebar: React.FC<{ isOpen?: boolean; onClose?: () => void }> = ({
     { label: 'Profile', path: '/profile', icon: UserCheck },
   ];
 
-  const handleResetDemo = async () => {
-    if (window.confirm('Reset demo data to initial hackathon state?')) {
-      await api.resetDemoData();
-      window.location.reload();
-    }
-  };
-
   return (
-    <aside
-      className={`fixed inset-y-0 left-0 z-40 w-64 bg-white dark:bg-[#0B0B0B] border-r border-[#D8E9FA] dark:border-[#303030] flex flex-col justify-between transition-transform duration-300 md:translate-x-0 ${
-        isOpen ? 'translate-x-0' : '-translate-x-full'
-      }`}
-    >
-      <div>
-        {/* Top Logo */}
-        <div className="h-20 px-6 flex items-center justify-between border-b border-[#D8E9FA]/60 dark:border-[#303030]">
-          <NavLink to="/dashboard" className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#1685F8] to-[#0E6FD8] text-white flex items-center justify-center shadow-clay-btn">
-              <Wallet className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <span className="font-extrabold text-lg tracking-tight text-[#10274A] dark:text-[#F5F5F5]">
-                SplitSmart<span className="text-[#1685F8] dark:text-[#2589FF]"> AI</span>
-              </span>
-              <span className="block text-[10px] text-[#64748B] dark:text-[#737373] font-medium tracking-wide">
-                Fintech Platform
-              </span>
-            </div>
-          </NavLink>
-        </div>
+    <>
+      {isOpen && (
+        <div
+          onClick={onClose}
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-30 md:hidden transition-opacity"
+        />
+      )}
+      <aside
+        className={`fixed inset-y-0 left-0 z-40 w-64 bg-white dark:bg-[#0B0B0B] border-r border-[#D8E9FA] dark:border-[#303030] flex flex-col justify-between transition-transform duration-300 md:translate-x-0 ${
+          isOpen ? 'translate-x-0' : '-translate-x-full'
+        }`}
+      >
+        <div>
+          <div className="h-20 px-6 flex items-center justify-between border-b border-[#D8E9FA]/60 dark:border-[#303030]">
+            <NavLink to="/dashboard" onClick={onClose} className="flex items-center space-x-3">
+              <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#1685F8] to-[#0E6FD8] text-white flex items-center justify-center shadow-clay-btn">
+                <Wallet className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <span className="font-extrabold text-lg tracking-tight text-[#10274A] dark:text-[#F5F5F5]">
+                  SplitSmart<span className="text-[#1685F8] dark:text-[#2589FF]"> AI</span>
+                </span>
+                <span className="block text-[10px] text-[#64748B] dark:text-[#737373] font-medium tracking-wide">
+                  Fintech Platform
+                </span>
+              </div>
+            </NavLink>
+            <button
+              type="button"
+              onClick={onClose}
+              className="md:hidden p-2 text-[#64748B] hover:text-[#10274A] dark:text-[#A1A1AA] dark:hover:text-[#F5F5F5] rounded-xl hover:bg-slate-100 dark:hover:bg-[#141414]"
+              title="Close menu"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
 
-        {/* Navigation Links */}
         <nav className="p-4 space-y-1.5">
           {navItems.map(item => {
             const Icon = item.icon;
@@ -105,25 +116,7 @@ export const Sidebar: React.FC<{ isOpen?: boolean; onClose?: () => void }> = ({
         </nav>
       </div>
 
-      {/* Bottom Profile & Actions Card */}
       <div className="p-4 border-t border-[#D8E9FA]/60 dark:border-[#303030] space-y-3">
-        {/* Demo reset / reload */}
-        <div className="flex items-center justify-between px-2 text-[11px] text-[#64748B] dark:text-[#737373]">
-          <span className="flex items-center space-x-1">
-            <span className="w-2 h-2 rounded-full bg-[#16B890] dark:bg-[#34D399] animate-pulse" />
-            <span>Sandbox Mode</span>
-          </span>
-          <button
-            onClick={handleResetDemo}
-            className="hover:text-[#1685F8] dark:hover:text-[#2589FF] font-medium flex items-center space-x-1"
-            title="Reset sample groups and expenses"
-          >
-            <RefreshCcw className="w-3 h-3" />
-            <span>Reset Demo</span>
-          </button>
-        </div>
-
-        {/* User Card */}
         <div className="p-3 rounded-2xl bg-[#F1F9FF] dark:bg-[#101010] border border-[#D8E9FA] dark:border-[#303030] flex items-center justify-between">
           <div className="flex items-center space-x-2.5 truncate">
             <div
@@ -136,8 +129,23 @@ export const Sidebar: React.FC<{ isOpen?: boolean; onClose?: () => void }> = ({
               <div className="text-xs font-bold text-[#10274A] dark:text-[#F5F5F5] truncate">
                 {user?.name || 'Rahul Sharma'}
               </div>
-              <div className="text-[10px] text-[#64748B] dark:text-[#737373] truncate">
-                {user?.email || 'user@example.com'}
+              <div className="flex items-center space-x-1 text-[10px] text-[#1685F8] dark:text-[#2589FF] font-mono truncate">
+                <span className="truncate">{user?.username || '@user'}</span>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (user?.username) {
+                      navigator.clipboard.writeText(user.username);
+                      setCopied(true);
+                      setTimeout(() => setCopied(false), 2000);
+                    }
+                  }}
+                  className="hover:opacity-80 shrink-0 text-[#64748B] dark:text-[#737373] hover:text-[#1685F8] dark:hover:text-[#2589FF]"
+                  title="Copy username"
+                >
+                  {copied ? <Check className="w-2.5 h-2.5 text-emerald-500" /> : <Copy className="w-2.5 h-2.5" />}
+                </button>
               </div>
             </div>
           </div>
@@ -154,5 +162,6 @@ export const Sidebar: React.FC<{ isOpen?: boolean; onClose?: () => void }> = ({
         </div>
       </div>
     </aside>
+    </>
   );
 };

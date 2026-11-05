@@ -17,7 +17,6 @@ import {
 export const ForgotPasswordPage: React.FC = () => {
   const navigate = useNavigate();
 
-  // Steps: 1 = Email, 2 = Enter OTP, 3 = New Password, 4 = Success
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
   const [email, setEmail] = useState('');
   const [challengeId, setChallengeId] = useState('');
@@ -37,7 +36,6 @@ export const ForgotPasswordPage: React.FC = () => {
     }
   }, [resendTimer]);
 
-  // Step 1: Request OTP
   const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage('');
@@ -63,7 +61,6 @@ export const ForgotPasswordPage: React.FC = () => {
     }
   };
 
-  // Step 2: Handle OTP input
   const handleOtpChange = (index: number, val: string) => {
     if (!/^\d*$/.test(val)) return;
     const next = [...otpDigits];
@@ -125,7 +122,6 @@ export const ForgotPasswordPage: React.FC = () => {
     }
   };
 
-  // Step 3: New Password Submit
   const handleNewPasswordSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage('');
@@ -153,7 +149,6 @@ export const ForgotPasswordPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#F1F9FF] dark:bg-[#080808] text-[#10274A] dark:text-[#F5F5F5] flex flex-col justify-between selection:bg-[#BFE9FF] selection:text-[#10274A] dark:selection:bg-[#2589FF]/30 dark:selection:text-[#F5F5F5] transition-colors">
-      {/* Top Header */}
       <header className="px-6 sm:px-12 py-6 flex items-center justify-between">
         <Link to="/" className="flex items-center space-x-3">
           <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#1685F8] to-[#0E6FD8] text-white flex items-center justify-center shadow-clay-btn">
@@ -175,10 +170,8 @@ export const ForgotPasswordPage: React.FC = () => {
         </div>
       </header>
 
-      {/* Main Form Center */}
       <main className="max-w-xl mx-auto px-4 py-8 sm:py-14 w-full flex-1 flex items-center justify-center">
         <div className="w-full bg-white dark:bg-[#101010] rounded-[28px] p-8 sm:p-10 shadow-clay-card dark:shadow-none border border-[#D8E9FA] dark:border-[#303030] transition-colors">
-          {/* STEP 1: ENTER EMAIL */}
           {step === 1 && (
             <div>
               <div className="text-center mb-6">
@@ -228,7 +221,6 @@ export const ForgotPasswordPage: React.FC = () => {
             </div>
           )}
 
-          {/* STEP 2: VERIFY OTP */}
           {step === 2 && (
             <div>
               <div className="text-center mb-6">
@@ -314,7 +306,6 @@ export const ForgotPasswordPage: React.FC = () => {
             </div>
           )}
 
-          {/* STEP 3: CREATE NEW PASSWORD */}
           {step === 3 && (
             <div>
               <div className="text-center mb-6">
@@ -378,7 +369,6 @@ export const ForgotPasswordPage: React.FC = () => {
             </div>
           )}
 
-          {/* STEP 4: SUCCESS CONFIRMATION */}
           {step === 4 && (
             <div className="text-center py-4">
               <div className="w-16 h-16 rounded-full bg-[#DDF8EE] dark:bg-[#141414] text-[#16B890] dark:text-[#34D399] dark:border dark:border-[#303030] inline-flex items-center justify-center mb-4">

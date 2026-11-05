@@ -25,7 +25,6 @@ export const CheckoutPage: React.FC = () => {
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  // Settlement details from URL
   const groupId = searchParams.get('groupId') || 'grp_goa2026';
   const groupName = searchParams.get('groupName') || 'Goa Trip 2026';
   const recipientId = searchParams.get('recipientId') || 'usr_rahul';
@@ -36,34 +35,28 @@ export const CheckoutPage: React.FC = () => {
 
   const amount = parseFloat(rawAmount) || 1200;
 
-  // Payment method selection
   const [selectedMethod, setSelectedMethod] = useState<'CREDIT_CARD' | 'DEBIT_CARD' | 'PAYPAL' | 'GOOGLE_PAY'>('CREDIT_CARD');
 
-  // Card form states
   const [cardholderName, setCardholderName] = useState(user?.name || 'Rahul Sharma');
   const [cardNumber, setCardNumber] = useState('4242 4242 4242 4242');
   const [expiry, setExpiry] = useState('09/29');
   const [cvv, setCvv] = useState('884');
   const [isFlipped, setIsFlipped] = useState(false);
 
-  // Payment animation state machine
   const [paymentState, setPaymentState] = useState<PaymentState>('IDLE');
   const [errorMessage, setErrorMessage] = useState('');
   const [successReference, setSuccessReference] = useState('');
 
-  // Receipt Modal State
   const [activeReceipt, setActiveReceipt] = useState<ReceiptData | null>(null);
   const [isReceiptOpen, setIsReceiptOpen] = useState(false);
   const [isDeletingTrip, setIsDeletingTrip] = useState(false);
 
-  // Format card number with spaces as user types
   const handleCardNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const raw = e.target.value.replace(/\D/g, '').slice(0, 16);
     const formatted = raw.replace(/(\d{4})(?=\d)/g, '$1 ');
     setCardNumber(formatted);
   };
 
-  // Format expiry MM/YY
   const handleExpiryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let raw = e.target.value.replace(/\D/g, '').slice(0, 4);
     if (raw.length >= 2) {
@@ -72,7 +65,6 @@ export const CheckoutPage: React.FC = () => {
     setExpiry(raw);
   };
 
-  // Card payment submit
   const handleCardPayment = async (e: React.FormEvent) => {
     e.preventDefault();
     if (paymentState === 'PROCESSING' || paymentState === 'VALIDATING') return;
@@ -119,7 +111,6 @@ export const CheckoutPage: React.FC = () => {
     }, 1200);
   };
 
-  // PayPal Sandbox flow
   const handlePayPalPayment = async () => {
     setPaymentState('PROCESSING');
     setErrorMessage('');
@@ -171,7 +162,6 @@ export const CheckoutPage: React.FC = () => {
     }
   };
 
-  // Google Pay settlement flow
   const handleGooglePayPayment = async () => {
     setPaymentState('VALIDATING');
     setErrorMessage('');
@@ -209,7 +199,6 @@ export const CheckoutPage: React.FC = () => {
     }, 1200);
   };
 
-  // Delete trip after payment is completed
   const handleDeleteTripAfterPayment = async () => {
     if (!groupId) return;
     if (window.confirm(`Are you sure you want to permanently delete and close "${groupName}"? All debts in this trip are settled.`)) {
@@ -234,7 +223,6 @@ export const CheckoutPage: React.FC = () => {
         <Topbar onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
 
         <main className="p-4 sm:p-8 space-y-6 max-w-5xl w-full mx-auto">
-          {/* Back link */}
           <Link
             to="/settlements"
             className="text-xs font-bold text-[#64748B] dark:text-[#A1A1AA] hover:text-[#1685F8] dark:hover:text-[#2589FF] flex items-center space-x-1"
@@ -243,7 +231,6 @@ export const CheckoutPage: React.FC = () => {
             <span>Back to Settlements</span>
           </Link>
 
-          {/* Checkout Header */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
               <h1 className="text-2xl sm:text-3xl font-black text-[#10274A] dark:text-[#F5F5F5] tracking-tight">
@@ -260,11 +247,8 @@ export const CheckoutPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Main Checkout Layout Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            {/* ================= LEFT SIDE: 3D CARD ANIMATION & PREVIEW ================= */}
             <div className="lg:col-span-6 flex flex-col items-center space-y-6">
-              {/* Payment Summary Box */}
               <div className="w-full clay-card p-6 bg-white dark:bg-[#101010] dark:border dark:border-[#303030] space-y-3">
                 <div className="flex justify-between items-center text-xs text-[#64748B] dark:text-[#A1A1AA]">
                   <span>Intended Recipient</span>
@@ -282,7 +266,6 @@ export const CheckoutPage: React.FC = () => {
                 </div>
               </div>
 
-              {/* 3D Claymorphic Animated Card Component */}
               <div className="w-full flex justify-center">
                 <Card3D
                   cardholderName={cardholderName}
@@ -298,16 +281,13 @@ export const CheckoutPage: React.FC = () => {
                 />
               </div>
 
-              {/* CVV Interactive Flip Hint */}
               <p className="text-[11px] text-[#64748B] dark:text-[#737373] text-center">
                 💡 Entering the CVV field automatically rotates the 3D card to view the security signature strip.
               </p>
             </div>
 
-            {/* ================= RIGHT SIDE: PAYMENT METHOD SELECTOR & FORM ================= */}
             <div className="lg:col-span-6 space-y-6">
               <div className="clay-card p-6 sm:p-8 bg-white dark:bg-[#101010] dark:border dark:border-[#303030] space-y-6">
-                {/* Payment Method Tabs */}
                 <div>
                   <label className="block text-xs font-bold text-[#10274A] dark:text-[#F5F5F5] mb-2">
                     Select Payment Method
@@ -386,7 +366,6 @@ export const CheckoutPage: React.FC = () => {
                   </div>
                 </div>
 
-                {/* FORM FOR CREDIT & DEBIT CARD */}
                 {(selectedMethod === 'CREDIT_CARD' || selectedMethod === 'DEBIT_CARD') && (
                   <form onSubmit={handleCardPayment} className="space-y-4">
                     <div>
@@ -477,7 +456,6 @@ export const CheckoutPage: React.FC = () => {
                   </form>
                 )}
 
-                {/* PAYPAL SANDBOX FLOW */}
                 {selectedMethod === 'PAYPAL' && (
                   <div className="p-6 rounded-2xl bg-sky-50/50 dark:bg-[#0D0D0D] border border-sky-100 dark:border-[#303030] text-center space-y-4">
                     <div className="w-14 h-14 rounded-2xl bg-[#0079C1] text-white flex items-center justify-center mx-auto shadow-md font-black text-xl italic">
@@ -523,7 +501,6 @@ export const CheckoutPage: React.FC = () => {
                   </div>
                 )}
 
-                {/* GOOGLE PAY (GPAY) FLOW */}
                 {selectedMethod === 'GOOGLE_PAY' && (
                   <div className="p-6 rounded-2xl bg-white dark:bg-[#0D0D0D] border border-[#D8E9FA] dark:border-[#303030] text-center space-y-4">
                     <div className="w-16 h-12 rounded-xl bg-black text-white flex items-center justify-center mx-auto shadow-md">
@@ -569,7 +546,6 @@ export const CheckoutPage: React.FC = () => {
                   </div>
                 )}
 
-                {/* Cancelled State Box */}
                 {paymentState === 'CANCELLED' && (
                   <div className="p-4 rounded-2xl bg-slate-50 dark:bg-[#141414] border border-slate-200 dark:border-[#303030] text-center space-y-2">
                     <p className="text-xs text-[#64748B] dark:text-[#A1A1AA]">
@@ -588,7 +564,6 @@ export const CheckoutPage: React.FC = () => {
                   </div>
                 )}
 
-                {/* Cancel Action when Idle */}
                 {paymentState === 'IDLE' && (
                   <div className="text-center pt-1">
                     <button
@@ -602,7 +577,6 @@ export const CheckoutPage: React.FC = () => {
                 )}
               </div>
 
-              {/* Success Next Steps & Receipt/Delete Options */}
               {paymentState === 'SUCCESS' && (
                 <div className="clay-card p-6 bg-[#DDF8EE] dark:bg-[#0D1F17] border-[#16B890]/40 dark:border-[#34D399]/40 space-y-4">
                   <div className="flex items-center space-x-3">
@@ -617,7 +591,6 @@ export const CheckoutPage: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* Actions: View Receipt + Delete Trip */}
                   <div className="pt-2 flex flex-wrap gap-2.5">
                     <button
                       type="button"
@@ -652,7 +625,6 @@ export const CheckoutPage: React.FC = () => {
         </main>
       </div>
 
-      {/* Official Printable Settlement Receipt Modal */}
       <ReceiptModal
         isOpen={isReceiptOpen}
         onClose={() => setIsReceiptOpen(false)}

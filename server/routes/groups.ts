@@ -7,7 +7,6 @@ import { emailService } from '../services/email';
 const router = Router();
 router.use(authenticateToken);
 
-// 1. GET ALL GROUPS FOR USER
 router.get('/', (req: AuthenticatedRequest, res: Response): void => {
   try {
     const userId = req.user!.id;
@@ -29,7 +28,6 @@ router.get('/', (req: AuthenticatedRequest, res: Response): void => {
   }
 });
 
-// 2. CREATE A NEW GROUP
 router.post('/', (req: AuthenticatedRequest, res: Response): void => {
   try {
     const { name, description, category, currency, initialMembers } = req.body;
@@ -48,7 +46,6 @@ router.post('/', (req: AuthenticatedRequest, res: Response): void => {
       initialMembers: initialMembers || [],
     });
 
-    // Notify user
     db.createNotification({
       userId: req.user!.id,
       title: 'Group Created',
@@ -70,7 +67,6 @@ router.post('/', (req: AuthenticatedRequest, res: Response): void => {
   }
 });
 
-// 3. GET SINGLE GROUP DETAILS WITH BALANCES AND SETTLEMENTS
 router.get('/:id', (req: AuthenticatedRequest, res: Response): void => {
   try {
     const groupId = (Array.isArray(req.params.id) ? req.params.id[0] : req.params.id) as string;
@@ -81,7 +77,6 @@ router.get('/:id', (req: AuthenticatedRequest, res: Response): void => {
       return;
     }
 
-    // Verify membership authorization
     const userEmail = req.user!.email.toLowerCase().trim();
     const isMember = group.members.some(m => m.userId === req.user!.id || (m.email && m.email.toLowerCase().trim() === userEmail));
     if (!isMember) {
@@ -93,7 +88,6 @@ router.get('/:id', (req: AuthenticatedRequest, res: Response): void => {
     const expenses = db.getExpensesForGroup(groupId);
     const settlements = db.getSettlementsForGroup(groupId);
 
-    // Compute balances & optimized settlements
     const balances = SettlementEngine.calculateBalances(group, expenses, settlements);
     const optimizedTransfers = SettlementEngine.optimizeTransfers(balances, group.currency);
 
@@ -131,7 +125,6 @@ router.get('/:id', (req: AuthenticatedRequest, res: Response): void => {
   }
 });
 
-// 4. ADD / INVITE MEMBER TO GROUP WITH EMAIL INVITATION
 router.post('/:id/members', async (req: AuthenticatedRequest, res: Response): Promise<void> => {
   try {
     const groupId = (Array.isArray(req.params.id) ? req.params.id[0] : req.params.id) as string;
@@ -154,10 +147,8 @@ router.post('/:id/members', async (req: AuthenticatedRequest, res: Response): Pr
       return;
     }
 
-    // Generate unique invitation token & magic join link
     const invitation = db.createGroupInvitation(groupId, group.name, req.user!.name, email);
-    
-    // Automatically use configured public URL (e.g. from tunnel or domain), clientBaseUrl, browser origin/referer, or fallback to localhost
+
     const clientOrigin = (req.headers.origin as string) || (req.headers.referer ? new URL(req.headers.referer).origin : '');
     const clientBaseUrl = typeof req.body.clientBaseUrl === 'string' && req.body.clientBaseUrl.trim() !== ''
       ? req.body.clientBaseUrl.trim().replace(/\/$/, '')
@@ -168,7 +159,6 @@ router.post('/:id/members', async (req: AuthenticatedRequest, res: Response): Pr
 
     const joinUrl = `${baseUrl}/join-group?token=${invitation.token}&groupId=${groupId}`;
 
-    // Send invitation email to friend's mailbox
     const emailResult = await emailService.sendGroupInvitation({
       to: email.trim(),
       memberName: name.trim(),
@@ -177,7 +167,6 @@ router.post('/:id/members', async (req: AuthenticatedRequest, res: Response): Pr
       joinUrl,
     });
 
-    // If invited user already exists, also send in-app notification
     const existingUser = db.findUserByEmail(email);
     if (existingUser) {
       db.createNotification({
@@ -203,7 +192,6 @@ router.post('/:id/members', async (req: AuthenticatedRequest, res: Response): Pr
   }
 });
 
-// 5. ACCEPT GROUP INVITATION (Allows friend to join from any device)
 router.post('/join', (req: AuthenticatedRequest, res: Response): void => {
   try {
     const { token } = req.body;
@@ -228,7 +216,6 @@ router.post('/join', (req: AuthenticatedRequest, res: Response): void => {
   }
 });
 
-// 6. DELETE TRIP / GROUP (Option after payments are done)
 router.delete('/:id', (req: AuthenticatedRequest, res: Response): void => {
   try {
     const groupId = (Array.isArray(req.params.id) ? req.params.id[0] : req.params.id) as string;
@@ -248,7 +235,6 @@ router.delete('/:id', (req: AuthenticatedRequest, res: Response): void => {
   }
 });
 
-// 7. SET OR UPDATE GROUP BUDGET
 router.put('/:id/budget', (req: AuthenticatedRequest, res: Response): void => {
   try {
     const groupId = (Array.isArray(req.params.id) ? req.params.id[0] : req.params.id) as string;

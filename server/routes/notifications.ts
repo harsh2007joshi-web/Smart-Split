@@ -8,7 +8,6 @@ import { AuthenticatedRequest, authenticateToken } from '../middleware/auth';
 const router = Router();
 router.use(authenticateToken);
 
-// GET USER NOTIFICATIONS
 router.get('/', (req: AuthenticatedRequest, res: Response): void => {
   try {
     const userId = req.user!.id;
@@ -24,7 +23,6 @@ router.get('/', (req: AuthenticatedRequest, res: Response): void => {
   }
 });
 
-// CHECK EMAIL API CONNECTION STATUS
 router.get('/email-status', (req: AuthenticatedRequest, res: Response): void => {
   const status = emailService.getProviderStatus();
   res.json({
@@ -34,7 +32,6 @@ router.get('/email-status', (req: AuthenticatedRequest, res: Response): void => 
   });
 });
 
-// UPDATE / CONFIGURE PUBLIC APP_URL AT RUNTIME & IN .ENV
 router.post('/set-public-url', (req: AuthenticatedRequest, res: Response): void => {
   try {
     const { appUrl } = req.body;
@@ -66,7 +63,6 @@ router.post('/set-public-url', (req: AuthenticatedRequest, res: Response): void 
   }
 });
 
-// SEND DIRECT LINK TO FRIEND'S EMAIL ADDRESS
 router.post('/share-link', async (req: AuthenticatedRequest, res: Response): Promise<void> => {
   try {
     const { email, friendName, targetUrl, note } = req.body;
@@ -105,7 +101,6 @@ router.post('/share-link', async (req: AuthenticatedRequest, res: Response): Pro
   }
 });
 
-// MARK SINGLE NOTIFICATION READ
 router.put('/:id/read', (req: AuthenticatedRequest, res: Response): void => {
   try {
     const notifId = (Array.isArray(req.params.id) ? req.params.id[0] : req.params.id) as string;
@@ -116,7 +111,6 @@ router.put('/:id/read', (req: AuthenticatedRequest, res: Response): void => {
   }
 });
 
-// MARK ALL READ
 router.post('/read-all', (req: AuthenticatedRequest, res: Response): void => {
   try {
     db.markAllNotificationsRead(req.user!.id);

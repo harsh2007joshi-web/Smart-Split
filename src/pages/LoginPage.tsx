@@ -16,7 +16,7 @@ import {
 } from 'lucide-react';
 
 export const LoginPage: React.FC = () => {
-  const { login, demoLogin } = useAuth();
+  const { login } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const returnTo = searchParams.get('returnTo');
@@ -52,21 +52,8 @@ export const LoginPage: React.FC = () => {
     }
   };
 
-  const handleDemoSignIn = async () => {
-    setIsLoading(true);
-    try {
-      await demoLogin();
-      navigate(returnTo || '/dashboard');
-    } catch (err: any) {
-      setErrorMessage('Could not initialize demo login. Please try again.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   return (
     <div className="min-h-screen bg-[#F1F9FF] dark:bg-[#080808] text-[#10274A] dark:text-[#F5F5F5] flex flex-col justify-between selection:bg-[#BFE9FF] selection:text-[#10274A] dark:selection:bg-[#2589FF]/30 dark:selection:text-[#F5F5F5] transition-colors">
-      {/* Top Header with Brand Mark at Upper Left & ThemeToggle at Upper Right */}
       <header className="px-6 sm:px-12 py-6 flex items-center justify-between">
         <Link to="/" className="flex items-center space-x-3 group">
           <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#1685F8] to-[#0E6FD8] text-white flex items-center justify-center shadow-clay-btn group-hover:scale-105 transition-transform">
@@ -90,17 +77,13 @@ export const LoginPage: React.FC = () => {
         </div>
       </header>
 
-      {/* Main Container: 2-Column Split matching Reference 2 */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8 flex-1 flex items-center">
         <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center">
-          {/* ================= LEFT SIDE (55% ON DESKTOP) ================= */}
           <div className="lg:col-span-7 flex flex-col items-center lg:items-start text-center lg:text-left space-y-6">
-            {/* Rich 3D Composition Illustration (Robot + Wallet + Card + Coins + Balance pill) */}
             <div className="w-full max-w-[500px]">
               <HeroIllustration compact={true} />
             </div>
 
-            {/* Headline */}
             <div className="space-y-1">
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-[#10274A] dark:text-[#F5F5F5]">
                 Split Expenses.
@@ -110,12 +93,10 @@ export const LoginPage: React.FC = () => {
               </h2>
             </div>
 
-            {/* Supporting Description */}
             <p className="text-sm sm:text-base text-[#64748B] dark:text-[#A1A1AA] max-w-lg leading-relaxed">
               AI-powered expense splitting with real payments via PayPal. Plan, track, and settle with ease — for trips, roommates and more.
             </p>
 
-            {/* Feature Indicators */}
             <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 sm:gap-6 text-xs sm:text-sm font-bold text-[#10274A] dark:text-[#F5F5F5] pt-2">
               <div className="flex items-center space-x-2 px-3 py-1.5 rounded-full bg-white dark:bg-[#101010] border border-[#D8E9FA] dark:border-[#303030] shadow-sm dark:shadow-none">
                 <div className="w-5 h-5 rounded-full bg-[#E9F5FE] text-[#1685F8] dark:bg-[#141414] dark:text-[#2589FF] flex items-center justify-center">
@@ -140,10 +121,8 @@ export const LoginPage: React.FC = () => {
             </div>
           </div>
 
-          {/* ================= RIGHT SIDE: CLAYMORPHISM LOGIN CARD ================= */}
           <div className="lg:col-span-5 flex justify-center">
             <div className="w-full max-w-[440px] bg-white dark:bg-[#101010] rounded-[28px] p-8 sm:p-10 shadow-clay-card dark:shadow-none border border-[#D8E9FA] dark:border-[#303030] relative transition-colors">
-              {/* Card Header */}
               <div className="text-center mb-7">
                 <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#1685F8] to-[#0E6FD8] text-white shadow-clay-btn mb-4">
                   <Wallet className="w-6 h-6 text-white" />
@@ -156,7 +135,6 @@ export const LoginPage: React.FC = () => {
                 </p>
               </div>
 
-              {/* Error Message */}
               {errorMessage && (
                 <div className="mb-5 p-3.5 rounded-2xl bg-[#FFE9EC] dark:bg-[#FB7185]/10 border border-red-200 dark:border-[#FB7185]/30 flex items-start space-x-2.5 text-xs text-red-600 dark:text-[#FB7185] font-medium">
                   <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
@@ -164,9 +142,7 @@ export const LoginPage: React.FC = () => {
                 </div>
               )}
 
-              {/* Login Form */}
               <form onSubmit={handleSubmit} className="space-y-4">
-                {/* Email address */}
                 <div>
                   <label className="block text-xs font-bold text-[#10274A] dark:text-[#F5F5F5] mb-1.5">
                     Email address
@@ -181,7 +157,6 @@ export const LoginPage: React.FC = () => {
                   />
                 </div>
 
-                {/* Password */}
                 <div>
                   <label className="block text-xs font-bold text-[#10274A] dark:text-[#F5F5F5] mb-1.5">
                     Password
@@ -205,7 +180,6 @@ export const LoginPage: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Remember Me & Forgot Password */}
                 <div className="flex items-center justify-between text-xs pt-1">
                   <label className="flex items-center space-x-2 cursor-pointer">
                     <input
@@ -225,7 +199,6 @@ export const LoginPage: React.FC = () => {
                   </Link>
                 </div>
 
-                {/* Primary Button */}
                 <button
                   type="submit"
                   disabled={isLoading}
@@ -242,7 +215,6 @@ export const LoginPage: React.FC = () => {
                 </button>
               </form>
 
-              {/* Divider ("or") */}
               <div className="relative my-6 text-center">
                 <div className="absolute inset-0 flex items-center">
                   <div className="w-full border-t border-[#D8E9FA] dark:border-[#303030]" />
@@ -252,12 +224,11 @@ export const LoginPage: React.FC = () => {
                 </span>
               </div>
 
-              {/* Google OAuth & Quick Demo Buttons */}
               <div className="space-y-2.5">
                 <button
                   type="button"
                   onClick={() =>
-                    alert('Google OAuth integration can be linked in production by configuring GOOGLE_CLIENT_ID in the backend environment. For instant evaluation, please click the "One-Click Demo Login" button below!')
+                    alert('Google OAuth integration can be linked in production by configuring GOOGLE_CLIENT_ID in the backend environment.')
                   }
                   className="w-full py-3 px-4 rounded-2xl border border-[#D8E9FA] dark:border-[#303030] bg-white dark:bg-[#101010] hover:bg-slate-50 dark:hover:bg-[#141414] text-xs sm:text-sm font-bold text-[#10274A] dark:text-[#F5F5F5] flex items-center justify-center space-x-2.5 shadow-sm dark:shadow-none transition-all"
                 >
@@ -281,18 +252,8 @@ export const LoginPage: React.FC = () => {
                   </svg>
                   <span>Continue with Google</span>
                 </button>
-
-                <button
-                  type="button"
-                  onClick={handleDemoSignIn}
-                  className="w-full py-3 px-4 rounded-2xl bg-[#DDF8EE] dark:bg-[#141414] hover:bg-[#cbf4e5] dark:hover:bg-[#1a1a1a] border border-[#16B890]/30 dark:border-[#303030] text-xs sm:text-sm font-bold text-[#16B890] dark:text-[#34D399] flex items-center justify-center space-x-2 transition-all shadow-sm dark:shadow-none"
-                >
-                  <Sparkles className="w-4 h-4" />
-                  <span>One-Click Demo Login (Rahul Sharma)</span>
-                </button>
               </div>
 
-              {/* Signup Link */}
               <div className="mt-7 text-center text-xs text-[#64748B] dark:text-[#737373]">
                 <span>Don't have an account? </span>
                 <Link
@@ -307,7 +268,6 @@ export const LoginPage: React.FC = () => {
         </div>
       </main>
 
-      {/* Footer */}
       <footer className="py-6 text-center text-xs text-[#64748B] dark:text-[#737373]">
         © 2026 SplitSmart AI. PayPal AI Hackathon.
       </footer>

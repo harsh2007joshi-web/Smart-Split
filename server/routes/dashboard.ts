@@ -15,7 +15,6 @@ router.get('/', (req: AuthenticatedRequest, res: Response): void => {
     const allExpenses = db.getRawData().expenses.filter(e => userGroupIds.includes(e.groupId));
     const allSettlements = db.getRawData().settlements.filter(s => userGroupIds.includes(s.groupId));
 
-    // Aggregate category totals
     const categoryTotals: Record<string, number> = {
       Food: 0,
       Travel: 0,
@@ -32,7 +31,6 @@ router.get('/', (req: AuthenticatedRequest, res: Response): void => {
       categoryTotals[cat] = (categoryTotals[cat] || 0) + amt;
     }
 
-    // Category donut data
     const categoryColors: Record<string, string> = {
       Food: '#1685F8',
       Accommodation: '#10274A',
@@ -48,7 +46,6 @@ router.get('/', (req: AuthenticatedRequest, res: Response): void => {
       color: categoryColors[cat] || '#1685F8',
     }));
 
-    // Balance calculations
     let youOwe = 0;
     let youAreOwed = 0;
 
@@ -63,11 +60,9 @@ router.get('/', (req: AuthenticatedRequest, res: Response): void => {
       }
     }
 
-    // Dynamic AI Insight
     const topCat = Object.entries(categoryTotals).sort((a, b) => b[1] - a[1])[0] || ['Food', 0];
     const topCatPct = totalSpent > 0 ? Math.round((topCat[1] / totalSpent) * 100) : 0;
 
-    // Check group budgets
     const groupWithBudget = userGroups.find(g => g.budget && g.budget > 0);
     let budgetInsightText = '';
     if (groupWithBudget) {
@@ -90,7 +85,6 @@ router.get('/', (req: AuthenticatedRequest, res: Response): void => {
         : 'All your group expenses are balanced. Great financial management!',
     };
 
-    // Recent Groups enriched
     const recentGroups = userGroups.slice(0, 4).map(g => {
       const gExpenses = allExpenses.filter(e => e.groupId === g.id);
       const gTotal = gExpenses.reduce((sum, e) => sum + Number(e.amount), 0);
@@ -101,7 +95,6 @@ router.get('/', (req: AuthenticatedRequest, res: Response): void => {
       };
     });
 
-    // Recent activities
     const recentActivities = allExpenses.slice(0, 5).map(exp => ({
       id: exp.id,
       type: 'EXPENSE',

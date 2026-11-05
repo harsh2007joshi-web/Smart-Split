@@ -13,7 +13,6 @@ export const GroupsPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
 
-  // New Group form state
   const [name, setName] = useState('');
   const [category, setCategory] = useState('Travel');
   const [currency, setCurrency] = useState('INR');
@@ -71,7 +70,6 @@ export const GroupsPage: React.FC = () => {
         <Topbar onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
 
         <main className="p-4 sm:p-8 space-y-6 max-w-7xl w-full mx-auto">
-          {/* Header */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
               <h1 className="text-2xl sm:text-3xl font-black text-[#10274A] dark:text-[#F5F5F5] tracking-tight">
@@ -91,7 +89,6 @@ export const GroupsPage: React.FC = () => {
             </button>
           </div>
 
-          {/* Groups Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {groups.map(group => (
               <div
@@ -147,7 +144,6 @@ export const GroupsPage: React.FC = () => {
         </main>
       </div>
 
-      {/* Create Group Modal */}
       {isCreateOpen && (
         <div className="fixed inset-0 z-50 overflow-y-auto bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="w-full max-w-md bg-white dark:bg-[#101010] rounded-3xl p-6 sm:p-8 shadow-clay-float dark:shadow-none border border-[#D8E9FA] dark:border-[#303030]">

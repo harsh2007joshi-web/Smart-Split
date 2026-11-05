@@ -21,7 +21,6 @@ export const RobotIllustration: React.FC<RobotProps> = ({ className = '', size =
         className="relative z-10 drop-shadow-xl"
       >
         <defs>
-          {/* Head & Body Gradients */}
           <linearGradient id="robotWhiteClay" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor="#FFFFFF" />
             <stop offset="70%" stopColor="#F0F7FF" />
@@ -54,15 +53,11 @@ export const RobotIllustration: React.FC<RobotProps> = ({ className = '', size =
           </filter>
         </defs>
 
-        {/* Shadow base */}
         <ellipse cx="120" cy="225" rx="65" ry="12" fill="#1685F8" fillOpacity="0.15" />
 
-        {/* Floating Feet */}
         <ellipse cx="90" cy="210" rx="16" ry="9" fill="url(#robotBlueClay)" />
         <ellipse cx="150" cy="210" rx="16" ry="9" fill="url(#robotBlueClay)" />
 
-        {/* Arms */}
-        {/* Left Arm waving */}
         <g className="origin-[60px_130px] animate-float-slow">
           <path
             d="M58 135 C38 120, 30 100, 42 85 C48 78, 58 84, 52 98 C46 110, 56 122, 68 132 Z"
@@ -72,7 +67,6 @@ export const RobotIllustration: React.FC<RobotProps> = ({ className = '', size =
           <circle cx="44" cy="84" r="10" fill="url(#cyanGlow)" />
         </g>
 
-        {/* Right Arm */}
         <path
           d="M182 135 C198 145, 208 160, 202 172 C198 178, 188 176, 192 165 C196 154, 186 145, 172 138 Z"
           fill="url(#robotWhiteClay)"
@@ -80,7 +74,6 @@ export const RobotIllustration: React.FC<RobotProps> = ({ className = '', size =
         />
         <circle cx="200" cy="172" r="9" fill="url(#cyanGlow)" />
 
-        {/* Torso / Body */}
         <rect
           x="72"
           y="118"
@@ -90,7 +83,6 @@ export const RobotIllustration: React.FC<RobotProps> = ({ className = '', size =
           fill="url(#robotWhiteClay)"
           filter="url(#clayShadow)"
         />
-        {/* Inner Blue Belly Screen */}
         <rect
           x="88"
           y="132"
@@ -99,7 +91,6 @@ export const RobotIllustration: React.FC<RobotProps> = ({ className = '', size =
           rx="18"
           fill="url(#robotBlueClay)"
         />
-        {/* Glowing AI Chip pulse in belly */}
         <circle cx="120" cy="159" r="14" fill="#FFFFFF" fillOpacity="0.25" />
         <path
           d="M112 159 L120 151 L128 159 L120 167 Z"
@@ -107,10 +98,8 @@ export const RobotIllustration: React.FC<RobotProps> = ({ className = '', size =
           className="animate-pulse"
         />
 
-        {/* Neck */}
         <rect x="106" y="106" width="28" height="18" rx="8" fill="url(#metalAccents)" />
 
-        {/* Head */}
         <rect
           x="60"
           y="35"
@@ -121,16 +110,13 @@ export const RobotIllustration: React.FC<RobotProps> = ({ className = '', size =
           filter="url(#clayShadow)"
         />
 
-        {/* Side Head Ears / Antennas */}
         <ellipse cx="58" cy="76" rx="6" ry="14" fill="url(#robotBlueClay)" />
         <ellipse cx="182" cy="76" rx="6" ry="14" fill="url(#robotBlueClay)" />
 
-        {/* Top Antenna */}
         <rect x="117" y="14" width="6" height="22" rx="3" fill="url(#metalAccents)" />
         <circle cx="120" cy="12" r="8" fill="url(#cyanGlow)" />
         <circle cx="120" cy="12" r="4" fill="#FFFFFF" />
 
-        {/* Robot Visor / Face */}
         <rect
           x="72"
           y="48"
@@ -140,14 +126,12 @@ export const RobotIllustration: React.FC<RobotProps> = ({ className = '', size =
           fill="url(#visorGlass)"
         />
 
-        {/* Robot Eyes (Glowing Cyan ovals) */}
         <ellipse cx="98" cy="73" rx="10" ry="13" fill="url(#cyanGlow)" />
         <circle cx="95" cy="69" r="4" fill="#FFFFFF" />
 
         <ellipse cx="142" cy="73" rx="10" ry="13" fill="url(#cyanGlow)" />
         <circle cx="139" cy="69" r="4" fill="#FFFFFF" />
 
-        {/* Friendly cute mouth smile */}
         <path
           d="M112 86 Q120 92 128 86"
           stroke="url(#cyanGlow)"
@@ -156,7 +140,6 @@ export const RobotIllustration: React.FC<RobotProps> = ({ className = '', size =
           fill="none"
         />
 
-        {/* Highlight reflections */}
         <path
           d="M74 54 Q120 40 166 54"
           stroke="#FFFFFF"

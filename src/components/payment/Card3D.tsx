@@ -28,7 +28,7 @@ export const Card3D: React.FC<Card3DProps> = ({
   successReference,
   onRetry,
 }) => {
-  // Determine card network
+
   const getCardNetwork = (num: string) => {
     const clean = num.replace(/\s+/g, '');
     if (clean.startsWith('4')) return 'VISA';
@@ -39,7 +39,6 @@ export const Card3D: React.FC<Card3DProps> = ({
 
   const network = getCardNetwork(cardNumber);
 
-  // Format card number display
   const getFormattedNumber = () => {
     const clean = cardNumber.replace(/\s+/g, '');
     if (!clean) return '•••• •••• •••• ••••';
@@ -57,9 +56,7 @@ export const Card3D: React.FC<Card3DProps> = ({
 
   return (
     <div className="w-full flex flex-col items-center select-none">
-      {/* 3D Flip Card Container */}
       <div className="card-perspective-container w-full max-w-[380px] h-[220px] relative">
-        {/* Processing Glow Pulse Backdrop */}
         {paymentState === 'PROCESSING' && (
           <div className="absolute inset-0 bg-gradient-to-r from-[#1685F8] via-[#16B890] to-[#0E6FD8] rounded-[24px] blur-xl opacity-75 animate-pulse -z-10" />
         )}
@@ -68,7 +65,6 @@ export const Card3D: React.FC<Card3DProps> = ({
           <div className="absolute inset-0 bg-[#16B890] rounded-[24px] blur-xl opacity-60 animate-pulse -z-10" />
         )}
 
-        {/* Flipping Inner Wrapper */}
         <div
           className={`flip-card-inner relative w-full h-full duration-700 transition-transform ${
             isFlipped ? 'is-flipped' : ''
@@ -76,21 +72,16 @@ export const Card3D: React.FC<Card3DProps> = ({
             paymentState === 'PROCESSING' ? 'animate-pulse-subtle scale-[1.02]' : ''
           }`}
         >
-          {/* ================= CARD FRONT ================= */}
           <div className="card-face bg-gradient-to-tr from-[#0F223D] via-[#163863] to-[#1685F8] text-white p-6 shadow-clay-float border border-white/20 flex flex-col justify-between overflow-hidden">
-            {/* Hologram Light Sheen Overlay */}
             <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent pointer-events-none transform -skew-x-12 translate-x-1/2" />
 
-            {/* Top Row: Chip, Contactless Icon, and Card Type */}
             <div className="flex justify-between items-center relative z-10">
               <div className="flex items-center space-x-3">
-                {/* Gold Metallic EMV Chip */}
                 <div className="w-11 h-8 rounded-md bg-gradient-to-br from-amber-200 via-amber-400 to-yellow-600 p-1 border border-amber-300 shadow-inner flex flex-col justify-between">
                   <div className="w-full h-0.5 bg-amber-800/40 rounded-full" />
                   <div className="w-full h-0.5 bg-amber-800/40 rounded-full" />
                   <div className="w-full h-0.5 bg-amber-800/40 rounded-full" />
                 </div>
-                {/* Contactless symbol */}
                 <Wifi className="w-5 h-5 text-blue-200 rotate-90 opacity-80" />
               </div>
 
@@ -101,14 +92,12 @@ export const Card3D: React.FC<Card3DProps> = ({
               </div>
             </div>
 
-            {/* Middle Row: Card Number */}
             <div className="relative z-10 my-auto">
               <div className="font-mono text-lg sm:text-xl font-bold tracking-[3px] text-white/95 drop-shadow">
                 {getFormattedNumber()}
               </div>
             </div>
 
-            {/* Bottom Row: Cardholder Name, Expiry, and Network Logo */}
             <div className="flex justify-between items-end relative z-10">
               <div className="max-w-[170px]">
                 <div className="text-[9px] uppercase tracking-wider text-blue-200/80 font-medium">Cardholder Name</div>
@@ -125,7 +114,6 @@ export const Card3D: React.FC<Card3DProps> = ({
                   </div>
                 </div>
 
-                {/* Network Logo */}
                 <div className="font-black italic tracking-tighter text-sm sm:text-base px-2 py-0.5 rounded bg-white/15 backdrop-blur-sm border border-white/20 text-white">
                   {network === 'VISA' && 'VISA'}
                   {network === 'MASTERCARD' && 'MC'}
@@ -135,12 +123,9 @@ export const Card3D: React.FC<Card3DProps> = ({
             </div>
           </div>
 
-          {/* ================= CARD BACK ================= */}
           <div className="card-face card-face-back bg-gradient-to-tr from-[#0B182B] via-[#10274A] to-[#1A3E6B] text-white pt-5 shadow-clay-float border border-white/20 flex flex-col justify-between overflow-hidden">
-            {/* Magnetic Black Stripe */}
             <div className="w-full h-11 bg-black/90 shadow-inner" />
 
-            {/* Signature Area & CVV */}
             <div className="px-6 my-auto">
               <div className="flex items-center space-x-2">
                 <div className="flex-1 h-9 bg-white/90 rounded-sm flex items-center px-3 italic font-serif text-[#10274A] text-xs font-semibold shadow-inner">
@@ -156,7 +141,6 @@ export const Card3D: React.FC<Card3DProps> = ({
               </div>
             </div>
 
-            {/* Bottom Security Hologram & Bank Note */}
             <div className="px-6 pb-4 flex justify-between items-center text-[8px] text-slate-400">
               <div className="flex items-center space-x-1.5">
                 <ShieldCheck className="w-4 h-4 text-[#16B890]" />
@@ -170,7 +154,6 @@ export const Card3D: React.FC<Card3DProps> = ({
         </div>
       </div>
 
-      {/* ================= REAL-TIME STATE DISPLAY ================= */}
       <div className="mt-5 w-full max-w-[380px]">
         {paymentState === 'VALIDATING' && (
           <div className="clay-card p-3.5 bg-blue-50/80 border-[#BFE9FF] flex items-center space-x-3 text-xs text-[#1685F8] font-medium animate-pulse">

@@ -1,7 +1,3 @@
-/**
- * 2Factor.in SMS Gateway Integration
- * Official API Documentation: https://2factor.in/
- */
 
 export interface TwoFactorSendResponse {
   success: boolean;
@@ -29,13 +25,10 @@ class TwoFactorService {
     }
   }
 
-  /**
-   * Cleans phone number to format (handles Indian +91 or raw 10 digits)
-   */
   private formatPhoneNumber(phone: string): string {
     const cleaned = phone.replace(/\D/g, '');
     if (cleaned.length === 10) {
-      return cleaned; // 2factor.in expects 10 digits for Indian numbers
+      return cleaned;
     }
     if (cleaned.length === 12 && cleaned.startsWith('91')) {
       return cleaned.substring(2);
@@ -43,18 +36,13 @@ class TwoFactorService {
     return cleaned;
   }
 
-  /**
-   * Send SMS OTP via 2factor.in
-   */
   public async sendOtp(phone: string, customOtp?: string): Promise<TwoFactorSendResponse> {
     const formattedPhone = this.formatPhoneNumber(phone);
     const otp = customOtp || Math.floor(100000 + Math.random() * 900000).toString();
 
-    // If API key is provided, invoke official 2factor.in endpoint
     if (this.apiKey && this.apiKey !== 'your_2factor_api_key_here') {
       try {
-        // 2Factor.in AUTOGEN or custom OTP URL
-        // Format: https://2factor.in/API/V1/{api_key}/SMS/{phone_number}/{otp}/SplitSmart
+
         const url = `${this.baseUrl}/${this.apiKey}/SMS/${formattedPhone}/${otp}/SplitSmartAI`;
         const res = await fetch(url, { method: 'GET' });
         const data = await res.json();
@@ -76,7 +64,6 @@ class TwoFactorService {
       }
     }
 
-    // Development Console Simulation Mode
     console.log('\n============================================================');
     console.log(`📱 [2FACTOR.IN SMS GATEWAY DEV MODE]`);
     console.log(`📞 Recipient Phone: +91 ${formattedPhone}`);
@@ -93,13 +80,10 @@ class TwoFactorService {
     };
   }
 
-  /**
-   * Verify SMS OTP with 2factor.in or local store
-   */
   public async verifyOtp(sessionId: string, enteredOtp: string, expectedOtp?: string): Promise<TwoFactorVerifyResponse> {
     if (this.apiKey && this.apiKey !== 'your_2factor_api_key_here' && sessionId && !sessionId.startsWith('2F_SESSION_')) {
       try {
-        // Format: https://2factor.in/API/V1/{api_key}/SMS/VERIFY/{session_id}/{otp_entered}
+
         const url = `${this.baseUrl}/${this.apiKey}/SMS/VERIFY/${sessionId}/${enteredOtp.trim()}`;
         const res = await fetch(url, { method: 'GET' });
         const data = await res.json();
@@ -114,7 +98,6 @@ class TwoFactorService {
       }
     }
 
-    // Local/Simulation verification check
     if (expectedOtp && enteredOtp.trim() === expectedOtp.trim()) {
       return { success: true, message: 'Phone number verified successfully!' };
     }

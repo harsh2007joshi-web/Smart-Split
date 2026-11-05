@@ -15,7 +15,6 @@ router.get('/', (req: AuthenticatedRequest, res: Response): void => {
     const allExpenses = db.getRawData().expenses.filter(e => userGroupIds.includes(e.groupId));
     const allSettlements = db.getRawData().settlements.filter(s => userGroupIds.includes(s.groupId));
 
-    // Category breakdown
     const categoryMap: Record<string, number> = {
       Food: 0,
       Travel: 0,
@@ -66,7 +65,6 @@ router.get('/', (req: AuthenticatedRequest, res: Response): void => {
         color: categoryColors[cat] || '#1685F8',
       }));
 
-    // Group breakdown
     const groupBreakdown = userGroups.map(g => {
       const gExpenses = allExpenses.filter(e => e.groupId === g.id);
       const spent = gExpenses.reduce((sum, e) => sum + Number(e.amount), 0);
@@ -79,7 +77,6 @@ router.get('/', (req: AuthenticatedRequest, res: Response): void => {
       };
     });
 
-    // Balances
     let youOwe = 0;
     let youAreOwed = 0;
 
@@ -94,31 +91,78 @@ router.get('/', (req: AuthenticatedRequest, res: Response): void => {
       }
     }
 
-    // Monthly/Weekly time series
-    const monthlySpending = [
-      { month: 'Oct 2025', amount: 8200 },
-      { month: 'Nov 2025', amount: 11400 },
-      { month: 'Dec 2025', amount: 19800 },
-      { month: 'Jan 2026', amount: 14200 },
-      { month: 'Feb 2026', amount: 18420 },
-      { month: 'Mar 2026', amount: totalGroupSpent > 0 ? totalGroupSpent : 23500 },
-    ];
-
-    // Transparent forecasting calculation
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     const now = new Date();
+
+    interface MonthlyBucket {
+      month: string;
+      year: number;
+      monthIndex: number;
+      amount: number;
+    }
+
+    const monthlyBuckets: MonthlyBucket[] = [];
+    for (let i = 5; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      monthlyBuckets.push({
+        month: `${monthNames[d.getMonth()]} ${d.getFullYear()}`,
+        year: d.getFullYear(),
+        monthIndex: d.getMonth(),
+        amount: 0,
+      });
+    }
+
+    for (const exp of allExpenses) {
+      const amt = Number(exp.amount) || 0;
+      if (amt <= 0) continue;
+
+      const expDate = new Date(exp.date || exp.createdAt);
+      if (isNaN(expDate.getTime())) continue;
+
+      const bucket = monthlyBuckets.find(
+        b => b.year === expDate.getFullYear() && b.monthIndex === expDate.getMonth()
+      );
+      if (bucket) {
+        bucket.amount += amt;
+      }
+    }
+
+    const monthlySpending = monthlyBuckets.map(b => ({
+      month: b.month,
+      amount: b.amount,
+    }));
+
     const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
     const dayOfMonth = Math.max(1, now.getDate());
     const daysRemaining = Math.max(0, daysInMonth - dayOfMonth);
 
-    const currentMonthSpent = totalGroupSpent > 0 ? totalGroupSpent : 18420;
-    const dailyVelocity = Math.round((currentMonthSpent / dayOfMonth) * 100) / 100;
-    const estimatedMonthEnd = Math.round(currentMonthSpent + (dailyVelocity * daysRemaining));
+    const currentMonthSpent = monthlyBuckets[5].amount;
 
-    const historicalAmounts = monthlySpending.slice(0, 5).map(m => m.amount);
-    const historicalAverage = Math.round(historicalAmounts.reduce((a, b) => a + b, 0) / historicalAmounts.length);
-    const trend = estimatedMonthEnd > historicalAverage * 1.08 ? 'INCREASING' : estimatedMonthEnd < historicalAverage * 0.92 ? 'DECREASING' : 'STABLE';
+    let dailyVelocity = 0;
+    let estimatedMonthEnd = 0;
+    if (currentMonthSpent > 0) {
+      dailyVelocity = Math.round((currentMonthSpent / dayOfMonth) * 100) / 100;
+      estimatedMonthEnd = Math.round(currentMonthSpent + (dailyVelocity * daysRemaining));
+    }
 
-    // Check budget overrun risks
+    const historicalAmounts = monthlyBuckets.slice(0, 5).map(m => m.amount);
+    const pastSpending = historicalAmounts.reduce((a, b) => a + b, 0);
+    const monthsWithSpend = historicalAmounts.filter(a => a > 0).length;
+    const historicalAverage = monthsWithSpend > 0 ? Math.round(pastSpending / monthsWithSpend) : 0;
+
+    let trend: 'INCREASING' | 'DECREASING' | 'STABLE' = 'STABLE';
+    if (currentMonthSpent === 0 && historicalAverage === 0) {
+      trend = 'STABLE';
+    } else if (historicalAverage === 0) {
+      trend = currentMonthSpent > 0 ? 'INCREASING' : 'STABLE';
+    } else {
+      trend = estimatedMonthEnd > historicalAverage * 1.08
+        ? 'INCREASING'
+        : estimatedMonthEnd < historicalAverage * 0.92
+        ? 'DECREASING'
+        : 'STABLE';
+    }
+
     let budgetOverrunRisk = false;
     let budgetRiskMessage = '';
     const groupsWithBudget = userGroups.filter(g => g.budget && g.budget > 0);

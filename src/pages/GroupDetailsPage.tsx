@@ -55,7 +55,6 @@ export const GroupDetailsPage: React.FC = () => {
   const [isUpdatingDomain, setIsUpdatingDomain] = useState(false);
   const [domainSuccess, setDomainSuccess] = useState('');
 
-  // Budget Management States
   const [isBudgetModalOpen, setIsBudgetModalOpen] = useState(false);
   const [budgetValue, setBudgetValue] = useState('');
   const [isUpdatingBudget, setIsUpdatingBudget] = useState(false);
@@ -205,7 +204,6 @@ export const GroupDetailsPage: React.FC = () => {
         />
 
         <main className="p-4 sm:p-8 space-y-6 max-w-7xl w-full mx-auto">
-          {/* Breadcrumb & Header */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="space-y-1">
               <Link
@@ -252,7 +250,6 @@ export const GroupDetailsPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Magic Invitation Link Banner (Visible immediately when inviting a friend) */}
           {activeInviteUrl && (
             <div className="clay-card p-5 bg-gradient-to-r from-[#DDF8EE] via-white to-[#F1F9FF] dark:from-[#101010] dark:via-[#141414] dark:to-[#101010] border-2 border-[#16B890]/50 dark:border-[#303030] space-y-3 shadow-clay-card dark:shadow-none animate-in fade-in duration-200">
               <div className="flex items-start justify-between gap-3">
@@ -290,7 +287,6 @@ export const GroupDetailsPage: React.FC = () => {
                 </button>
               </div>
 
-              {/* Copyable URL input and action buttons */}
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 pt-1">
                 <div className="relative flex-1">
                   <input
@@ -318,7 +314,7 @@ export const GroupDetailsPage: React.FC = () => {
                   )}
                 </button>
                 <a
-                  href={`https://api.whatsapp.com/send?text=${encodeURIComponent(`Hey! Join our trip "${group?.name || 'Trip'}" on SplitSmart AI to track shared expenses and split bills: ${activeInviteUrl}`)}`}
+                  href={`https://api.whatsapp.com/send?text=${encodeURIComponent(`Hey! Join our trip "${group?.name || 'Trip'}" on SplitSmart AI: ${activeInviteUrl}`)}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="px-3.5 py-2.5 rounded-xl bg-[#25D366]/15 hover:bg-[#25D366]/25 border border-[#25D366]/30 text-[#128C7E] dark:text-[#34D399] text-xs font-bold flex items-center justify-center space-x-1.5 transition-all shrink-0 shadow-sm"
@@ -326,7 +322,7 @@ export const GroupDetailsPage: React.FC = () => {
                   <span>💬 WhatsApp</span>
                 </a>
                 <a
-                  href={`https://t.me/share/url?url=${encodeURIComponent(activeInviteUrl)}&text=${encodeURIComponent(`Hey! Join our trip "${group?.name || 'Trip'}" on SplitSmart AI:`)}`}
+                  href={`https://api.whatsapp.com/send?text=${encodeURIComponent(`Hey! Join our trip "${group?.name || 'Trip'}" on SplitSmart AI: ${activeInviteUrl}`)}`}//t.me/share/url?url=${encodeURIComponent(activeInviteUrl)}&text=${encodeURIComponent(`Hey! Join our trip "${group?.name || 'Trip'}" on SplitSmart AI:`)}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="px-3.5 py-2.5 rounded-xl bg-[#0088cc]/15 hover:bg-[#0088cc]/25 border border-[#0088cc]/30 text-[#0088cc] dark:text-[#2589FF] text-xs font-bold flex items-center justify-center space-x-1.5 transition-all shrink-0 shadow-sm"
@@ -344,7 +340,6 @@ export const GroupDetailsPage: React.FC = () => {
                 </a>
               </div>
 
-              {/* Localhost / Domain Alert & Public Domain Connector */}
               <div className="p-3.5 rounded-2xl bg-amber-50/90 dark:bg-[#141414] border border-amber-200 dark:border-[#303030] text-xs text-amber-900 dark:text-[#F5F5F5] space-y-3">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                   <div className="leading-snug">
@@ -419,7 +414,6 @@ export const GroupDetailsPage: React.FC = () => {
             </div>
           )}
 
-          {/* Group 4 Tabs Navigation */}
           <div className="flex border-b border-[#D8E9FA] dark:border-[#303030] space-x-4 sm:space-x-8 text-sm font-bold">
             {(['OVERVIEW', 'EXPENSES', 'MEMBERS', 'SETTLEMENTS'] as const).map(tab => (
               <button
@@ -438,10 +432,8 @@ export const GroupDetailsPage: React.FC = () => {
             ))}
           </div>
 
-          {/* ================= TAB 1: OVERVIEW ================= */}
           {activeTab === 'OVERVIEW' && (
             <div className="space-y-6">
-              {/* Group Summary Banner */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
                 <div className="clay-card p-6 bg-white dark:bg-[#101010] dark:border-[#303030]">
                   <span className="text-xs font-bold text-[#64748B] dark:text-[#737373] uppercase tracking-wider">Total Group Spent</span>
@@ -477,7 +469,6 @@ export const GroupDetailsPage: React.FC = () => {
                 </div>
               </div>
 
-              {/* Group Budget Tracker Card */}
               <div className="clay-card p-6 bg-white dark:bg-[#101010] dark:border-[#303030] space-y-4">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                   <div className="flex items-center space-x-3">
@@ -544,7 +535,6 @@ export const GroupDetailsPage: React.FC = () => {
                       </div>
                     </div>
 
-                    {/* Progress Bar */}
                     <div className="space-y-1 pt-1">
                       <div className="w-full h-3 rounded-full bg-[#E9F5FE] dark:bg-[#181818] overflow-hidden">
                         <div
@@ -581,7 +571,6 @@ export const GroupDetailsPage: React.FC = () => {
                 )}
               </div>
 
-              {/* Member Balances Table */}
               <div className="clay-card p-6 bg-white dark:bg-[#101010] dark:border-[#303030] space-y-4">
                 <h3 className="text-base font-bold text-[#10274A] dark:text-[#F5F5F5]">Member Balances & Settlements</h3>
                 <div className="divide-y divide-[#D8E9FA]/60 dark:divide-[#303030]">
@@ -627,7 +616,6 @@ export const GroupDetailsPage: React.FC = () => {
             </div>
           )}
 
-          {/* ================= TAB 2: EXPENSES ================= */}
           {activeTab === 'EXPENSES' && (
             <div className="space-y-4">
               <div className="flex justify-between items-center">
@@ -696,7 +684,6 @@ export const GroupDetailsPage: React.FC = () => {
             </div>
           )}
 
-          {/* ================= TAB 3: MEMBERS ================= */}
           {activeTab === 'MEMBERS' && (
             <div className="clay-card p-6 bg-white dark:bg-[#101010] dark:border-[#303030] space-y-4">
               <div className="flex justify-between items-center pb-2 border-b border-[#D8E9FA]/60 dark:border-[#303030]">
@@ -732,7 +719,6 @@ export const GroupDetailsPage: React.FC = () => {
             </div>
           )}
 
-          {/* ================= TAB 4: SETTLEMENTS ================= */}
           {activeTab === 'SETTLEMENTS' && (
             <div className="space-y-4">
               <div className="clay-card p-6 bg-[#DDF8EE]/40 dark:bg-[#101010] border-[#16B890]/30 dark:border-[#303030] flex items-start space-x-3.5">
@@ -793,7 +779,6 @@ export const GroupDetailsPage: React.FC = () => {
         </main>
       </div>
 
-      {/* Add Expense Modal */}
       {group && (
         <AddExpenseModal
           isOpen={isAddExpenseOpen}
@@ -804,7 +789,6 @@ export const GroupDetailsPage: React.FC = () => {
         />
       )}
 
-      {/* Invite Member Modal */}
       {isInviteOpen && (
         <div className="fixed inset-0 z-50 overflow-y-auto bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="w-full max-w-sm bg-white dark:bg-[#101010] rounded-3xl p-6 shadow-clay-float dark:shadow-none border border-[#D8E9FA] dark:border-[#303030]">
@@ -856,7 +840,6 @@ export const GroupDetailsPage: React.FC = () => {
         </div>
       )}
 
-      {/* Set / Update Budget Modal */}
       {isBudgetModalOpen && (
         <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="relative w-full max-w-sm bg-white dark:bg-[#101010] rounded-3xl shadow-clay-float border border-[#D8E9FA] dark:border-[#303030] p-6 space-y-4 animate-in fade-in zoom-in-95">
