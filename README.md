@@ -142,3 +142,4 @@ npx tsx server/test-suite.ts
 - Click **"Demo Tour"** in the navigation bar or **"One-Click Demo Login"** on the Login screen to instantly sign in as **Rahul Sharma**.
 - Explore preloaded groups: **Goa Trip 2026**, **College Friends**, and **Roommates Flat 402**.
 - Open **Settlements** to test debt netting or launch the **Checkout** to trigger the **3D card flip animation** and **PayPal Sandbox** payment!
+Contributor: @omprakx
