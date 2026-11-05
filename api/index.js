@@ -22,10 +22,10 @@ var splitsmart_db_default = {
       username: "@rahulsharma_101",
       email: "rahul@example.com",
       gender: "male",
-      passwordHash: "$2a$10$ceef3BaIA.tyRST7TyKY8uFggim9XBvprZhfqmiobCKMBycgaMBFi",
+      passwordHash: "$2a$10$dNaCaKDw2ZXFvVsGFZp0sudlOdHlcueOh1BVLU2bI6U2j13gfLAkm",
       isEmailVerified: true,
-      createdAt: "2026-10-06T06:43:50.903Z",
-      updatedAt: "2026-11-05T06:43:50.905Z"
+      createdAt: "2026-10-06T07:05:55.358Z",
+      updatedAt: "2026-11-05T07:05:55.360Z"
     },
     {
       id: "usr_priya",
@@ -33,11 +33,11 @@ var splitsmart_db_default = {
       username: "@priyapatel_204",
       email: "priya@example.com",
       gender: "female",
-      passwordHash: "$2a$10$ceef3BaIA.tyRST7TyKY8uFggim9XBvprZhfqmiobCKMBycgaMBFi",
+      passwordHash: "$2a$10$dNaCaKDw2ZXFvVsGFZp0sudlOdHlcueOh1BVLU2bI6U2j13gfLAkm",
       avatarUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80",
       isEmailVerified: true,
-      createdAt: "2026-10-08T06:43:50.905Z",
-      updatedAt: "2026-11-05T06:43:50.905Z"
+      createdAt: "2026-10-08T07:05:55.360Z",
+      updatedAt: "2026-11-05T07:05:55.360Z"
     },
     {
       id: "usr_aman",
@@ -45,11 +45,11 @@ var splitsmart_db_default = {
       username: "@amangupta_305",
       email: "aman@example.com",
       gender: "male",
-      passwordHash: "$2a$10$ceef3BaIA.tyRST7TyKY8uFggim9XBvprZhfqmiobCKMBycgaMBFi",
+      passwordHash: "$2a$10$dNaCaKDw2ZXFvVsGFZp0sudlOdHlcueOh1BVLU2bI6U2j13gfLAkm",
       avatarUrl: "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=150&auto=format&fit=crop&q=80",
       isEmailVerified: true,
-      createdAt: "2026-10-11T06:43:50.905Z",
-      updatedAt: "2026-11-05T06:43:50.905Z"
+      createdAt: "2026-10-11T07:05:55.360Z",
+      updatedAt: "2026-11-05T07:05:55.360Z"
     },
     {
       id: "usr_sneha",
@@ -57,61 +57,61 @@ var splitsmart_db_default = {
       username: "@sneharoy_402",
       email: "sneha@example.com",
       gender: "female",
-      passwordHash: "$2a$10$ceef3BaIA.tyRST7TyKY8uFggim9XBvprZhfqmiobCKMBycgaMBFi",
+      passwordHash: "$2a$10$dNaCaKDw2ZXFvVsGFZp0sudlOdHlcueOh1BVLU2bI6U2j13gfLAkm",
       avatarUrl: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&auto=format&fit=crop&q=80",
       isEmailVerified: true,
-      createdAt: "2026-10-16T06:43:50.905Z",
-      updatedAt: "2026-11-05T06:43:50.905Z"
+      createdAt: "2026-10-16T07:05:55.360Z",
+      updatedAt: "2026-11-05T07:05:55.360Z"
     },
     {
       name: "Test Hackathon Judge",
       email: "judge@paypal-hackathon.com",
-      passwordHash: "$2a$10$ru9WLgB2seMUW0I5vkwoQO5vxW4XaNhKZypGy78GYNuDkQjJwZBBq",
+      passwordHash: "$2a$10$oQs4KPbUtKfR2X24GMrJbemI5fR7q.KmrMBt2chMKj8nvqmKODoFy",
       isEmailVerified: true,
-      username: "@testhackathonjudge_535",
-      id: "usr_3waofb4",
-      createdAt: "2026-11-05T06:43:50.982Z",
-      updatedAt: "2026-11-05T06:43:51.068Z"
+      username: "@testhackathonjudge_233",
+      id: "usr_0iu4i6y",
+      createdAt: "2026-11-05T07:05:55.428Z",
+      updatedAt: "2026-11-05T07:05:55.511Z"
     },
     {
       name: "Deepak Verma",
       email: "deepak.traveler@example.com",
       passwordHash: "dummyhash",
       isEmailVerified: true,
-      username: "@deepakverma_292",
-      id: "usr_c4qs047",
-      createdAt: "2026-11-05T06:43:51.098Z",
-      updatedAt: "2026-11-05T06:43:51.098Z"
+      username: "@deepakverma_168",
+      id: "usr_pg9o69p",
+      createdAt: "2026-11-05T07:05:55.544Z",
+      updatedAt: "2026-11-05T07:05:55.544Z"
     },
     {
       name: "Harsh Joshi",
       email: "harsh.test@example.com",
       passwordHash: "dummyhash",
       isEmailVerified: true,
-      username: "@harshjoshi_165",
-      id: "usr_xs91kov",
-      createdAt: "2026-11-05T06:43:51.110Z",
-      updatedAt: "2026-11-05T06:43:51.110Z"
+      username: "@harshjoshi_611",
+      id: "usr_uxqpgrr",
+      createdAt: "2026-11-05T07:05:55.557Z",
+      updatedAt: "2026-11-05T07:05:55.557Z"
     },
     {
       name: "Rahul Patel",
       email: "rahul.patel.test@example.com",
       passwordHash: "dummyhash",
       isEmailVerified: true,
-      username: "@rahulpatel_337",
-      id: "usr_s2t60qr",
-      createdAt: "2026-11-05T06:43:51.112Z",
-      updatedAt: "2026-11-05T06:43:51.112Z"
+      username: "@rahulpatel_985",
+      id: "usr_vjzd1q4",
+      createdAt: "2026-11-05T07:05:55.559Z",
+      updatedAt: "2026-11-05T07:05:55.559Z"
     },
     {
       name: "Vikram Singh",
       email: "vikram.test@example.com",
       passwordHash: "dummyhash",
       isEmailVerified: true,
-      username: "@vikramsingh_542",
-      id: "usr_qhjo3b0",
-      createdAt: "2026-11-05T06:43:51.128Z",
-      updatedAt: "2026-11-05T06:43:51.128Z"
+      username: "@vikramsingh_368",
+      id: "usr_q465ho1",
+      createdAt: "2026-11-05T07:05:55.594Z",
+      updatedAt: "2026-11-05T07:05:55.594Z"
     }
   ],
   verificationTokens: [
@@ -166,11 +166,11 @@ var splitsmart_db_default = {
       verified: false
     },
     {
-      id: "pv_mnfb5h2",
+      id: "pv_7977wtx",
       phone: "9876543210",
       otp: "849201",
       sessionId: "session_2factor_test_xyz",
-      expiresAt: 1793861631091,
+      expiresAt: 1793862955538,
       verified: true
     }
   ],
@@ -374,6 +374,26 @@ var splitsmart_db_default = {
       token: "inv_kcbpgtjtqymw36ji60",
       status: "ACCEPTED",
       createdAt: "2026-11-05T06:43:51.096Z"
+    },
+    {
+      id: "invit_img61sp",
+      groupId: "grp_goa2026",
+      groupName: "Goa Trip 2026",
+      inviterName: "Rahul Sharma",
+      email: "deepak.traveler@example.com",
+      token: "inv_bh22iyf68emw36ujy6",
+      status: "ACCEPTED",
+      createdAt: "2026-11-05T06:52:26.622Z"
+    },
+    {
+      id: "invit_lbdk8gp",
+      groupId: "grp_goa2026",
+      groupName: "Goa Trip 2026",
+      inviterName: "Rahul Sharma",
+      email: "deepak.traveler@example.com",
+      token: "inv_31854e4tzomw37bw46",
+      status: "ACCEPTED",
+      createdAt: "2026-11-05T07:05:55.542Z"
     }
   ],
   resetChallenges: [
@@ -395,8 +415,8 @@ var splitsmart_db_default = {
       currency: "INR",
       creatorId: "usr_rahul",
       budget: 5e4,
-      createdAt: "2026-10-22T06:43:50.905Z",
-      updatedAt: "2026-11-05T06:43:51.107Z",
+      createdAt: "2026-10-22T07:05:55.360Z",
+      updatedAt: "2026-11-05T07:05:55.553Z",
       members: [
         {
           id: "gm_1",
@@ -405,7 +425,7 @@ var splitsmart_db_default = {
           name: "Rahul Sharma",
           email: "rahul@example.com",
           role: "ADMIN",
-          joinedAt: "2026-10-22T06:43:50.905Z"
+          joinedAt: "2026-10-22T07:05:55.360Z"
         },
         {
           id: "gm_2",
@@ -414,7 +434,7 @@ var splitsmart_db_default = {
           name: "Priya Patel",
           email: "priya@example.com",
           role: "MEMBER",
-          joinedAt: "2026-10-22T06:43:50.905Z"
+          joinedAt: "2026-10-22T07:05:55.360Z"
         },
         {
           id: "gm_3",
@@ -423,7 +443,7 @@ var splitsmart_db_default = {
           name: "Aman Gupta",
           email: "aman@example.com",
           role: "MEMBER",
-          joinedAt: "2026-10-22T06:43:50.905Z"
+          joinedAt: "2026-10-22T07:05:55.360Z"
         },
         {
           id: "gm_4",
@@ -432,16 +452,16 @@ var splitsmart_db_default = {
           name: "Sneha Roy",
           email: "sneha@example.com",
           role: "MEMBER",
-          joinedAt: "2026-10-23T06:43:50.905Z"
+          joinedAt: "2026-10-23T07:05:55.360Z"
         },
         {
-          id: "gm_6crwv93",
+          id: "gm_4u3tlle",
           groupId: "grp_goa2026",
-          userId: "usr_c4qs047",
+          userId: "usr_pg9o69p",
           name: "Deepak Verma",
           email: "deepak.traveler@example.com",
           role: "MEMBER",
-          joinedAt: "2026-11-05T06:43:51.100Z"
+          joinedAt: "2026-11-05T07:05:55.546Z"
         }
       ],
       budgetCurrency: "INR"
@@ -453,8 +473,8 @@ var splitsmart_db_default = {
       category: "Entertainment",
       currency: "INR",
       creatorId: "usr_rahul",
-      createdAt: "2026-09-21T06:43:50.905Z",
-      updatedAt: "2026-11-05T06:43:50.905Z",
+      createdAt: "2026-09-21T07:05:55.360Z",
+      updatedAt: "2026-11-05T07:05:55.360Z",
       members: [
         {
           id: "gm_5",
@@ -463,7 +483,7 @@ var splitsmart_db_default = {
           name: "Rahul Sharma",
           email: "rahul@example.com",
           role: "ADMIN",
-          joinedAt: "2026-09-21T06:43:50.905Z"
+          joinedAt: "2026-09-21T07:05:55.360Z"
         },
         {
           id: "gm_6",
@@ -472,7 +492,7 @@ var splitsmart_db_default = {
           name: "Priya Patel",
           email: "priya@example.com",
           role: "MEMBER",
-          joinedAt: "2026-09-21T06:43:50.905Z"
+          joinedAt: "2026-09-21T07:05:55.360Z"
         },
         {
           id: "gm_7",
@@ -481,7 +501,7 @@ var splitsmart_db_default = {
           name: "Aman Gupta",
           email: "aman@example.com",
           role: "MEMBER",
-          joinedAt: "2026-09-21T06:43:50.905Z"
+          joinedAt: "2026-09-21T07:05:55.360Z"
         }
       ]
     },
@@ -492,8 +512,8 @@ var splitsmart_db_default = {
       category: "Utilities",
       currency: "INR",
       creatorId: "usr_aman",
-      createdAt: "2026-09-06T06:43:50.905Z",
-      updatedAt: "2026-11-05T06:43:50.905Z",
+      createdAt: "2026-09-06T07:05:55.360Z",
+      updatedAt: "2026-11-05T07:05:55.360Z",
       members: [
         {
           id: "gm_8",
@@ -502,7 +522,7 @@ var splitsmart_db_default = {
           name: "Rahul Sharma",
           email: "rahul@example.com",
           role: "MEMBER",
-          joinedAt: "2026-09-06T06:43:50.905Z"
+          joinedAt: "2026-09-06T07:05:55.360Z"
         },
         {
           id: "gm_9",
@@ -511,7 +531,7 @@ var splitsmart_db_default = {
           name: "Aman Gupta",
           email: "aman@example.com",
           role: "ADMIN",
-          joinedAt: "2026-09-06T06:43:50.905Z"
+          joinedAt: "2026-09-06T07:05:55.360Z"
         }
       ]
     }
@@ -559,8 +579,8 @@ var splitsmart_db_default = {
         }
       ],
       notes: "3 nights stay near Baga Beach with breakfast included",
-      createdAt: "2026-10-31T06:43:50.905Z",
-      updatedAt: "2026-11-05T06:43:50.905Z"
+      createdAt: "2026-10-31T07:05:55.360Z",
+      updatedAt: "2026-11-05T07:05:55.360Z"
     },
     {
       id: "exp_2",
@@ -604,8 +624,8 @@ var splitsmart_db_default = {
         }
       ],
       notes: "Candlelight dinner at Curlies Beach Shack",
-      createdAt: "2026-11-01T06:43:50.905Z",
-      updatedAt: "2026-11-05T06:43:50.905Z"
+      createdAt: "2026-11-01T07:05:55.360Z",
+      updatedAt: "2026-11-05T07:05:55.360Z"
     },
     {
       id: "exp_3",
@@ -649,8 +669,8 @@ var splitsmart_db_default = {
         }
       ],
       notes: "Airport pickup and north Goa cruising",
-      createdAt: "2026-11-02T06:43:50.905Z",
-      updatedAt: "2026-11-05T06:43:50.905Z"
+      createdAt: "2026-11-02T07:05:55.360Z",
+      updatedAt: "2026-11-05T07:05:55.360Z"
     },
     {
       id: "exp_4",
@@ -687,8 +707,8 @@ var splitsmart_db_default = {
         }
       ],
       notes: "Pizzas, pasta and tiramisu",
-      createdAt: "2026-11-03T06:43:50.905Z",
-      updatedAt: "2026-11-05T06:43:50.905Z"
+      createdAt: "2026-11-03T07:05:55.360Z",
+      updatedAt: "2026-11-05T07:05:55.360Z"
     },
     {
       id: "exp_5",
@@ -718,8 +738,8 @@ var splitsmart_db_default = {
         }
       ],
       notes: "Monthly connection bill",
-      createdAt: "2026-11-04T06:43:50.905Z",
-      updatedAt: "2026-11-05T06:43:50.905Z"
+      createdAt: "2026-11-04T07:05:55.360Z",
+      updatedAt: "2026-11-05T07:05:55.360Z"
     }
   ],
   settlements: [
@@ -850,7 +870,7 @@ var splitsmart_db_default = {
       method: "PAYPAL",
       status: "COMPLETED",
       reference: "PP-TXN-88492019",
-      createdAt: "2026-11-03T06:43:50.905Z",
+      createdAt: "2026-11-03T07:05:55.360Z",
       metadata: {
         note: "Villa booking share settled via PayPal Sandbox"
       }
@@ -866,14 +886,14 @@ var splitsmart_db_default = {
       currency: "INR",
       method: "CREDIT_CARD",
       status: "COMPLETED",
-      reference: "SS-CRD-1793861031089",
-      receiptNumber: "REC-1793861031089-CRD",
+      reference: "SS-CRD-1793862355534",
+      receiptNumber: "REC-1793862355534-CRD",
       metadata: {
         cardMasked: "\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 4242",
         verified: true
       },
-      id: "pay_81d5j3f",
-      createdAt: "2026-11-05T06:43:51.089Z"
+      id: "pay_gol4p7r",
+      createdAt: "2026-11-05T07:05:55.534Z"
     }
   ],
   notifications: [
@@ -884,7 +904,7 @@ var splitsmart_db_default = {
       message: "Sneha Roy settled \u20B93,500 for Beach Resort Villa Booking via PayPal Sandbox.",
       type: "PAYMENT",
       isRead: false,
-      createdAt: "2026-11-03T06:43:50.905Z",
+      createdAt: "2026-11-03T07:05:55.360Z",
       link: "/transactions"
     },
     {
@@ -894,7 +914,7 @@ var splitsmart_db_default = {
       message: 'Aman Gupta added "High-Speed Fiber WiFi & Electricity" (\u20B92,400) in Roommates Flat 402.',
       type: "EXPENSE",
       isRead: false,
-      createdAt: "2026-11-04T06:43:50.905Z",
+      createdAt: "2026-11-04T07:05:55.360Z",
       link: "/groups/grp_roommates"
     },
     {
@@ -904,7 +924,7 @@ var splitsmart_db_default = {
       message: "Food and Accommodation account for 61% of your group spending this month.",
       type: "ALERT",
       isRead: true,
-      createdAt: "2026-11-02T06:43:50.905Z",
+      createdAt: "2026-11-02T07:05:55.360Z",
       link: "/analytics"
     },
     {
@@ -914,7 +934,7 @@ var splitsmart_db_default = {
       message: "Sneha Roy (@sneharoy_402) sent you a friend request.",
       type: "FRIEND_REQUEST",
       isRead: false,
-      createdAt: "2026-11-05T04:43:50.905Z",
+      createdAt: "2026-11-05T05:05:55.360Z",
       link: "/contacts",
       metadata: {
         friendRequestId: "freq_demo_sneha",
@@ -924,100 +944,100 @@ var splitsmart_db_default = {
       }
     },
     {
-      userId: "usr_s2t60qr",
+      userId: "usr_vjzd1q4",
       title: "New Friend Request \u{1F44B}",
-      message: "Harsh Joshi (@harshjoshi_165) sent you a friend request.",
+      message: "Harsh Joshi (@harshjoshi_611) sent you a friend request.",
       type: "FRIEND_REQUEST",
       link: "/contacts",
       metadata: {
-        friendRequestId: "freq_d70risy",
-        senderId: "usr_xs91kov",
+        friendRequestId: "freq_r63e2ua",
+        senderId: "usr_uxqpgrr",
         senderName: "Harsh Joshi",
-        senderUsername: "@harshjoshi_165"
+        senderUsername: "@harshjoshi_611"
       },
-      id: "notif_hchfeh1",
+      id: "notif_63md18n",
       isRead: true,
-      createdAt: "2026-11-05T06:43:51.115Z"
+      createdAt: "2026-11-05T07:05:55.562Z"
     },
     {
-      userId: "usr_xs91kov",
+      userId: "usr_uxqpgrr",
       title: "Friend Request Accepted \u{1F389}",
-      message: "Rahul Patel (@rahulpatel_337) accepted your friend request. You can now chat privately!",
+      message: "Rahul Patel (@rahulpatel_985) accepted your friend request. You can now chat privately!",
       type: "FRIEND_REQUEST",
       link: "/contacts",
       metadata: {
-        friendRequestId: "freq_d70risy",
-        acceptedUserId: "usr_s2t60qr"
+        friendRequestId: "freq_r63e2ua",
+        acceptedUserId: "usr_vjzd1q4"
       },
-      id: "notif_kyvimv0",
+      id: "notif_vn7sni0",
       isRead: false,
-      createdAt: "2026-11-05T06:43:51.124Z"
+      createdAt: "2026-11-05T07:05:55.571Z"
     },
     {
-      userId: "usr_xs91kov",
+      userId: "usr_uxqpgrr",
       title: "New Friend Request \u{1F44B}",
-      message: "Vikram Singh (@vikramsingh_542) sent you a friend request.",
+      message: "Vikram Singh (@vikramsingh_368) sent you a friend request.",
       type: "FRIEND_REQUEST",
       link: "/contacts",
       metadata: {
-        friendRequestId: "freq_j4xfvu8",
-        senderId: "usr_qhjo3b0",
+        friendRequestId: "freq_h23u60b",
+        senderId: "usr_q465ho1",
         senderName: "Vikram Singh",
-        senderUsername: "@vikramsingh_542"
+        senderUsername: "@vikramsingh_368"
       },
-      id: "notif_uhtmi4v",
+      id: "notif_zoowbg6",
       isRead: true,
-      createdAt: "2026-11-05T06:43:51.130Z"
+      createdAt: "2026-11-05T07:05:55.596Z"
     },
     {
-      userId: "usr_s2t60qr",
+      userId: "usr_vjzd1q4",
       title: "New Message from Harsh Joshi",
       message: "Hello Rahul! How is the trip planning going?",
       type: "MESSAGE",
-      link: "/contacts?chat=usr_xs91kov",
-      id: "notif_qsgxv8q",
+      link: "/contacts?chat=usr_uxqpgrr",
+      id: "notif_c1wb1li",
       isRead: false,
-      createdAt: "2026-11-05T06:43:51.137Z"
+      createdAt: "2026-11-05T07:05:55.604Z"
     },
     {
-      userId: "usr_xs91kov",
+      userId: "usr_uxqpgrr",
       title: "New Message from Rahul Patel",
       message: "Hey Harsh! Everything is booked. I will share the receipt.",
       type: "MESSAGE",
-      link: "/contacts?chat=usr_s2t60qr",
-      id: "notif_hsv6cs3",
+      link: "/contacts?chat=usr_vjzd1q4",
+      id: "notif_zpoetnv",
       isRead: false,
-      createdAt: "2026-11-05T06:43:51.141Z"
+      createdAt: "2026-11-05T07:05:55.609Z"
     },
     {
-      userId: "usr_s2t60qr",
+      userId: "usr_vjzd1q4",
       title: "New File from Harsh Joshi",
       message: "Harsh Joshi sent you an image: GoaResortBooking.jpg",
       type: "MESSAGE",
-      link: "/contacts?chat=usr_xs91kov",
-      id: "notif_tjza77b",
+      link: "/contacts?chat=usr_uxqpgrr",
+      id: "notif_hry55i3",
       isRead: false,
-      createdAt: "2026-11-05T06:43:51.149Z"
+      createdAt: "2026-11-05T07:05:55.615Z"
     },
     {
-      userId: "usr_s2t60qr",
+      userId: "usr_vjzd1q4",
       title: "New File from Harsh Joshi",
       message: "Harsh Joshi sent you a file: FlightTickets.pdf",
       type: "MESSAGE",
-      link: "/contacts?chat=usr_xs91kov",
-      id: "notif_3hmp3a9",
+      link: "/contacts?chat=usr_uxqpgrr",
+      id: "notif_mt3udkr",
       isRead: false,
-      createdAt: "2026-11-05T06:43:51.154Z"
+      createdAt: "2026-11-05T07:05:55.620Z"
     },
     {
-      userId: "usr_s2t60qr",
+      userId: "usr_vjzd1q4",
       title: "Payment Receipt Shared by Harsh Joshi",
       message: "Harsh Joshi shared a settlement receipt for INR 1,200 (Goa Trip 2026).",
       type: "PAYMENT",
-      link: "/contacts?chat=usr_xs91kov",
-      id: "notif_ca2k87q",
+      link: "/contacts?chat=usr_uxqpgrr",
+      id: "notif_71smq68",
       isRead: false,
-      createdAt: "2026-11-05T06:43:51.158Z"
+      createdAt: "2026-11-05T07:05:55.624Z"
     }
   ],
   friendRequests: [
@@ -1031,32 +1051,32 @@ var splitsmart_db_default = {
       receiverName: "Rahul Sharma",
       receiverUsername: "@rahulsharma_101",
       status: "PENDING",
-      createdAt: "2026-11-05T04:43:50.905Z",
-      updatedAt: "2026-11-05T04:43:50.905Z"
+      createdAt: "2026-11-05T05:05:55.360Z",
+      updatedAt: "2026-11-05T05:05:55.360Z"
     },
     {
-      id: "freq_d70risy",
-      senderId: "usr_xs91kov",
+      id: "freq_r63e2ua",
+      senderId: "usr_uxqpgrr",
       senderName: "Harsh Joshi",
-      senderUsername: "@harshjoshi_165",
-      receiverId: "usr_s2t60qr",
+      senderUsername: "@harshjoshi_611",
+      receiverId: "usr_vjzd1q4",
       receiverName: "Rahul Patel",
-      receiverUsername: "@rahulpatel_337",
+      receiverUsername: "@rahulpatel_985",
       status: "ACCEPTED",
-      createdAt: "2026-11-05T06:43:51.115Z",
-      updatedAt: "2026-11-05T06:43:51.120Z"
+      createdAt: "2026-11-05T07:05:55.562Z",
+      updatedAt: "2026-11-05T07:05:55.566Z"
     },
     {
-      id: "freq_j4xfvu8",
-      senderId: "usr_qhjo3b0",
+      id: "freq_h23u60b",
+      senderId: "usr_q465ho1",
       senderName: "Vikram Singh",
-      senderUsername: "@vikramsingh_542",
-      receiverId: "usr_xs91kov",
+      senderUsername: "@vikramsingh_368",
+      receiverId: "usr_uxqpgrr",
       receiverName: "Harsh Joshi",
-      receiverUsername: "@harshjoshi_165",
+      receiverUsername: "@harshjoshi_611",
       status: "DECLINED",
-      createdAt: "2026-11-05T06:43:51.130Z",
-      updatedAt: "2026-11-05T06:43:51.135Z"
+      createdAt: "2026-11-05T07:05:55.596Z",
+      updatedAt: "2026-11-05T07:05:55.600Z"
     }
   ],
   contacts: [
@@ -1064,25 +1084,25 @@ var splitsmart_db_default = {
       id: "cnt_1",
       userId: "usr_rahul",
       contactUserId: "usr_priya",
-      createdAt: "2026-10-11T06:43:50.905Z"
+      createdAt: "2026-10-11T07:05:55.360Z"
     },
     {
       id: "cnt_2",
       userId: "usr_priya",
       contactUserId: "usr_rahul",
-      createdAt: "2026-10-11T06:43:50.905Z"
+      createdAt: "2026-10-11T07:05:55.360Z"
     },
     {
       id: "cnt_3",
       userId: "usr_rahul",
       contactUserId: "usr_aman",
-      createdAt: "2026-10-16T06:43:50.905Z"
+      createdAt: "2026-10-16T07:05:55.360Z"
     },
     {
       id: "cnt_4",
       userId: "usr_aman",
       contactUserId: "usr_rahul",
-      createdAt: "2026-10-16T06:43:50.905Z"
+      createdAt: "2026-10-16T07:05:55.360Z"
     }
   ],
   chatMessages: [
@@ -1098,7 +1118,7 @@ var splitsmart_db_default = {
       receiverUsername: "@rahulsharma_101",
       type: "TEXT",
       text: "Hey Rahul! Did you receive the settlement for Beach Resort Villa Booking?",
-      createdAt: "2026-11-03T18:43:50.905Z",
+      createdAt: "2026-11-03T19:05:55.360Z",
       isRead: true
     },
     {
@@ -1113,7 +1133,7 @@ var splitsmart_db_default = {
       receiverAvatarUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80",
       type: "TEXT",
       text: "Yes! All confirmed on PayPal Sandbox. Here is the verified payment receipt for your records:",
-      createdAt: "2026-11-03T19:43:50.905Z",
+      createdAt: "2026-11-03T20:05:55.360Z",
       isRead: true
     },
     {
@@ -1133,52 +1153,52 @@ var splitsmart_db_default = {
         amount: 3500,
         currency: "INR",
         groupName: "Goa Trip 2026",
-        date: "2026-11-03T06:43:50.905Z",
+        date: "2026-11-03T07:05:55.360Z",
         status: "COMPLETED",
         payerName: "Sneha Roy",
         recipientName: "Rahul Sharma",
         receiptNumber: "REC-2026-88492"
       },
-      createdAt: "2026-11-03T20:43:50.905Z",
+      createdAt: "2026-11-03T21:05:55.360Z",
       isRead: true
     },
     {
-      id: "msg_7w82c913l",
-      conversationId: "usr_s2t60qr:usr_xs91kov",
-      senderId: "usr_xs91kov",
+      id: "msg_oc4ti2xoq",
+      conversationId: "usr_uxqpgrr:usr_vjzd1q4",
+      senderId: "usr_uxqpgrr",
       senderName: "Harsh Joshi",
-      senderUsername: "@harshjoshi_165",
-      receiverId: "usr_s2t60qr",
+      senderUsername: "@harshjoshi_611",
+      receiverId: "usr_vjzd1q4",
       receiverName: "Rahul Patel",
-      receiverUsername: "@rahulpatel_337",
+      receiverUsername: "@rahulpatel_985",
       type: "TEXT",
       text: "Hello Rahul! How is the trip planning going?",
-      createdAt: "2026-11-05T06:43:51.137Z",
+      createdAt: "2026-11-05T07:05:55.604Z",
       isRead: false
     },
     {
-      id: "msg_5xrieegy8",
-      conversationId: "usr_s2t60qr:usr_xs91kov",
-      senderId: "usr_s2t60qr",
+      id: "msg_5j1wc3g05",
+      conversationId: "usr_uxqpgrr:usr_vjzd1q4",
+      senderId: "usr_vjzd1q4",
       senderName: "Rahul Patel",
-      senderUsername: "@rahulpatel_337",
-      receiverId: "usr_xs91kov",
+      senderUsername: "@rahulpatel_985",
+      receiverId: "usr_uxqpgrr",
       receiverName: "Harsh Joshi",
-      receiverUsername: "@harshjoshi_165",
+      receiverUsername: "@harshjoshi_611",
       type: "TEXT",
       text: "Hey Harsh! Everything is booked. I will share the receipt.",
-      createdAt: "2026-11-05T06:43:51.141Z",
+      createdAt: "2026-11-05T07:05:55.609Z",
       isRead: true
     },
     {
-      id: "msg_f9d42ci06",
-      conversationId: "usr_s2t60qr:usr_xs91kov",
-      senderId: "usr_xs91kov",
+      id: "msg_4hchedn3v",
+      conversationId: "usr_uxqpgrr:usr_vjzd1q4",
+      senderId: "usr_uxqpgrr",
       senderName: "Harsh Joshi",
-      senderUsername: "@harshjoshi_165",
-      receiverId: "usr_s2t60qr",
+      senderUsername: "@harshjoshi_611",
+      receiverId: "usr_vjzd1q4",
       receiverName: "Rahul Patel",
-      receiverUsername: "@rahulpatel_337",
+      receiverUsername: "@rahulpatel_985",
       type: "IMAGE",
       attachment: {
         id: "att_test_img_1",
@@ -1186,20 +1206,20 @@ var splitsmart_db_default = {
         originalName: "GoaResortBooking.jpg",
         mimeType: "image/jpeg",
         size: 245100,
-        uploadedAt: "2026-11-05T06:43:51.148Z"
+        uploadedAt: "2026-11-05T07:05:55.615Z"
       },
-      createdAt: "2026-11-05T06:43:51.149Z",
+      createdAt: "2026-11-05T07:05:55.615Z",
       isRead: false
     },
     {
-      id: "msg_k0plbl32q",
-      conversationId: "usr_s2t60qr:usr_xs91kov",
-      senderId: "usr_xs91kov",
+      id: "msg_eujcjz7ab",
+      conversationId: "usr_uxqpgrr:usr_vjzd1q4",
+      senderId: "usr_uxqpgrr",
       senderName: "Harsh Joshi",
-      senderUsername: "@harshjoshi_165",
-      receiverId: "usr_s2t60qr",
+      senderUsername: "@harshjoshi_611",
+      receiverId: "usr_vjzd1q4",
       receiverName: "Rahul Patel",
-      receiverUsername: "@rahulpatel_337",
+      receiverUsername: "@rahulpatel_985",
       type: "FILE",
       attachment: {
         id: "att_test_pdf_1",
@@ -1207,34 +1227,34 @@ var splitsmart_db_default = {
         originalName: "FlightTickets.pdf",
         mimeType: "application/pdf",
         size: 512e3,
-        uploadedAt: "2026-11-05T06:43:51.154Z"
+        uploadedAt: "2026-11-05T07:05:55.619Z"
       },
-      createdAt: "2026-11-05T06:43:51.154Z",
+      createdAt: "2026-11-05T07:05:55.620Z",
       isRead: false
     },
     {
-      id: "msg_hkqcv5zd1",
-      conversationId: "usr_s2t60qr:usr_xs91kov",
-      senderId: "usr_xs91kov",
+      id: "msg_68p5tvjm5",
+      conversationId: "usr_uxqpgrr:usr_vjzd1q4",
+      senderId: "usr_uxqpgrr",
       senderName: "Harsh Joshi",
-      senderUsername: "@harshjoshi_165",
-      receiverId: "usr_s2t60qr",
+      senderUsername: "@harshjoshi_611",
+      receiverId: "usr_vjzd1q4",
       receiverName: "Rahul Patel",
-      receiverUsername: "@rahulpatel_337",
+      receiverUsername: "@rahulpatel_985",
       type: "RECEIPT",
       receipt: {
-        paymentId: "pay_81d5j3f",
-        reference: "SS-CRD-1793861031089",
+        paymentId: "pay_gol4p7r",
+        reference: "SS-CRD-1793862355534",
         amount: 1200,
         currency: "INR",
         groupName: "Goa Trip 2026",
-        date: "2026-11-05T06:43:51.089Z",
+        date: "2026-11-05T07:05:55.534Z",
         status: "COMPLETED",
         payerName: "Rahul Sharma",
         recipientName: "Priya Patel",
-        receiptNumber: "REC-1793861031089-CRD"
+        receiptNumber: "REC-1793862355534-CRD"
       },
-      createdAt: "2026-11-05T06:43:51.158Z",
+      createdAt: "2026-11-05T07:05:55.624Z",
       isRead: false
     }
   ]
@@ -2553,10 +2573,7 @@ var EmailService = class {
         try {
           this.transporter = nodemailer.createTransport({
             service: "gmail",
-            auth: { user, pass },
-            connectionTimeout: 2500,
-            greetingTimeout: 2500,
-            socketTimeout: 2500
+            auth: { user, pass }
           });
           this.isSmtpConfigured = true;
           console.log(`\u2705 Gmail SMTP Email service configured successfully for ${user}.`);
@@ -2570,10 +2587,7 @@ var EmailService = class {
           host,
           port,
           secure: port === 465,
-          auth: { user, pass },
-          connectionTimeout: 2500,
-          greetingTimeout: 2500,
-          socketTimeout: 2500
+          auth: { user, pass }
         });
         this.isSmtpConfigured = true;
         console.log(`\u2705 SMTP Email service configured successfully (${host}:${port}).`);
@@ -2595,10 +2609,23 @@ var EmailService = class {
   }
   async dispatchHtmlEmail(options) {
     const { to, subject, html, textFallback } = options;
-    const fromAddress = process.env.SMTP_FROM || process.env.EMAIL_FROM || "SplitSmart AI <no-reply@splitsmart.ai>";
-    const isVercel = !!process.env.VERCEL;
-    const tryResend = async () => {
-      if (!this.resendApiKey) return null;
+    const fromAddress = process.env.SMTP_FROM || process.env.EMAIL_FROM || "SplitSmart AI <harsh2007joshi@gmail.com>";
+    if (this.isSmtpConfigured && this.transporter) {
+      try {
+        await this.transporter.sendMail({
+          from: fromAddress,
+          to,
+          subject,
+          html,
+          text: textFallback
+        });
+        console.log(`\u2709\uFE0F Email successfully dispatched to ${to} via Gmail SMTP.`);
+        return { delivered: true, devMode: false };
+      } catch (err) {
+        console.warn(`\u26A0\uFE0F Failed to send email via SMTP to ${to} (trying fallback):`, err.message);
+      }
+    }
+    if (this.resendApiKey) {
       try {
         const response = await fetch("https://api.resend.com/emails", {
           method: "POST",
@@ -2606,7 +2633,6 @@ var EmailService = class {
             Authorization: `Bearer ${this.resendApiKey}`,
             "Content-Type": "application/json"
           },
-          signal: AbortSignal.timeout(3e3),
           body: JSON.stringify({
             from: process.env.RESEND_FROM || "SplitSmart AI <onboarding@resend.dev>",
             to: [to],
@@ -2620,54 +2646,11 @@ var EmailService = class {
           return { delivered: true, devMode: false };
         } else {
           const errBody = await response.text();
-          console.error(`\u26A0\uFE0F Resend API returned error for ${to}:`, errBody);
-          let errDetail = errBody;
-          try {
-            const parsed = JSON.parse(errBody);
-            errDetail = parsed.message || errBody;
-          } catch {
-          }
-          if (errDetail.toLowerCase().includes("only send testing emails") || errDetail.toLowerCase().includes("verify your domain") || errDetail.toLowerCase().includes("validation_error")) {
-            errDetail = `Resend test mode (onboarding@resend.dev) only delivers to your registered account (harsh2007joshi@gmail.com). To email friends directly, connect your custom domain at resend.com/domains or configure Gmail SMTP in .env.`;
-          }
-          return { delivered: false, devMode: true, error: errDetail };
+          console.warn(`\u26A0\uFE0F Resend API returned error for ${to}:`, errBody);
         }
       } catch (err) {
-        console.error("\u26A0\uFE0F Resend API fetch failed:", err.message);
-        return { delivered: false, devMode: true, error: err.message };
+        console.warn("\u26A0\uFE0F Resend API fetch failed:", err.message);
       }
-    };
-    const trySmtp = async () => {
-      if (!this.isSmtpConfigured || !this.transporter) return null;
-      try {
-        await Promise.race([
-          this.transporter.sendMail({
-            from: fromAddress,
-            to,
-            subject,
-            html,
-            text: textFallback
-          }),
-          new Promise((_, reject) => setTimeout(() => reject(new Error("SMTP timeout")), 2500))
-        ]);
-        console.log(`\u2709\uFE0F Email successfully dispatched to ${to} via SMTP.`);
-        return { delivered: true, devMode: false };
-      } catch (err) {
-        console.warn(`\u26A0\uFE0F Failed to send email via SMTP to ${to} (falling back):`, err.message);
-        return null;
-      }
-    };
-    if (isVercel && this.resendApiKey) {
-      const resendRes = await tryResend();
-      if (resendRes && resendRes.delivered) return resendRes;
-      const smtpRes = await trySmtp();
-      if (smtpRes && smtpRes.delivered) return smtpRes;
-      if (resendRes) return resendRes;
-    } else {
-      const smtpRes = await trySmtp();
-      if (smtpRes && smtpRes.delivered) return smtpRes;
-      const resendRes = await tryResend();
-      if (resendRes) return resendRes;
     }
     console.log("\n============================================================");
     console.log(`\u{1F4E8} [DEV EMAIL DISPATCH - CONSOLE FALLBACK]`);
@@ -3067,39 +3050,23 @@ router.post("/register", async (req, res) => {
     let code = "";
     try {
       code = db.createVerificationOtp(newUser.id, newUser.email);
-      emailResult = await Promise.race([
-        emailService.sendOtp({
-          to: newUser.email,
-          name: newUser.name,
-          code,
-          type: "VERIFICATION",
-          expiryMinutes: 15
-        }),
-        new Promise(
-          (resolve) => setTimeout(
-            () => resolve({
-              delivered: false,
-              devMode: true,
-              code,
-              message: "Email timeout fallback"
-            }),
-            2500
-          )
-        )
-      ]);
+      emailResult = await emailService.sendOtp({
+        to: newUser.email,
+        name: newUser.name,
+        code,
+        type: "VERIFICATION",
+        expiryMinutes: 15
+      });
     } catch (emailErr) {
       console.warn("Email dispatch warning (proceeding with registration):", emailErr);
     }
-    const effectiveOtp = phoneDispatch?.otp || code;
     res.status(201).json({
-      message: phoneNumber ? "Account created successfully! 6-digit OTP code sent via 2Factor.in SMS and email." : "Account created successfully. A verification code has been sent to your email.",
+      message: phoneNumber ? "Account created successfully! 6-digit OTP code sent to your email." : "Account created successfully. A verification code has been sent to your email.",
       userId: newUser.id,
       username: newUser.username,
       email: newUser.email,
       phoneNumber: newUser.phoneNumber,
       requiresVerification: true,
-      otpCode: effectiveOtp,
-      devCode: effectiveOtp,
       emailDispatch: emailResult,
       phoneDispatch
     });
@@ -3162,33 +3129,18 @@ router.post("/resend-verification", async (req, res) => {
     const code = db.createVerificationOtp(user.id, user.email);
     let emailResult = null;
     try {
-      emailResult = await Promise.race([
-        emailService.sendOtp({
-          to: user.email,
-          name: user.name,
-          code,
-          type: "VERIFICATION",
-          expiryMinutes: 15
-        }),
-        new Promise(
-          (resolve) => setTimeout(
-            () => resolve({
-              delivered: false,
-              devMode: true,
-              code,
-              message: "Email timeout fallback"
-            }),
-            2500
-          )
-        )
-      ]);
+      emailResult = await emailService.sendOtp({
+        to: user.email,
+        name: user.name,
+        code,
+        type: "VERIFICATION",
+        expiryMinutes: 15
+      });
     } catch (e) {
       console.warn("Resend email warning:", e);
     }
     res.json({
       message: `A new verification code was sent to ${user.email}`,
-      otpCode: code,
-      devCode: code,
       emailDispatch: emailResult
     });
   } catch (err) {
@@ -3215,16 +3167,13 @@ router.post("/login", async (req, res) => {
     if (!user.isEmailVerified) {
       const code = db.createVerificationOtp(user.id, user.email);
       try {
-        await Promise.race([
-          emailService.sendOtp({
-            to: user.email,
-            name: user.name,
-            code,
-            type: "VERIFICATION",
-            expiryMinutes: 15
-          }),
-          new Promise((resolve) => setTimeout(resolve, 2500))
-        ]);
+        await emailService.sendOtp({
+          to: user.email,
+          name: user.name,
+          code,
+          type: "VERIFICATION",
+          expiryMinutes: 15
+        });
       } catch (e) {
         console.warn("Login verification email warning:", e);
       }
@@ -3232,9 +3181,7 @@ router.post("/login", async (req, res) => {
         error: "Please verify your email address to log in.",
         requiresVerification: true,
         userId: user.id,
-        email: user.email,
-        otpCode: code,
-        devCode: code
+        email: user.email
       });
       return;
     }

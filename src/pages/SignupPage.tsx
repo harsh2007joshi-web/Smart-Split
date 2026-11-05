@@ -105,12 +105,7 @@ export const SignupPage: React.FC = () => {
       setVerificationPhone(phoneNumber.trim());
       setIsVerifying(true);
       setResendCooldown(45);
-      const otp = data.otpCode || data.devCode || data.phoneDispatch?.otp || data.emailDispatch?.code;
-      if (data.emailDispatch?.devMode || data.phoneDispatch?.devMode) {
-        setVerificationMessage(`Verification OTP Code: [ ${otp} ] (Enter this 6-digit code below)`);
-      } else {
-        setVerificationMessage(`Verification code sent to ${data.phoneNumber ? `+91 ${cleanPhone} and ` : ''}${data.email}.`);
-      }
+      setVerificationMessage(`A 6-digit verification code has been sent to your email (${data.email}). Please check your inbox or spam folder.`);
     } catch (err: any) {
       setErrorMessage(err.message || 'Registration failed. Please check your information.');
     } finally {
@@ -176,7 +171,7 @@ export const SignupPage: React.FC = () => {
     try {
       const res = await resendVerification(verificationUserId);
       setResendCooldown(60);
-      setVerificationMessage(`New verification code sent to ${verificationEmail}`);
+      setVerificationMessage(`New verification code sent to ${verificationEmail}. Please check your inbox or spam folder.`);
     } catch (err: any) {
       setErrorMessage(err.message || 'Failed to resend code.');
     }
@@ -420,10 +415,9 @@ export const SignupPage: React.FC = () => {
                       Verify Your Account
                     </h2>
                     <p className="text-xs sm:text-sm text-[#64748B] dark:text-[#A1A1AA] mt-1">
-                      Enter the 6-digit code sent via <strong className="text-[#1685F8] dark:text-[#2589FF]">2Factor.in SMS</strong> to{' '}
-                      {verificationPhone ? <strong className="text-[#10274A] dark:text-[#F5F5F5]">+91 {verificationPhone}</strong> : null}
-                      {verificationPhone && verificationEmail ? ' & ' : ''}
+                      Enter the 6-digit code sent to{' '}
                       <strong className="text-[#10274A] dark:text-[#F5F5F5]">{verificationEmail}</strong>
+                      {verificationPhone ? <span> & <strong className="text-[#10274A] dark:text-[#F5F5F5]">+91 {verificationPhone}</strong></span> : null}
                     </p>
                   </div>
 

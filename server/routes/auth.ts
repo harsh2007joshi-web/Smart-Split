@@ -158,44 +158,26 @@ router.post('/register', async (req: Request, res: Response): Promise<void> => {
     let code = '';
     try {
       code = db.createVerificationOtp(newUser.id, newUser.email);
-      emailResult = await Promise.race([
-        emailService.sendOtp({
-          to: newUser.email,
-          name: newUser.name,
-          code,
-          type: 'VERIFICATION',
-          expiryMinutes: 15,
-        }),
-        new Promise<any>((resolve) =>
-          setTimeout(
-            () =>
-              resolve({
-                delivered: false,
-                devMode: true,
-                code,
-                message: 'Email timeout fallback',
-              }),
-            2500
-          )
-        ),
-      ]);
+      emailResult = await emailService.sendOtp({
+        to: newUser.email,
+        name: newUser.name,
+        code,
+        type: 'VERIFICATION',
+        expiryMinutes: 15,
+      });
     } catch (emailErr) {
       console.warn('Email dispatch warning (proceeding with registration):', emailErr);
     }
 
-    const effectiveOtp = phoneDispatch?.otp || code;
-
     res.status(201).json({
       message: phoneNumber
-        ? 'Account created successfully! 6-digit OTP code sent via 2Factor.in SMS and email.'
+        ? 'Account created successfully! 6-digit OTP code sent to your email.'
         : 'Account created successfully. A verification code has been sent to your email.',
       userId: newUser.id,
       username: newUser.username,
       email: newUser.email,
       phoneNumber: newUser.phoneNumber,
       requiresVerification: true,
-      otpCode: effectiveOtp,
-      devCode: effectiveOtp,
       emailDispatch: emailResult,
       phoneDispatch,
     });
@@ -268,35 +250,19 @@ router.post('/resend-verification', async (req: Request, res: Response): Promise
     const code = db.createVerificationOtp(user.id, user.email);
     let emailResult: any = null;
     try {
-      emailResult = await Promise.race([
-        emailService.sendOtp({
-          to: user.email,
-          name: user.name,
-          code,
-          type: 'VERIFICATION',
-          expiryMinutes: 15,
-        }),
-        new Promise<any>((resolve) =>
-          setTimeout(
-            () =>
-              resolve({
-                delivered: false,
-                devMode: true,
-                code,
-                message: 'Email timeout fallback',
-              }),
-            2500
-          )
-        ),
-      ]);
+      emailResult = await emailService.sendOtp({
+        to: user.email,
+        name: user.name,
+        code,
+        type: 'VERIFICATION',
+        expiryMinutes: 15,
+      });
     } catch (e) {
       console.warn('Resend email warning:', e);
     }
 
     res.json({
       message: `A new verification code was sent to ${user.email}`,
-      otpCode: code,
-      devCode: code,
       emailDispatch: emailResult,
     });
   } catch (err) {
@@ -328,16 +294,13 @@ router.post('/login', async (req: Request, res: Response): Promise<void> => {
     if (!user.isEmailVerified) {
       const code = db.createVerificationOtp(user.id, user.email);
       try {
-        await Promise.race([
-          emailService.sendOtp({
-            to: user.email,
-            name: user.name,
-            code,
-            type: 'VERIFICATION',
-            expiryMinutes: 15,
-          }),
-          new Promise((resolve) => setTimeout(resolve, 2500)),
-        ]);
+        await emailService.sendOtp({
+          to: user.email,
+          name: user.name,
+          code,
+          type: 'VERIFICATION',
+          expiryMinutes: 15,
+        });
       } catch (e) {
         console.warn('Login verification email warning:', e);
       }
@@ -347,8 +310,6 @@ router.post('/login', async (req: Request, res: Response): Promise<void> => {
         requiresVerification: true,
         userId: user.id,
         email: user.email,
-        otpCode: code,
-        devCode: code,
       });
       return;
     }

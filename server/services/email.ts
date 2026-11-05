@@ -47,9 +47,6 @@ class EmailService {
           this.transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: { user, pass },
-            connectionTimeout: 2500,
-            greetingTimeout: 2500,
-            socketTimeout: 2500,
           });
           this.isSmtpConfigured = true;
           console.log(`✅ Gmail SMTP Email service configured successfully for ${user}.`);
@@ -64,9 +61,6 @@ class EmailService {
           port,
           secure: port === 465,
           auth: { user, pass },
-          connectionTimeout: 2500,
-          greetingTimeout: 2500,
-          socketTimeout: 2500,
         });
         this.isSmtpConfigured = true;
         console.log(`✅ SMTP Email service configured successfully (${host}:${port}).`);
@@ -97,11 +91,25 @@ class EmailService {
     textFallback?: string;
   }): Promise<{ delivered: boolean; devMode: boolean; error?: string }> {
     const { to, subject, html, textFallback } = options;
-    const fromAddress = process.env.SMTP_FROM || process.env.EMAIL_FROM || 'SplitSmart AI <no-reply@splitsmart.ai>';
-    const isVercel = !!process.env.VERCEL;
+    const fromAddress = process.env.SMTP_FROM || process.env.EMAIL_FROM || 'SplitSmart AI <harsh2007joshi@gmail.com>';
 
-    const tryResend = async (): Promise<{ delivered: boolean; devMode: boolean; error?: string } | null> => {
-      if (!this.resendApiKey) return null;
+    if (this.isSmtpConfigured && this.transporter) {
+      try {
+        await this.transporter.sendMail({
+          from: fromAddress,
+          to,
+          subject,
+          html,
+          text: textFallback,
+        });
+        console.log(`✉️ Email successfully dispatched to ${to} via Gmail SMTP.`);
+        return { delivered: true, devMode: false };
+      } catch (err: any) {
+        console.warn(`⚠️ Failed to send email via SMTP to ${to} (trying fallback):`, err.message);
+      }
+    }
+
+    if (this.resendApiKey) {
       try {
         const response = await fetch('https://api.resend.com/emails', {
           method: 'POST',
@@ -109,7 +117,6 @@ class EmailService {
             Authorization: `Bearer ${this.resendApiKey}`,
             'Content-Type': 'application/json',
           },
-          signal: AbortSignal.timeout(3000),
           body: JSON.stringify({
             from: process.env.RESEND_FROM || 'SplitSmart AI <onboarding@resend.dev>',
             to: [to],
@@ -124,61 +131,11 @@ class EmailService {
           return { delivered: true, devMode: false };
         } else {
           const errBody = await response.text();
-          console.error(`⚠️ Resend API returned error for ${to}:`, errBody);
-          let errDetail = errBody;
-          try {
-            const parsed = JSON.parse(errBody);
-            errDetail = parsed.message || errBody;
-          } catch {}
-
-          if (
-            errDetail.toLowerCase().includes('only send testing emails') ||
-            errDetail.toLowerCase().includes('verify your domain') ||
-            errDetail.toLowerCase().includes('validation_error')
-          ) {
-            errDetail = `Resend test mode (onboarding@resend.dev) only delivers to your registered account (harsh2007joshi@gmail.com). To email friends directly, connect your custom domain at resend.com/domains or configure Gmail SMTP in .env.`;
-          }
-
-          return { delivered: false, devMode: true, error: errDetail };
+          console.warn(`⚠️ Resend API returned error for ${to}:`, errBody);
         }
       } catch (err: any) {
-        console.error('⚠️ Resend API fetch failed:', err.message);
-        return { delivered: false, devMode: true, error: err.message };
+        console.warn('⚠️ Resend API fetch failed:', err.message);
       }
-    };
-
-    const trySmtp = async (): Promise<{ delivered: boolean; devMode: boolean } | null> => {
-      if (!this.isSmtpConfigured || !this.transporter) return null;
-      try {
-        await Promise.race([
-          this.transporter.sendMail({
-            from: fromAddress,
-            to,
-            subject,
-            html,
-            text: textFallback,
-          }),
-          new Promise((_, reject) => setTimeout(() => reject(new Error('SMTP timeout')), 2500)),
-        ]);
-        console.log(`✉️ Email successfully dispatched to ${to} via SMTP.`);
-        return { delivered: true, devMode: false };
-      } catch (err: any) {
-        console.warn(`⚠️ Failed to send email via SMTP to ${to} (falling back):`, err.message);
-        return null;
-      }
-    };
-
-    if (isVercel && this.resendApiKey) {
-      const resendRes = await tryResend();
-      if (resendRes && resendRes.delivered) return resendRes;
-      const smtpRes = await trySmtp();
-      if (smtpRes && smtpRes.delivered) return smtpRes;
-      if (resendRes) return resendRes;
-    } else {
-      const smtpRes = await trySmtp();
-      if (smtpRes && smtpRes.delivered) return smtpRes;
-      const resendRes = await tryResend();
-      if (resendRes) return resendRes;
     }
 
     console.log('\n============================================================');
