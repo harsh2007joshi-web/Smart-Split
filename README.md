@@ -143,3 +143,4 @@ npx tsx server/test-suite.ts
 - Explore preloaded groups: **Goa Trip 2026**, **College Friends**, and **Roommates Flat 402**.
 - Open **Settlements** to test debt netting or launch the **Checkout** to trigger the **3D card flip animation** and **PayPal Sandbox** payment!
 Contributor: @omprakx
+Contributor: @himani01
