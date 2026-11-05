@@ -22,17 +22,34 @@ app.use(cors({
   origin: true,
   credentials: true,
 }));
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Vercel serverless URL normalization
+// Vercel serverless URL normalization (restore true route from x-matched-path or req.originalUrl)
 app.use((req, res, next) => {
-  if (req.url === '/api' || req.url === '/api/' || req.url.startsWith('/api/index')) {
+  const matchedPath = (req.headers['x-matched-path'] as string) || (req.headers['x-original-url'] as string);
+  if (matchedPath && matchedPath.startsWith('/')) {
+    req.url = matchedPath;
+    req.originalUrl = matchedPath;
+  } else if (req.url === '/api' || req.url === '/api/' || req.url.startsWith('/api/index')) {
     if (req.originalUrl && req.originalUrl !== req.url) {
       req.url = req.originalUrl;
     }
   }
   next();
+});
+
+// Safe body parsing: If Vercel has pre-parsed req.body, skip stream reading to prevent timeout hanging
+app.use((req, res, next) => {
+  if (req.body && typeof req.body === 'object') {
+    return next();
+  }
+  express.json({ limit: '10mb' })(req, res, next);
+});
+
+app.use((req, res, next) => {
+  if (req.body && typeof req.body === 'object' && Object.keys(req.body).length > 0) {
+    return next();
+  }
+  express.urlencoded({ extended: true, limit: '10mb' })(req, res, next);
 });
 
 const apiRouter = express.Router();

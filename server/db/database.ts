@@ -2,19 +2,25 @@ import fs from 'fs';
 import path from 'path';
 import bcrypt from 'bcryptjs';
 
-const isVercel = !!process.env.VERCEL;
+const isServerless = !!(
+  process.env.VERCEL ||
+  process.env.VERCEL_ENV ||
+  process.env.AWS_LAMBDA_FUNCTION_NAME ||
+  process.env.LAMBDA_TASK_ROOT ||
+  process.env.NOW_REGION
+);
 const BASE_DATA_DIR = path.resolve(process.cwd(), 'server/data');
 const BASE_DB_FILE = path.join(BASE_DATA_DIR, 'splitsmart_db.json');
 
-const DATA_DIR = isVercel ? path.join('/tmp', 'splitsmart_data') : BASE_DATA_DIR;
-const DB_FILE = isVercel ? path.join(DATA_DIR, 'splitsmart_db.json') : BASE_DB_FILE;
+const DATA_DIR = isServerless ? path.join('/tmp', 'splitsmart_data') : BASE_DATA_DIR;
+const DB_FILE = isServerless ? path.join(DATA_DIR, 'splitsmart_db.json') : BASE_DB_FILE;
 
 try {
   if (!fs.existsSync(DATA_DIR)) {
     fs.mkdirSync(DATA_DIR, { recursive: true });
   }
 
-  if (isVercel && !fs.existsSync(DB_FILE) && fs.existsSync(BASE_DB_FILE)) {
+  if (isServerless && !fs.existsSync(DB_FILE) && fs.existsSync(BASE_DB_FILE)) {
     try {
       fs.copyFileSync(BASE_DB_FILE, DB_FILE);
     } catch (e) {

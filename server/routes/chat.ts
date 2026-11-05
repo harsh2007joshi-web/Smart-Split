@@ -7,8 +7,14 @@ import { AuthenticatedRequest, authenticateToken } from '../middleware/auth';
 const router = Router();
 router.use(authenticateToken);
 
-const isVercel = !!process.env.VERCEL;
-const UPLOAD_DIR = isVercel
+const isServerless = !!(
+  process.env.VERCEL ||
+  process.env.VERCEL_ENV ||
+  process.env.AWS_LAMBDA_FUNCTION_NAME ||
+  process.env.LAMBDA_TASK_ROOT ||
+  process.env.NOW_REGION
+);
+const UPLOAD_DIR = isServerless
   ? path.join('/tmp', 'splitsmart_uploads', 'chat')
   : path.resolve(process.cwd(), 'server/uploads/chat');
 try {
