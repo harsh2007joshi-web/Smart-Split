@@ -22,10 +22,10 @@ var splitsmart_db_default = {
       username: "@rahulsharma_101",
       email: "rahul@example.com",
       gender: "male",
-      passwordHash: "$2a$10$dNaCaKDw2ZXFvVsGFZp0sudlOdHlcueOh1BVLU2bI6U2j13gfLAkm",
+      passwordHash: "$2a$10$vV6pB13GUQ.plFTDl0oF1etCjLj0qeN1b7SzNBkVOTcmfmG28q4la",
       isEmailVerified: true,
-      createdAt: "2026-10-06T07:05:55.358Z",
-      updatedAt: "2026-11-05T07:05:55.360Z"
+      createdAt: "2026-10-06T07:30:03.616Z",
+      updatedAt: "2026-11-05T07:30:03.618Z"
     },
     {
       id: "usr_priya",
@@ -33,11 +33,11 @@ var splitsmart_db_default = {
       username: "@priyapatel_204",
       email: "priya@example.com",
       gender: "female",
-      passwordHash: "$2a$10$dNaCaKDw2ZXFvVsGFZp0sudlOdHlcueOh1BVLU2bI6U2j13gfLAkm",
+      passwordHash: "$2a$10$vV6pB13GUQ.plFTDl0oF1etCjLj0qeN1b7SzNBkVOTcmfmG28q4la",
       avatarUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80",
       isEmailVerified: true,
-      createdAt: "2026-10-08T07:05:55.360Z",
-      updatedAt: "2026-11-05T07:05:55.360Z"
+      createdAt: "2026-10-08T07:30:03.618Z",
+      updatedAt: "2026-11-05T07:30:03.618Z"
     },
     {
       id: "usr_aman",
@@ -45,11 +45,11 @@ var splitsmart_db_default = {
       username: "@amangupta_305",
       email: "aman@example.com",
       gender: "male",
-      passwordHash: "$2a$10$dNaCaKDw2ZXFvVsGFZp0sudlOdHlcueOh1BVLU2bI6U2j13gfLAkm",
+      passwordHash: "$2a$10$vV6pB13GUQ.plFTDl0oF1etCjLj0qeN1b7SzNBkVOTcmfmG28q4la",
       avatarUrl: "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=150&auto=format&fit=crop&q=80",
       isEmailVerified: true,
-      createdAt: "2026-10-11T07:05:55.360Z",
-      updatedAt: "2026-11-05T07:05:55.360Z"
+      createdAt: "2026-10-11T07:30:03.618Z",
+      updatedAt: "2026-11-05T07:30:03.618Z"
     },
     {
       id: "usr_sneha",
@@ -57,61 +57,73 @@ var splitsmart_db_default = {
       username: "@sneharoy_402",
       email: "sneha@example.com",
       gender: "female",
-      passwordHash: "$2a$10$dNaCaKDw2ZXFvVsGFZp0sudlOdHlcueOh1BVLU2bI6U2j13gfLAkm",
+      passwordHash: "$2a$10$vV6pB13GUQ.plFTDl0oF1etCjLj0qeN1b7SzNBkVOTcmfmG28q4la",
       avatarUrl: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&auto=format&fit=crop&q=80",
       isEmailVerified: true,
-      createdAt: "2026-10-16T07:05:55.360Z",
-      updatedAt: "2026-11-05T07:05:55.360Z"
+      createdAt: "2026-10-16T07:30:03.618Z",
+      updatedAt: "2026-11-05T07:30:03.618Z"
     },
     {
       name: "Test Hackathon Judge",
       email: "judge@paypal-hackathon.com",
-      passwordHash: "$2a$10$oQs4KPbUtKfR2X24GMrJbemI5fR7q.KmrMBt2chMKj8nvqmKODoFy",
+      passwordHash: "$2a$10$dJDl/G8KnO69jFJVeEkDwubtioT7WuHRuVfHXD/hinJ1CV2rcpFN2",
       isEmailVerified: true,
-      username: "@testhackathonjudge_233",
-      id: "usr_0iu4i6y",
-      createdAt: "2026-11-05T07:05:55.428Z",
-      updatedAt: "2026-11-05T07:05:55.511Z"
+      id: "usr_m624aqd",
+      username: "@testhackathonjudge_924",
+      createdAt: "2026-11-05T07:30:03.691Z",
+      updatedAt: "2026-11-05T07:30:03.780Z"
     },
     {
       name: "Deepak Verma",
       email: "deepak.traveler@example.com",
       passwordHash: "dummyhash",
       isEmailVerified: true,
-      username: "@deepakverma_168",
-      id: "usr_pg9o69p",
-      createdAt: "2026-11-05T07:05:55.544Z",
-      updatedAt: "2026-11-05T07:05:55.544Z"
+      id: "usr_d8rnx9x",
+      username: "@deepakverma_308",
+      createdAt: "2026-11-05T07:30:03.817Z",
+      updatedAt: "2026-11-05T07:30:03.817Z"
     },
     {
       name: "Harsh Joshi",
       email: "harsh.test@example.com",
       passwordHash: "dummyhash",
       isEmailVerified: true,
-      username: "@harshjoshi_611",
-      id: "usr_uxqpgrr",
-      createdAt: "2026-11-05T07:05:55.557Z",
-      updatedAt: "2026-11-05T07:05:55.557Z"
+      id: "usr_ywrt9sl",
+      username: "@harshjoshi_654",
+      createdAt: "2026-11-05T07:30:03.834Z",
+      updatedAt: "2026-11-05T07:30:03.834Z"
     },
     {
       name: "Rahul Patel",
       email: "rahul.patel.test@example.com",
       passwordHash: "dummyhash",
       isEmailVerified: true,
-      username: "@rahulpatel_985",
-      id: "usr_vjzd1q4",
-      createdAt: "2026-11-05T07:05:55.559Z",
-      updatedAt: "2026-11-05T07:05:55.559Z"
+      id: "usr_5t1m85x",
+      username: "@rahulpatel_670",
+      createdAt: "2026-11-05T07:30:03.837Z",
+      updatedAt: "2026-11-05T07:30:03.837Z"
     },
     {
       name: "Vikram Singh",
       email: "vikram.test@example.com",
       passwordHash: "dummyhash",
       isEmailVerified: true,
-      username: "@vikramsingh_368",
-      id: "usr_q465ho1",
-      createdAt: "2026-11-05T07:05:55.594Z",
-      updatedAt: "2026-11-05T07:05:55.594Z"
+      id: "usr_9p0f2f4",
+      username: "@vikramsingh_322",
+      createdAt: "2026-11-05T07:30:03.869Z",
+      updatedAt: "2026-11-05T07:30:03.869Z"
+    },
+    {
+      id: "usr_q1fybp4",
+      name: "Harsh Joshi",
+      username: "@harshjoshi_350",
+      email: "harsh2007joshi@gmail.com",
+      phoneNumber: "9136274875",
+      passwordHash: "hash123",
+      isEmailVerified: true,
+      isPhoneVerified: false,
+      createdAt: "2026-11-05T07:32:15.514Z",
+      updatedAt: "2026-11-05T07:32:15.517Z"
     }
   ],
   verificationTokens: [
@@ -166,11 +178,11 @@ var splitsmart_db_default = {
       verified: false
     },
     {
-      id: "pv_7977wtx",
+      id: "pv_17svh1f",
       phone: "9876543210",
       otp: "849201",
       sessionId: "session_2factor_test_xyz",
-      expiresAt: 1793862955538,
+      expiresAt: 1793864403808,
       verified: true
     }
   ],
@@ -394,6 +406,26 @@ var splitsmart_db_default = {
       token: "inv_31854e4tzomw37bw46",
       status: "ACCEPTED",
       createdAt: "2026-11-05T07:05:55.542Z"
+    },
+    {
+      id: "invit_voioras",
+      groupId: "grp_goa2026",
+      groupName: "Goa Trip 2026",
+      inviterName: "Rahul Sharma",
+      email: "deepak.traveler@example.com",
+      token: "inv_33b71iblo3mw37nu2v",
+      status: "ACCEPTED",
+      createdAt: "2026-11-05T07:15:12.775Z"
+    },
+    {
+      id: "invit_8s1vu16",
+      groupId: "grp_goa2026",
+      groupName: "Goa Trip 2026",
+      inviterName: "Rahul Sharma",
+      email: "deepak.traveler@example.com",
+      token: "inv_griuztxsgomw386xlx",
+      status: "ACCEPTED",
+      createdAt: "2026-11-05T07:30:03.813Z"
     }
   ],
   resetChallenges: [
@@ -415,8 +447,8 @@ var splitsmart_db_default = {
       currency: "INR",
       creatorId: "usr_rahul",
       budget: 5e4,
-      createdAt: "2026-10-22T07:05:55.360Z",
-      updatedAt: "2026-11-05T07:05:55.553Z",
+      createdAt: "2026-10-22T07:30:03.618Z",
+      updatedAt: "2026-11-05T07:30:03.830Z",
       members: [
         {
           id: "gm_1",
@@ -425,7 +457,7 @@ var splitsmart_db_default = {
           name: "Rahul Sharma",
           email: "rahul@example.com",
           role: "ADMIN",
-          joinedAt: "2026-10-22T07:05:55.360Z"
+          joinedAt: "2026-10-22T07:30:03.618Z"
         },
         {
           id: "gm_2",
@@ -434,7 +466,7 @@ var splitsmart_db_default = {
           name: "Priya Patel",
           email: "priya@example.com",
           role: "MEMBER",
-          joinedAt: "2026-10-22T07:05:55.360Z"
+          joinedAt: "2026-10-22T07:30:03.618Z"
         },
         {
           id: "gm_3",
@@ -443,7 +475,7 @@ var splitsmart_db_default = {
           name: "Aman Gupta",
           email: "aman@example.com",
           role: "MEMBER",
-          joinedAt: "2026-10-22T07:05:55.360Z"
+          joinedAt: "2026-10-22T07:30:03.618Z"
         },
         {
           id: "gm_4",
@@ -452,16 +484,16 @@ var splitsmart_db_default = {
           name: "Sneha Roy",
           email: "sneha@example.com",
           role: "MEMBER",
-          joinedAt: "2026-10-23T07:05:55.360Z"
+          joinedAt: "2026-10-23T07:30:03.618Z"
         },
         {
-          id: "gm_4u3tlle",
+          id: "gm_lwn36fe",
           groupId: "grp_goa2026",
-          userId: "usr_pg9o69p",
+          userId: "usr_d8rnx9x",
           name: "Deepak Verma",
           email: "deepak.traveler@example.com",
           role: "MEMBER",
-          joinedAt: "2026-11-05T07:05:55.546Z"
+          joinedAt: "2026-11-05T07:30:03.820Z"
         }
       ],
       budgetCurrency: "INR"
@@ -473,8 +505,8 @@ var splitsmart_db_default = {
       category: "Entertainment",
       currency: "INR",
       creatorId: "usr_rahul",
-      createdAt: "2026-09-21T07:05:55.360Z",
-      updatedAt: "2026-11-05T07:05:55.360Z",
+      createdAt: "2026-09-21T07:30:03.618Z",
+      updatedAt: "2026-11-05T07:30:03.618Z",
       members: [
         {
           id: "gm_5",
@@ -483,7 +515,7 @@ var splitsmart_db_default = {
           name: "Rahul Sharma",
           email: "rahul@example.com",
           role: "ADMIN",
-          joinedAt: "2026-09-21T07:05:55.360Z"
+          joinedAt: "2026-09-21T07:30:03.618Z"
         },
         {
           id: "gm_6",
@@ -492,7 +524,7 @@ var splitsmart_db_default = {
           name: "Priya Patel",
           email: "priya@example.com",
           role: "MEMBER",
-          joinedAt: "2026-09-21T07:05:55.360Z"
+          joinedAt: "2026-09-21T07:30:03.618Z"
         },
         {
           id: "gm_7",
@@ -501,7 +533,7 @@ var splitsmart_db_default = {
           name: "Aman Gupta",
           email: "aman@example.com",
           role: "MEMBER",
-          joinedAt: "2026-09-21T07:05:55.360Z"
+          joinedAt: "2026-09-21T07:30:03.618Z"
         }
       ]
     },
@@ -512,8 +544,8 @@ var splitsmart_db_default = {
       category: "Utilities",
       currency: "INR",
       creatorId: "usr_aman",
-      createdAt: "2026-09-06T07:05:55.360Z",
-      updatedAt: "2026-11-05T07:05:55.360Z",
+      createdAt: "2026-09-06T07:30:03.618Z",
+      updatedAt: "2026-11-05T07:30:03.618Z",
       members: [
         {
           id: "gm_8",
@@ -522,7 +554,7 @@ var splitsmart_db_default = {
           name: "Rahul Sharma",
           email: "rahul@example.com",
           role: "MEMBER",
-          joinedAt: "2026-09-06T07:05:55.360Z"
+          joinedAt: "2026-09-06T07:30:03.618Z"
         },
         {
           id: "gm_9",
@@ -531,7 +563,7 @@ var splitsmart_db_default = {
           name: "Aman Gupta",
           email: "aman@example.com",
           role: "ADMIN",
-          joinedAt: "2026-09-06T07:05:55.360Z"
+          joinedAt: "2026-09-06T07:30:03.618Z"
         }
       ]
     }
@@ -579,8 +611,8 @@ var splitsmart_db_default = {
         }
       ],
       notes: "3 nights stay near Baga Beach with breakfast included",
-      createdAt: "2026-10-31T07:05:55.360Z",
-      updatedAt: "2026-11-05T07:05:55.360Z"
+      createdAt: "2026-10-31T07:30:03.618Z",
+      updatedAt: "2026-11-05T07:30:03.618Z"
     },
     {
       id: "exp_2",
@@ -624,8 +656,8 @@ var splitsmart_db_default = {
         }
       ],
       notes: "Candlelight dinner at Curlies Beach Shack",
-      createdAt: "2026-11-01T07:05:55.360Z",
-      updatedAt: "2026-11-05T07:05:55.360Z"
+      createdAt: "2026-11-01T07:30:03.618Z",
+      updatedAt: "2026-11-05T07:30:03.618Z"
     },
     {
       id: "exp_3",
@@ -669,8 +701,8 @@ var splitsmart_db_default = {
         }
       ],
       notes: "Airport pickup and north Goa cruising",
-      createdAt: "2026-11-02T07:05:55.360Z",
-      updatedAt: "2026-11-05T07:05:55.360Z"
+      createdAt: "2026-11-02T07:30:03.618Z",
+      updatedAt: "2026-11-05T07:30:03.618Z"
     },
     {
       id: "exp_4",
@@ -707,8 +739,8 @@ var splitsmart_db_default = {
         }
       ],
       notes: "Pizzas, pasta and tiramisu",
-      createdAt: "2026-11-03T07:05:55.360Z",
-      updatedAt: "2026-11-05T07:05:55.360Z"
+      createdAt: "2026-11-03T07:30:03.618Z",
+      updatedAt: "2026-11-05T07:30:03.618Z"
     },
     {
       id: "exp_5",
@@ -738,8 +770,8 @@ var splitsmart_db_default = {
         }
       ],
       notes: "Monthly connection bill",
-      createdAt: "2026-11-04T07:05:55.360Z",
-      updatedAt: "2026-11-05T07:05:55.360Z"
+      createdAt: "2026-11-04T07:30:03.618Z",
+      updatedAt: "2026-11-05T07:30:03.618Z"
     }
   ],
   settlements: [
@@ -870,7 +902,7 @@ var splitsmart_db_default = {
       method: "PAYPAL",
       status: "COMPLETED",
       reference: "PP-TXN-88492019",
-      createdAt: "2026-11-03T07:05:55.360Z",
+      createdAt: "2026-11-03T07:30:03.618Z",
       metadata: {
         note: "Villa booking share settled via PayPal Sandbox"
       }
@@ -886,14 +918,14 @@ var splitsmart_db_default = {
       currency: "INR",
       method: "CREDIT_CARD",
       status: "COMPLETED",
-      reference: "SS-CRD-1793862355534",
-      receiptNumber: "REC-1793862355534-CRD",
+      reference: "SS-CRD-1793863803805",
+      receiptNumber: "REC-1793863803805-CRD",
       metadata: {
         cardMasked: "\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 4242",
         verified: true
       },
-      id: "pay_gol4p7r",
-      createdAt: "2026-11-05T07:05:55.534Z"
+      id: "pay_gp6vbuh",
+      createdAt: "2026-11-05T07:30:03.805Z"
     }
   ],
   notifications: [
@@ -904,7 +936,7 @@ var splitsmart_db_default = {
       message: "Sneha Roy settled \u20B93,500 for Beach Resort Villa Booking via PayPal Sandbox.",
       type: "PAYMENT",
       isRead: false,
-      createdAt: "2026-11-03T07:05:55.360Z",
+      createdAt: "2026-11-03T07:30:03.618Z",
       link: "/transactions"
     },
     {
@@ -914,7 +946,7 @@ var splitsmart_db_default = {
       message: 'Aman Gupta added "High-Speed Fiber WiFi & Electricity" (\u20B92,400) in Roommates Flat 402.',
       type: "EXPENSE",
       isRead: false,
-      createdAt: "2026-11-04T07:05:55.360Z",
+      createdAt: "2026-11-04T07:30:03.618Z",
       link: "/groups/grp_roommates"
     },
     {
@@ -924,7 +956,7 @@ var splitsmart_db_default = {
       message: "Food and Accommodation account for 61% of your group spending this month.",
       type: "ALERT",
       isRead: true,
-      createdAt: "2026-11-02T07:05:55.360Z",
+      createdAt: "2026-11-02T07:30:03.618Z",
       link: "/analytics"
     },
     {
@@ -934,7 +966,7 @@ var splitsmart_db_default = {
       message: "Sneha Roy (@sneharoy_402) sent you a friend request.",
       type: "FRIEND_REQUEST",
       isRead: false,
-      createdAt: "2026-11-05T05:05:55.360Z",
+      createdAt: "2026-11-05T05:30:03.618Z",
       link: "/contacts",
       metadata: {
         friendRequestId: "freq_demo_sneha",
@@ -944,100 +976,100 @@ var splitsmart_db_default = {
       }
     },
     {
-      userId: "usr_vjzd1q4",
+      userId: "usr_5t1m85x",
       title: "New Friend Request \u{1F44B}",
-      message: "Harsh Joshi (@harshjoshi_611) sent you a friend request.",
+      message: "Harsh Joshi (@harshjoshi_654) sent you a friend request.",
       type: "FRIEND_REQUEST",
       link: "/contacts",
       metadata: {
-        friendRequestId: "freq_r63e2ua",
-        senderId: "usr_uxqpgrr",
+        friendRequestId: "freq_82mqd2x",
+        senderId: "usr_ywrt9sl",
         senderName: "Harsh Joshi",
-        senderUsername: "@harshjoshi_611"
+        senderUsername: "@harshjoshi_654"
       },
-      id: "notif_63md18n",
+      id: "notif_ctv69to",
       isRead: true,
-      createdAt: "2026-11-05T07:05:55.562Z"
+      createdAt: "2026-11-05T07:30:03.844Z"
     },
     {
-      userId: "usr_uxqpgrr",
+      userId: "usr_ywrt9sl",
       title: "Friend Request Accepted \u{1F389}",
-      message: "Rahul Patel (@rahulpatel_985) accepted your friend request. You can now chat privately!",
+      message: "Rahul Patel (@rahulpatel_670) accepted your friend request. You can now chat privately!",
       type: "FRIEND_REQUEST",
       link: "/contacts",
       metadata: {
-        friendRequestId: "freq_r63e2ua",
-        acceptedUserId: "usr_vjzd1q4"
+        friendRequestId: "freq_82mqd2x",
+        acceptedUserId: "usr_5t1m85x"
       },
-      id: "notif_vn7sni0",
+      id: "notif_xr6780g",
       isRead: false,
-      createdAt: "2026-11-05T07:05:55.571Z"
+      createdAt: "2026-11-05T07:30:03.861Z"
     },
     {
-      userId: "usr_uxqpgrr",
+      userId: "usr_ywrt9sl",
       title: "New Friend Request \u{1F44B}",
-      message: "Vikram Singh (@vikramsingh_368) sent you a friend request.",
+      message: "Vikram Singh (@vikramsingh_322) sent you a friend request.",
       type: "FRIEND_REQUEST",
       link: "/contacts",
       metadata: {
-        friendRequestId: "freq_h23u60b",
-        senderId: "usr_q465ho1",
+        friendRequestId: "freq_v532gae",
+        senderId: "usr_9p0f2f4",
         senderName: "Vikram Singh",
-        senderUsername: "@vikramsingh_368"
+        senderUsername: "@vikramsingh_322"
       },
-      id: "notif_zoowbg6",
+      id: "notif_8cevhq5",
       isRead: true,
-      createdAt: "2026-11-05T07:05:55.596Z"
+      createdAt: "2026-11-05T07:30:03.872Z"
     },
     {
-      userId: "usr_vjzd1q4",
+      userId: "usr_5t1m85x",
       title: "New Message from Harsh Joshi",
       message: "Hello Rahul! How is the trip planning going?",
       type: "MESSAGE",
-      link: "/contacts?chat=usr_uxqpgrr",
-      id: "notif_c1wb1li",
+      link: "/contacts?chat=usr_ywrt9sl",
+      id: "notif_5hubvr3",
       isRead: false,
-      createdAt: "2026-11-05T07:05:55.604Z"
+      createdAt: "2026-11-05T07:30:03.920Z"
     },
     {
-      userId: "usr_uxqpgrr",
+      userId: "usr_ywrt9sl",
       title: "New Message from Rahul Patel",
       message: "Hey Harsh! Everything is booked. I will share the receipt.",
       type: "MESSAGE",
-      link: "/contacts?chat=usr_vjzd1q4",
-      id: "notif_zpoetnv",
+      link: "/contacts?chat=usr_5t1m85x",
+      id: "notif_zad5pow",
       isRead: false,
-      createdAt: "2026-11-05T07:05:55.609Z"
+      createdAt: "2026-11-05T07:30:03.935Z"
     },
     {
-      userId: "usr_vjzd1q4",
+      userId: "usr_5t1m85x",
       title: "New File from Harsh Joshi",
       message: "Harsh Joshi sent you an image: GoaResortBooking.jpg",
       type: "MESSAGE",
-      link: "/contacts?chat=usr_uxqpgrr",
-      id: "notif_hry55i3",
+      link: "/contacts?chat=usr_ywrt9sl",
+      id: "notif_ezznyo8",
       isRead: false,
-      createdAt: "2026-11-05T07:05:55.615Z"
+      createdAt: "2026-11-05T07:30:03.963Z"
     },
     {
-      userId: "usr_vjzd1q4",
+      userId: "usr_5t1m85x",
       title: "New File from Harsh Joshi",
       message: "Harsh Joshi sent you a file: FlightTickets.pdf",
       type: "MESSAGE",
-      link: "/contacts?chat=usr_uxqpgrr",
-      id: "notif_mt3udkr",
+      link: "/contacts?chat=usr_ywrt9sl",
+      id: "notif_ttzqdtk",
       isRead: false,
-      createdAt: "2026-11-05T07:05:55.620Z"
+      createdAt: "2026-11-05T07:30:03.970Z"
     },
     {
-      userId: "usr_vjzd1q4",
+      userId: "usr_5t1m85x",
       title: "Payment Receipt Shared by Harsh Joshi",
       message: "Harsh Joshi shared a settlement receipt for INR 1,200 (Goa Trip 2026).",
       type: "PAYMENT",
-      link: "/contacts?chat=usr_uxqpgrr",
-      id: "notif_71smq68",
+      link: "/contacts?chat=usr_ywrt9sl",
+      id: "notif_ab24jzb",
       isRead: false,
-      createdAt: "2026-11-05T07:05:55.624Z"
+      createdAt: "2026-11-05T07:30:03.978Z"
     }
   ],
   friendRequests: [
@@ -1051,32 +1083,32 @@ var splitsmart_db_default = {
       receiverName: "Rahul Sharma",
       receiverUsername: "@rahulsharma_101",
       status: "PENDING",
-      createdAt: "2026-11-05T05:05:55.360Z",
-      updatedAt: "2026-11-05T05:05:55.360Z"
+      createdAt: "2026-11-05T05:30:03.618Z",
+      updatedAt: "2026-11-05T05:30:03.618Z"
     },
     {
-      id: "freq_r63e2ua",
-      senderId: "usr_uxqpgrr",
+      id: "freq_82mqd2x",
+      senderId: "usr_ywrt9sl",
       senderName: "Harsh Joshi",
-      senderUsername: "@harshjoshi_611",
-      receiverId: "usr_vjzd1q4",
+      senderUsername: "@harshjoshi_654",
+      receiverId: "usr_5t1m85x",
       receiverName: "Rahul Patel",
-      receiverUsername: "@rahulpatel_985",
+      receiverUsername: "@rahulpatel_670",
       status: "ACCEPTED",
-      createdAt: "2026-11-05T07:05:55.562Z",
-      updatedAt: "2026-11-05T07:05:55.566Z"
+      createdAt: "2026-11-05T07:30:03.844Z",
+      updatedAt: "2026-11-05T07:30:03.855Z"
     },
     {
-      id: "freq_h23u60b",
-      senderId: "usr_q465ho1",
+      id: "freq_v532gae",
+      senderId: "usr_9p0f2f4",
       senderName: "Vikram Singh",
-      senderUsername: "@vikramsingh_368",
-      receiverId: "usr_uxqpgrr",
+      senderUsername: "@vikramsingh_322",
+      receiverId: "usr_ywrt9sl",
       receiverName: "Harsh Joshi",
-      receiverUsername: "@harshjoshi_611",
+      receiverUsername: "@harshjoshi_654",
       status: "DECLINED",
-      createdAt: "2026-11-05T07:05:55.596Z",
-      updatedAt: "2026-11-05T07:05:55.600Z"
+      createdAt: "2026-11-05T07:30:03.872Z",
+      updatedAt: "2026-11-05T07:30:03.890Z"
     }
   ],
   contacts: [
@@ -1084,25 +1116,25 @@ var splitsmart_db_default = {
       id: "cnt_1",
       userId: "usr_rahul",
       contactUserId: "usr_priya",
-      createdAt: "2026-10-11T07:05:55.360Z"
+      createdAt: "2026-10-11T07:30:03.618Z"
     },
     {
       id: "cnt_2",
       userId: "usr_priya",
       contactUserId: "usr_rahul",
-      createdAt: "2026-10-11T07:05:55.360Z"
+      createdAt: "2026-10-11T07:30:03.618Z"
     },
     {
       id: "cnt_3",
       userId: "usr_rahul",
       contactUserId: "usr_aman",
-      createdAt: "2026-10-16T07:05:55.360Z"
+      createdAt: "2026-10-16T07:30:03.618Z"
     },
     {
       id: "cnt_4",
       userId: "usr_aman",
       contactUserId: "usr_rahul",
-      createdAt: "2026-10-16T07:05:55.360Z"
+      createdAt: "2026-10-16T07:30:03.618Z"
     }
   ],
   chatMessages: [
@@ -1118,7 +1150,7 @@ var splitsmart_db_default = {
       receiverUsername: "@rahulsharma_101",
       type: "TEXT",
       text: "Hey Rahul! Did you receive the settlement for Beach Resort Villa Booking?",
-      createdAt: "2026-11-03T19:05:55.360Z",
+      createdAt: "2026-11-03T19:30:03.618Z",
       isRead: true
     },
     {
@@ -1133,7 +1165,7 @@ var splitsmart_db_default = {
       receiverAvatarUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80",
       type: "TEXT",
       text: "Yes! All confirmed on PayPal Sandbox. Here is the verified payment receipt for your records:",
-      createdAt: "2026-11-03T20:05:55.360Z",
+      createdAt: "2026-11-03T20:30:03.618Z",
       isRead: true
     },
     {
@@ -1153,52 +1185,52 @@ var splitsmart_db_default = {
         amount: 3500,
         currency: "INR",
         groupName: "Goa Trip 2026",
-        date: "2026-11-03T07:05:55.360Z",
+        date: "2026-11-03T07:30:03.618Z",
         status: "COMPLETED",
         payerName: "Sneha Roy",
         recipientName: "Rahul Sharma",
         receiptNumber: "REC-2026-88492"
       },
-      createdAt: "2026-11-03T21:05:55.360Z",
+      createdAt: "2026-11-03T21:30:03.618Z",
       isRead: true
     },
     {
-      id: "msg_oc4ti2xoq",
-      conversationId: "usr_uxqpgrr:usr_vjzd1q4",
-      senderId: "usr_uxqpgrr",
+      id: "msg_fobqsrhxd",
+      conversationId: "usr_5t1m85x:usr_ywrt9sl",
+      senderId: "usr_ywrt9sl",
       senderName: "Harsh Joshi",
-      senderUsername: "@harshjoshi_611",
-      receiverId: "usr_vjzd1q4",
+      senderUsername: "@harshjoshi_654",
+      receiverId: "usr_5t1m85x",
       receiverName: "Rahul Patel",
-      receiverUsername: "@rahulpatel_985",
+      receiverUsername: "@rahulpatel_670",
       type: "TEXT",
       text: "Hello Rahul! How is the trip planning going?",
-      createdAt: "2026-11-05T07:05:55.604Z",
+      createdAt: "2026-11-05T07:30:03.920Z",
       isRead: false
     },
     {
-      id: "msg_5j1wc3g05",
-      conversationId: "usr_uxqpgrr:usr_vjzd1q4",
-      senderId: "usr_vjzd1q4",
+      id: "msg_7lyfjr3xj",
+      conversationId: "usr_5t1m85x:usr_ywrt9sl",
+      senderId: "usr_5t1m85x",
       senderName: "Rahul Patel",
-      senderUsername: "@rahulpatel_985",
-      receiverId: "usr_uxqpgrr",
+      senderUsername: "@rahulpatel_670",
+      receiverId: "usr_ywrt9sl",
       receiverName: "Harsh Joshi",
-      receiverUsername: "@harshjoshi_611",
+      receiverUsername: "@harshjoshi_654",
       type: "TEXT",
       text: "Hey Harsh! Everything is booked. I will share the receipt.",
-      createdAt: "2026-11-05T07:05:55.609Z",
+      createdAt: "2026-11-05T07:30:03.935Z",
       isRead: true
     },
     {
-      id: "msg_4hchedn3v",
-      conversationId: "usr_uxqpgrr:usr_vjzd1q4",
-      senderId: "usr_uxqpgrr",
+      id: "msg_nlhd72g8d",
+      conversationId: "usr_5t1m85x:usr_ywrt9sl",
+      senderId: "usr_ywrt9sl",
       senderName: "Harsh Joshi",
-      senderUsername: "@harshjoshi_611",
-      receiverId: "usr_vjzd1q4",
+      senderUsername: "@harshjoshi_654",
+      receiverId: "usr_5t1m85x",
       receiverName: "Rahul Patel",
-      receiverUsername: "@rahulpatel_985",
+      receiverUsername: "@rahulpatel_670",
       type: "IMAGE",
       attachment: {
         id: "att_test_img_1",
@@ -1206,20 +1238,20 @@ var splitsmart_db_default = {
         originalName: "GoaResortBooking.jpg",
         mimeType: "image/jpeg",
         size: 245100,
-        uploadedAt: "2026-11-05T07:05:55.615Z"
+        uploadedAt: "2026-11-05T07:30:03.962Z"
       },
-      createdAt: "2026-11-05T07:05:55.615Z",
+      createdAt: "2026-11-05T07:30:03.962Z",
       isRead: false
     },
     {
-      id: "msg_eujcjz7ab",
-      conversationId: "usr_uxqpgrr:usr_vjzd1q4",
-      senderId: "usr_uxqpgrr",
+      id: "msg_r2j4ie3ak",
+      conversationId: "usr_5t1m85x:usr_ywrt9sl",
+      senderId: "usr_ywrt9sl",
       senderName: "Harsh Joshi",
-      senderUsername: "@harshjoshi_611",
-      receiverId: "usr_vjzd1q4",
+      senderUsername: "@harshjoshi_654",
+      receiverId: "usr_5t1m85x",
       receiverName: "Rahul Patel",
-      receiverUsername: "@rahulpatel_985",
+      receiverUsername: "@rahulpatel_670",
       type: "FILE",
       attachment: {
         id: "att_test_pdf_1",
@@ -1227,34 +1259,34 @@ var splitsmart_db_default = {
         originalName: "FlightTickets.pdf",
         mimeType: "application/pdf",
         size: 512e3,
-        uploadedAt: "2026-11-05T07:05:55.619Z"
+        uploadedAt: "2026-11-05T07:30:03.970Z"
       },
-      createdAt: "2026-11-05T07:05:55.620Z",
+      createdAt: "2026-11-05T07:30:03.970Z",
       isRead: false
     },
     {
-      id: "msg_68p5tvjm5",
-      conversationId: "usr_uxqpgrr:usr_vjzd1q4",
-      senderId: "usr_uxqpgrr",
+      id: "msg_akv7ecile",
+      conversationId: "usr_5t1m85x:usr_ywrt9sl",
+      senderId: "usr_ywrt9sl",
       senderName: "Harsh Joshi",
-      senderUsername: "@harshjoshi_611",
-      receiverId: "usr_vjzd1q4",
+      senderUsername: "@harshjoshi_654",
+      receiverId: "usr_5t1m85x",
       receiverName: "Rahul Patel",
-      receiverUsername: "@rahulpatel_985",
+      receiverUsername: "@rahulpatel_670",
       type: "RECEIPT",
       receipt: {
-        paymentId: "pay_gol4p7r",
-        reference: "SS-CRD-1793862355534",
+        paymentId: "pay_gp6vbuh",
+        reference: "SS-CRD-1793863803805",
         amount: 1200,
         currency: "INR",
         groupName: "Goa Trip 2026",
-        date: "2026-11-05T07:05:55.534Z",
+        date: "2026-11-05T07:30:03.805Z",
         status: "COMPLETED",
         payerName: "Rahul Sharma",
         recipientName: "Priya Patel",
-        receiptNumber: "REC-1793862355534-CRD"
+        receiptNumber: "REC-1793863803805-CRD"
       },
-      createdAt: "2026-11-05T07:05:55.624Z",
+      createdAt: "2026-11-05T07:30:03.978Z",
       isRead: false
     }
   ]
@@ -1404,19 +1436,53 @@ var Database = class {
     }).slice(0, 15);
   }
   createUser(user) {
+    const targetId = user.id || "usr_" + Math.random().toString(36).substring(2, 9);
     const assignedUsername = user.username || this.generateUniqueUsername(user.name);
+    const existingIndex = this.data.users.findIndex(
+      (u) => u.id === targetId || u.email.toLowerCase().trim() === user.email.toLowerCase().trim()
+    );
+    if (existingIndex >= 0) {
+      const existing = this.data.users[existingIndex];
+      this.data.users[existingIndex] = {
+        ...existing,
+        ...user,
+        id: targetId,
+        username: existing.username || assignedUsername,
+        updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+      };
+      this.syncUserWithGroups(this.data.users[existingIndex]);
+      this.save();
+      return this.data.users[existingIndex];
+    }
     const newUser = {
       ...user,
+      id: targetId,
       username: assignedUsername,
-      id: "usr_" + Math.random().toString(36).substring(2, 9),
       email: user.email.toLowerCase().trim(),
-      createdAt: (/* @__PURE__ */ new Date()).toISOString(),
-      updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+      createdAt: user.createdAt || (/* @__PURE__ */ new Date()).toISOString(),
+      updatedAt: user.updatedAt || (/* @__PURE__ */ new Date()).toISOString()
     };
     this.data.users.push(newUser);
     this.syncUserWithGroups(newUser);
     this.save();
     return newUser;
+  }
+  saveVerificationOtp(userId, email, code) {
+    if (!this.data.verificationTokens) {
+      this.data.verificationTokens = [];
+    }
+    this.data.verificationTokens = this.data.verificationTokens.filter(
+      (t) => t.userId !== userId && t.email.toLowerCase().trim() !== email.toLowerCase().trim()
+    );
+    this.data.verificationTokens.push({
+      id: "tok_" + Math.random().toString(36).substring(2, 9),
+      userId,
+      email: email.toLowerCase().trim(),
+      code: code.trim(),
+      expiresAt: Date.now() + 15 * 60 * 1e3,
+      attempts: 0
+    });
+    this.save();
   }
   syncUserWithGroups(user) {
     if (!user || !user.email) return;
@@ -1525,8 +1591,14 @@ var Database = class {
     this.save();
     return code;
   }
-  verifyEmailOtp(userId, code) {
-    const token = this.data.verificationTokens.find((t) => t.userId === userId);
+  verifyEmailOtp(userIdOrEmail, code) {
+    if (!this.data.verificationTokens) {
+      this.data.verificationTokens = [];
+    }
+    const cleanIdOrEmail = (userIdOrEmail || "").toLowerCase().trim();
+    const token = this.data.verificationTokens.find(
+      (t) => t.userId === userIdOrEmail || t.email.toLowerCase().trim() === cleanIdOrEmail
+    );
     if (!token) {
       return { success: false, message: "No pending verification found." };
     }
@@ -1545,7 +1617,10 @@ var Database = class {
       this.save();
       return { success: false, message: "Incorrect verification code. Please check and try again." };
     }
-    this.updateUser(userId, { isEmailVerified: true });
+    const user = this.findUserById(token.userId) || this.findUserByEmail(token.email);
+    if (user) {
+      this.updateUser(user.id, { isEmailVerified: true });
+    }
     this.data.verificationTokens = this.data.verificationTokens.filter((t) => t.id !== token.id);
     this.save();
     return { success: true, message: "Email successfully verified!" };
@@ -2910,7 +2985,21 @@ function authenticateToken(req, res, next) {
   }
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
-    const user = db.findUserById(decoded.userId);
+    let user = db.findUserById(decoded.userId);
+    if (!user && decoded.user && decoded.user.id) {
+      user = db.createUser({
+        id: decoded.user.id,
+        name: decoded.user.name || "User",
+        username: decoded.user.username,
+        email: decoded.user.email || decoded.email || "user@example.com",
+        phoneNumber: decoded.user.phoneNumber,
+        passwordHash: "",
+        gender: decoded.user.gender,
+        avatarUrl: decoded.user.avatarUrl,
+        isEmailVerified: decoded.user.isEmailVerified ?? true,
+        isPhoneVerified: decoded.user.isPhoneVerified ?? false
+      });
+    }
     if (!user) {
       res.status(401).json({ error: "User session not found or expired." });
       return;
@@ -2926,7 +3015,25 @@ function authenticateToken(req, res, next) {
 var router = Router();
 function generateUserToken(user, rememberMe = false) {
   const expiresIn = rememberMe ? "30d" : "7d";
-  return jwt2.sign({ userId: user.id, email: user.email }, JWT_SECRET, { expiresIn });
+  return jwt2.sign(
+    {
+      userId: user.id,
+      email: user.email,
+      user: {
+        id: user.id,
+        name: user.name,
+        username: user.username,
+        email: user.email,
+        phoneNumber: user.phoneNumber,
+        gender: user.gender,
+        avatarUrl: user.avatarUrl,
+        isEmailVerified: user.isEmailVerified,
+        isPhoneVerified: user.isPhoneVerified
+      }
+    },
+    JWT_SECRET,
+    { expiresIn }
+  );
 }
 router.post("/send-phone-otp", async (req, res) => {
   try {
@@ -3062,12 +3169,26 @@ router.post("/register", async (req, res) => {
     } catch (emailErr) {
       console.warn("Email dispatch warning (proceeding with registration):", emailErr);
     }
+    const signupToken = jwt2.sign(
+      {
+        userId: newUser.id,
+        name: newUser.name,
+        username: newUser.username,
+        email: newUser.email,
+        phoneNumber: newUser.phoneNumber,
+        passwordHash: newUser.passwordHash,
+        otpCode: code
+      },
+      JWT_SECRET,
+      { expiresIn: "1h" }
+    );
     res.status(201).json({
       message: phoneNumber ? "Account created successfully! 6-digit OTP code sent to your email." : "Account created successfully. A verification code has been sent to your email.",
       userId: newUser.id,
       username: newUser.username,
       email: newUser.email,
       phoneNumber: newUser.phoneNumber,
+      signupToken,
       requiresVerification: true,
       emailDispatch: emailResult,
       phoneDispatch
@@ -3079,28 +3200,66 @@ router.post("/register", async (req, res) => {
 });
 router.post("/verify-email", async (req, res) => {
   try {
-    const { userId, code } = req.body;
-    if (!userId || !code) {
-      res.status(400).json({ error: "User ID and verification code are required." });
+    const { userId, code, email, signupToken } = req.body;
+    if (!code || !userId && !email && !signupToken) {
+      res.status(400).json({ error: "Verification code is required." });
       return;
     }
-    const user = db.findUserById(userId);
-    if (!user) {
-      res.status(404).json({ error: "User not found." });
-      return;
-    }
-    let verificationResult = db.verifyEmailOtp(userId, code);
-    if (!verificationResult.success && user.phoneNumber) {
-      const phoneCheck = db.verifyPhoneOtpLocally(user.phoneNumber, code);
-      if (phoneCheck.success) {
-        db.updateUser(userId, { isEmailVerified: true, isPhoneVerified: true });
-        verificationResult = { success: true, message: "Phone number verified via 2Factor.in!" };
+    let decodedSignup = null;
+    if (signupToken) {
+      try {
+        decodedSignup = jwt2.verify(signupToken, JWT_SECRET);
+      } catch (tokenErr) {
+        console.warn("Signup token verification note:", tokenErr);
       }
     }
-    if (!verificationResult.success) {
-      res.status(400).json({ error: verificationResult.message });
+    const targetUserId = userId || decodedSignup?.userId;
+    const targetEmail = (email || decodedSignup?.email || "").trim().toLowerCase();
+    let user = targetUserId ? db.findUserById(targetUserId) : void 0;
+    if (!user && targetEmail) {
+      user = db.findUserByEmail(targetEmail);
+    }
+    if (!user && decodedSignup) {
+      user = db.createUser({
+        id: decodedSignup.userId,
+        name: decodedSignup.name,
+        username: decodedSignup.username,
+        email: decodedSignup.email,
+        phoneNumber: decodedSignup.phoneNumber,
+        passwordHash: decodedSignup.passwordHash,
+        isEmailVerified: false,
+        isPhoneVerified: false
+      });
+      if (decodedSignup.otpCode) {
+        db.saveVerificationOtp(user.id, user.email, decodedSignup.otpCode);
+      }
+    }
+    if (!user) {
+      res.status(404).json({ error: "User not found. Please try registering again." });
       return;
     }
+    const trimmedCode = String(code).trim();
+    let isCodeValid = false;
+    if (decodedSignup && decodedSignup.otpCode && decodedSignup.otpCode.trim() === trimmedCode) {
+      isCodeValid = true;
+    } else {
+      const verificationResult = db.verifyEmailOtp(user.id, trimmedCode);
+      if (verificationResult.success) {
+        isCodeValid = true;
+      } else if (user.phoneNumber) {
+        const phoneCheck = db.verifyPhoneOtpLocally(user.phoneNumber, trimmedCode);
+        if (phoneCheck.success) {
+          isCodeValid = true;
+        }
+      }
+    }
+    if (!isCodeValid) {
+      res.status(400).json({ error: "Incorrect verification code. Please check your email and try again." });
+      return;
+    }
+    db.updateUser(user.id, { isEmailVerified: true, isPhoneVerified: true });
+    user.isEmailVerified = true;
+    user.isPhoneVerified = true;
     db.syncUserWithGroups(user);
     const token = generateUserToken(user, true);
     res.json({
@@ -3112,23 +3271,62 @@ router.post("/verify-email", async (req, res) => {
         username: user.username,
         email: user.email,
         gender: user.gender,
+        phoneNumber: user.phoneNumber,
         avatarUrl: user.avatarUrl,
         isEmailVerified: user.isEmailVerified
       }
     });
   } catch (err) {
-    res.status(500).json({ error: "Verification failed." });
+    console.error("Verification error:", err);
+    res.status(500).json({ error: err.message || "Verification failed." });
   }
 });
 router.post("/resend-verification", async (req, res) => {
   try {
-    const { userId } = req.body;
-    const user = db.findUserById(userId);
+    const { userId, email, signupToken } = req.body;
+    let decodedSignup = null;
+    if (signupToken) {
+      try {
+        decodedSignup = jwt2.verify(signupToken, JWT_SECRET);
+      } catch {
+      }
+    }
+    const targetUserId = userId || decodedSignup?.userId;
+    const targetEmail = (email || decodedSignup?.email || "").trim().toLowerCase();
+    let user = targetUserId ? db.findUserById(targetUserId) : void 0;
+    if (!user && targetEmail) {
+      user = db.findUserByEmail(targetEmail);
+    }
+    if (!user && decodedSignup) {
+      user = db.createUser({
+        id: decodedSignup.userId,
+        name: decodedSignup.name,
+        username: decodedSignup.username,
+        email: decodedSignup.email,
+        phoneNumber: decodedSignup.phoneNumber,
+        passwordHash: decodedSignup.passwordHash,
+        isEmailVerified: false,
+        isPhoneVerified: false
+      });
+    }
     if (!user) {
-      res.status(404).json({ error: "User not found." });
+      res.status(404).json({ error: "User not found. Please try registering again." });
       return;
     }
     const code = db.createVerificationOtp(user.id, user.email);
+    const newSignupToken = jwt2.sign(
+      {
+        userId: user.id,
+        name: user.name,
+        username: user.username,
+        email: user.email,
+        phoneNumber: user.phoneNumber,
+        passwordHash: user.passwordHash,
+        otpCode: code
+      },
+      JWT_SECRET,
+      { expiresIn: "1h" }
+    );
     let emailResult = null;
     try {
       emailResult = await emailService.sendOtp({
@@ -3143,7 +3341,8 @@ router.post("/resend-verification", async (req, res) => {
     }
     res.json({
       message: `A new verification code was sent to ${user.email}`,
-      emailDispatch: emailResult
+      emailDispatch: emailResult,
+      signupToken: newSignupToken
     });
   } catch (err) {
     res.status(500).json({ error: "Failed to resend code." });
@@ -3168,6 +3367,19 @@ router.post("/login", async (req, res) => {
     }
     if (!user.isEmailVerified) {
       const code = db.createVerificationOtp(user.id, user.email);
+      const signupToken = jwt2.sign(
+        {
+          userId: user.id,
+          name: user.name,
+          username: user.username,
+          email: user.email,
+          phoneNumber: user.phoneNumber,
+          passwordHash: user.passwordHash,
+          otpCode: code
+        },
+        JWT_SECRET,
+        { expiresIn: "1h" }
+      );
       try {
         await emailService.sendOtp({
           to: user.email,
@@ -3183,7 +3395,8 @@ router.post("/login", async (req, res) => {
         error: "Please verify your email address to log in.",
         requiresVerification: true,
         userId: user.id,
-        email: user.email
+        email: user.email,
+        signupToken
       });
       return;
     }

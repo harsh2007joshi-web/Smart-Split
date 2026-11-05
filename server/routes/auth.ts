@@ -10,7 +10,25 @@ const router = Router();
 
 function generateUserToken(user: StoredUser, rememberMe: boolean = false): string {
   const expiresIn = rememberMe ? '30d' : '7d';
-  return jwt.sign({ userId: user.id, email: user.email }, JWT_SECRET, { expiresIn });
+  return jwt.sign(
+    {
+      userId: user.id,
+      email: user.email,
+      user: {
+        id: user.id,
+        name: user.name,
+        username: user.username,
+        email: user.email,
+        phoneNumber: user.phoneNumber,
+        gender: user.gender,
+        avatarUrl: user.avatarUrl,
+        isEmailVerified: user.isEmailVerified,
+        isPhoneVerified: user.isPhoneVerified,
+      },
+    },
+    JWT_SECRET,
+    { expiresIn }
+  );
 }
 
 router.post('/send-phone-otp', async (req: Request, res: Response): Promise<void> => {
@@ -169,6 +187,20 @@ router.post('/register', async (req: Request, res: Response): Promise<void> => {
       console.warn('Email dispatch warning (proceeding with registration):', emailErr);
     }
 
+    const signupToken = jwt.sign(
+      {
+        userId: newUser.id,
+        name: newUser.name,
+        username: newUser.username,
+        email: newUser.email,
+        phoneNumber: newUser.phoneNumber,
+        passwordHash: newUser.passwordHash,
+        otpCode: code,
+      },
+      JWT_SECRET,
+      { expiresIn: '1h' }
+    );
+
     res.status(201).json({
       message: phoneNumber
         ? 'Account created successfully! 6-digit OTP code sent to your email.'
@@ -177,6 +209,7 @@ router.post('/register', async (req: Request, res: Response): Promise<void> => {
       username: newUser.username,
       email: newUser.email,
       phoneNumber: newUser.phoneNumber,
+      signupToken,
       requiresVerification: true,
       emailDispatch: emailResult,
       phoneDispatch,
@@ -189,33 +222,77 @@ router.post('/register', async (req: Request, res: Response): Promise<void> => {
 
 router.post('/verify-email', async (req: Request, res: Response): Promise<void> => {
   try {
-    const { userId, code } = req.body;
+    const { userId, code, email, signupToken } = req.body;
 
-    if (!userId || !code) {
-      res.status(400).json({ error: 'User ID and verification code are required.' });
+    if (!code || (!userId && !email && !signupToken)) {
+      res.status(400).json({ error: 'Verification code is required.' });
       return;
     }
 
-    const user = db.findUserById(userId);
-    if (!user) {
-      res.status(404).json({ error: 'User not found.' });
-      return;
-    }
-
-    let verificationResult = db.verifyEmailOtp(userId, code);
-
-    if (!verificationResult.success && user.phoneNumber) {
-      const phoneCheck = db.verifyPhoneOtpLocally(user.phoneNumber, code);
-      if (phoneCheck.success) {
-        db.updateUser(userId, { isEmailVerified: true, isPhoneVerified: true });
-        verificationResult = { success: true, message: 'Phone number verified via 2Factor.in!' };
+    let decodedSignup: any = null;
+    if (signupToken) {
+      try {
+        decodedSignup = jwt.verify(signupToken, JWT_SECRET) as any;
+      } catch (tokenErr) {
+        console.warn('Signup token verification note:', tokenErr);
       }
     }
 
-    if (!verificationResult.success) {
-      res.status(400).json({ error: verificationResult.message });
+    const targetUserId = userId || decodedSignup?.userId;
+    const targetEmail = (email || decodedSignup?.email || '').trim().toLowerCase();
+
+    let user = targetUserId ? db.findUserById(targetUserId) : undefined;
+    if (!user && targetEmail) {
+      user = db.findUserByEmail(targetEmail);
+    }
+
+    // Reconstruct user if missing from cold lambda container
+    if (!user && decodedSignup) {
+      user = db.createUser({
+        id: decodedSignup.userId,
+        name: decodedSignup.name,
+        username: decodedSignup.username,
+        email: decodedSignup.email,
+        phoneNumber: decodedSignup.phoneNumber,
+        passwordHash: decodedSignup.passwordHash,
+        isEmailVerified: false,
+        isPhoneVerified: false,
+      });
+      if (decodedSignup.otpCode) {
+        db.saveVerificationOtp(user.id, user.email, decodedSignup.otpCode);
+      }
+    }
+
+    if (!user) {
+      res.status(404).json({ error: 'User not found. Please try registering again.' });
       return;
     }
+
+    const trimmedCode = String(code).trim();
+    let isCodeValid = false;
+
+    if (decodedSignup && decodedSignup.otpCode && decodedSignup.otpCode.trim() === trimmedCode) {
+      isCodeValid = true;
+    } else {
+      const verificationResult = db.verifyEmailOtp(user.id, trimmedCode);
+      if (verificationResult.success) {
+        isCodeValid = true;
+      } else if (user.phoneNumber) {
+        const phoneCheck = db.verifyPhoneOtpLocally(user.phoneNumber, trimmedCode);
+        if (phoneCheck.success) {
+          isCodeValid = true;
+        }
+      }
+    }
+
+    if (!isCodeValid) {
+      res.status(400).json({ error: 'Incorrect verification code. Please check your email and try again.' });
+      return;
+    }
+
+    db.updateUser(user.id, { isEmailVerified: true, isPhoneVerified: true });
+    user.isEmailVerified = true;
+    user.isPhoneVerified = true;
 
     db.syncUserWithGroups(user);
     const token = generateUserToken(user, true);
@@ -229,25 +306,68 @@ router.post('/verify-email', async (req: Request, res: Response): Promise<void> 
         username: user.username,
         email: user.email,
         gender: user.gender,
+        phoneNumber: user.phoneNumber,
         avatarUrl: user.avatarUrl,
         isEmailVerified: user.isEmailVerified,
       },
     });
-  } catch (err) {
-    res.status(500).json({ error: 'Verification failed.' });
+  } catch (err: any) {
+    console.error('Verification error:', err);
+    res.status(500).json({ error: err.message || 'Verification failed.' });
   }
 });
 
 router.post('/resend-verification', async (req: Request, res: Response): Promise<void> => {
   try {
-    const { userId } = req.body;
-    const user = db.findUserById(userId);
+    const { userId, email, signupToken } = req.body;
+    let decodedSignup: any = null;
+    if (signupToken) {
+      try {
+        decodedSignup = jwt.verify(signupToken, JWT_SECRET) as any;
+      } catch {}
+    }
+
+    const targetUserId = userId || decodedSignup?.userId;
+    const targetEmail = (email || decodedSignup?.email || '').trim().toLowerCase();
+
+    let user = targetUserId ? db.findUserById(targetUserId) : undefined;
+    if (!user && targetEmail) {
+      user = db.findUserByEmail(targetEmail);
+    }
+
+    if (!user && decodedSignup) {
+      user = db.createUser({
+        id: decodedSignup.userId,
+        name: decodedSignup.name,
+        username: decodedSignup.username,
+        email: decodedSignup.email,
+        phoneNumber: decodedSignup.phoneNumber,
+        passwordHash: decodedSignup.passwordHash,
+        isEmailVerified: false,
+        isPhoneVerified: false,
+      });
+    }
+
     if (!user) {
-      res.status(404).json({ error: 'User not found.' });
+      res.status(404).json({ error: 'User not found. Please try registering again.' });
       return;
     }
 
     const code = db.createVerificationOtp(user.id, user.email);
+    const newSignupToken = jwt.sign(
+      {
+        userId: user.id,
+        name: user.name,
+        username: user.username,
+        email: user.email,
+        phoneNumber: user.phoneNumber,
+        passwordHash: user.passwordHash,
+        otpCode: code,
+      },
+      JWT_SECRET,
+      { expiresIn: '1h' }
+    );
+
     let emailResult: any = null;
     try {
       emailResult = await emailService.sendOtp({
@@ -264,6 +384,7 @@ router.post('/resend-verification', async (req: Request, res: Response): Promise
     res.json({
       message: `A new verification code was sent to ${user.email}`,
       emailDispatch: emailResult,
+      signupToken: newSignupToken,
     });
   } catch (err) {
     res.status(500).json({ error: 'Failed to resend code.' });
@@ -293,6 +414,20 @@ router.post('/login', async (req: Request, res: Response): Promise<void> => {
 
     if (!user.isEmailVerified) {
       const code = db.createVerificationOtp(user.id, user.email);
+      const signupToken = jwt.sign(
+        {
+          userId: user.id,
+          name: user.name,
+          username: user.username,
+          email: user.email,
+          phoneNumber: user.phoneNumber,
+          passwordHash: user.passwordHash,
+          otpCode: code,
+        },
+        JWT_SECRET,
+        { expiresIn: '1h' }
+      );
+
       try {
         await emailService.sendOtp({
           to: user.email,
@@ -310,6 +445,7 @@ router.post('/login', async (req: Request, res: Response): Promise<void> => {
         requiresVerification: true,
         userId: user.id,
         email: user.email,
+        signupToken,
       });
       return;
     }

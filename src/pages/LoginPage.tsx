@@ -43,6 +43,15 @@ export const LoginPage: React.FC = () => {
       navigate(returnTo || '/dashboard');
     } catch (err: any) {
       if (err.data?.requiresVerification) {
+        if (err.data.signupToken) {
+          sessionStorage.setItem('splitsmart_signup_token', err.data.signupToken);
+        }
+        if (err.data.email) {
+          sessionStorage.setItem('splitsmart_signup_email', err.data.email);
+        }
+        if (err.data.userId) {
+          sessionStorage.setItem('splitsmart_signup_userid', err.data.userId);
+        }
         navigate(`/signup?verifyEmail=${encodeURIComponent(err.data.email)}&userId=${err.data.userId}${returnTo ? `&returnTo=${encodeURIComponent(returnTo)}` : ''}`);
       } else {
         setErrorMessage(err.message || 'Invalid email or password. Please try again.');

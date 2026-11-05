@@ -53,7 +53,10 @@ export const api = {
   sendPhoneOtp: (phone: string) => request<any>('/auth/send-phone-otp', { method: 'POST', body: JSON.stringify({ phone }) }),
   verifyPhoneOtp: (phone: string, otp: string, sessionId?: string) => request<any>('/auth/verify-phone-otp', { method: 'POST', body: JSON.stringify({ phone, otp, sessionId }) }),
   verifyEmail: (payload: any) => request<any>('/auth/verify-email', { method: 'POST', body: JSON.stringify(payload) }),
-  resendVerification: (userId: string) => request<any>('/auth/resend-verification', { method: 'POST', body: JSON.stringify({ userId }) }),
+  resendVerification: (payload: any) => request<any>('/auth/resend-verification', {
+    method: 'POST',
+    body: JSON.stringify(typeof payload === 'string' ? { userId: payload } : payload),
+  }),
   login: (payload: any) => request<any>('/auth/login', { method: 'POST', body: JSON.stringify(payload) }),
   forgotPassword: (emailOrPhone: string) => request<any>('/auth/forgot-password', { method: 'POST', body: JSON.stringify({ email: emailOrPhone, phone: emailOrPhone }) }),
   verifyResetOtp: (challengeId: string, otp: string) => request<any>('/auth/verify-reset-otp', { method: 'POST', body: JSON.stringify({ challengeId, otp }) }),

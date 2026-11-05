@@ -18,8 +18,29 @@ export function authenticateToken(req: AuthenticatedRequest, res: Response, next
   }
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET) as { userId: string };
-    const user = db.findUserById(decoded.userId);
+    const decoded = jwt.verify(token, JWT_SECRET) as {
+      userId: string;
+      email?: string;
+      user?: Partial<StoredUser>;
+    };
+
+    let user = db.findUserById(decoded.userId);
+
+    // If container is cold and user is not in memory, reconstruct user from verified JWT payload
+    if (!user && decoded.user && decoded.user.id) {
+      user = db.createUser({
+        id: decoded.user.id,
+        name: decoded.user.name || 'User',
+        username: decoded.user.username,
+        email: decoded.user.email || decoded.email || 'user@example.com',
+        phoneNumber: decoded.user.phoneNumber,
+        passwordHash: '',
+        gender: decoded.user.gender,
+        avatarUrl: decoded.user.avatarUrl,
+        isEmailVerified: decoded.user.isEmailVerified ?? true,
+        isPhoneVerified: decoded.user.isPhoneVerified ?? false,
+      });
+    }
 
     if (!user) {
       res.status(401).json({ error: 'User session not found or expired.' });

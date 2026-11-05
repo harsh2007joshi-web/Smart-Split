@@ -9,8 +9,8 @@ interface AuthContextType {
   isLoading: boolean;
   login: (credentials: { email: string; password: string; rememberMe?: boolean }) => Promise<void>;
   register: (data: any) => Promise<any>;
-  verifyEmail: (userId: string, code: string) => Promise<void>;
-  resendVerification: (userId: string) => Promise<any>;
+  verifyEmail: (userId: string, code: string, email?: string, signupToken?: string) => Promise<void>;
+  resendVerification: (userId: string, email?: string, signupToken?: string) => Promise<any>;
   demoLogin: () => Promise<void>;
   logout: () => void;
   refreshUser: () => Promise<void>;
@@ -56,15 +56,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return await api.register(payload);
   };
 
-  const verifyEmail = async (userId: string, code: string) => {
-    const data = await api.verifyEmail({ userId, code });
+  const verifyEmail = async (userId: string, code: string, email?: string, signupToken?: string) => {
+    const data = await api.verifyEmail({ userId, code, email, signupToken });
     localStorage.setItem('splitsmart_auth_token', data.token);
     setToken(data.token);
     setUser(data.user);
   };
 
-  const resendVerification = async (userId: string) => {
-    return await api.resendVerification(userId);
+  const resendVerification = async (userId: string, email?: string, signupToken?: string) => {
+    return await api.resendVerification({ userId, email, signupToken });
   };
 
   const demoLogin = async () => {

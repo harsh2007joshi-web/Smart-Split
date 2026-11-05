@@ -38,16 +38,22 @@ export const SignupPage: React.FC = () => {
   const [verificationUserId, setVerificationUserId] = useState('');
   const [verificationEmail, setVerificationEmail] = useState('');
   const [verificationPhone, setVerificationPhone] = useState('');
+  const [signupToken, setSignupToken] = useState<string>(() => sessionStorage.getItem('splitsmart_signup_token') || '');
   const [otpDigits, setOtpDigits] = useState(['', '', '', '', '', '']);
   const [verificationMessage, setVerificationMessage] = useState('');
   const [resendCooldown, setResendCooldown] = useState(0);
 
   useEffect(() => {
-    const queryEmail = searchParams.get('verifyEmail');
-    const queryUserId = searchParams.get('userId');
-    if (queryEmail && queryUserId) {
+    const queryEmail = searchParams.get('verifyEmail') || sessionStorage.getItem('splitsmart_signup_email');
+    const queryUserId = searchParams.get('userId') || sessionStorage.getItem('splitsmart_signup_userid');
+    const savedToken = sessionStorage.getItem('splitsmart_signup_token');
+
+    if (savedToken) {
+      setSignupToken(savedToken);
+    }
+    if (queryEmail) {
       setVerificationEmail(queryEmail);
-      setVerificationUserId(queryUserId);
+      if (queryUserId) setVerificationUserId(queryUserId);
       setIsVerifying(true);
     }
   }, [searchParams]);
@@ -103,6 +109,12 @@ export const SignupPage: React.FC = () => {
       setVerificationUserId(data.userId);
       setVerificationEmail(data.email);
       setVerificationPhone(phoneNumber.trim());
+      if (data.signupToken) {
+        setSignupToken(data.signupToken);
+        sessionStorage.setItem('splitsmart_signup_token', data.signupToken);
+      }
+      sessionStorage.setItem('splitsmart_signup_email', data.email);
+      sessionStorage.setItem('splitsmart_signup_userid', data.userId);
       setIsVerifying(true);
       setResendCooldown(45);
       setVerificationMessage(`A 6-digit verification code has been sent to your email (${data.email}). Please check your inbox or spam folder.`);
@@ -157,7 +169,10 @@ export const SignupPage: React.FC = () => {
 
     setIsLoading(true);
     try {
-      await verifyEmail(verificationUserId, code);
+      await verifyEmail(verificationUserId, code, verificationEmail, signupToken);
+      sessionStorage.removeItem('splitsmart_signup_token');
+      sessionStorage.removeItem('splitsmart_signup_email');
+      sessionStorage.removeItem('splitsmart_signup_userid');
       navigate(returnTo || '/dashboard');
     } catch (err: any) {
       setErrorMessage(err.message || 'Invalid verification code. Please check and try again.');
@@ -169,7 +184,11 @@ export const SignupPage: React.FC = () => {
   const handleResend = async () => {
     if (resendCooldown > 0) return;
     try {
-      const res = await resendVerification(verificationUserId);
+      const res = await resendVerification(verificationUserId, verificationEmail, signupToken);
+      if (res?.signupToken) {
+        setSignupToken(res.signupToken);
+        sessionStorage.setItem('splitsmart_signup_token', res.signupToken);
+      }
       setResendCooldown(60);
       setVerificationMessage(`New verification code sent to ${verificationEmail}. Please check your inbox or spam folder.`);
     } catch (err: any) {

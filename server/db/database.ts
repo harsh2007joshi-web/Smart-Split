@@ -401,20 +401,57 @@ class Database {
       .slice(0, 15);
   }
 
-  public createUser(user: Omit<StoredUser, 'id' | 'createdAt' | 'updatedAt' | 'username'> & { username?: string }): StoredUser {
+  public createUser(user: Omit<StoredUser, 'id' | 'createdAt' | 'updatedAt' | 'username'> & { id?: string; username?: string; createdAt?: string; updatedAt?: string }): StoredUser {
+    const targetId = user.id || ('usr_' + Math.random().toString(36).substring(2, 9));
     const assignedUsername = user.username || this.generateUniqueUsername(user.name);
+
+    const existingIndex = this.data.users.findIndex(
+      u => u.id === targetId || u.email.toLowerCase().trim() === user.email.toLowerCase().trim()
+    );
+    if (existingIndex >= 0) {
+      const existing = this.data.users[existingIndex];
+      this.data.users[existingIndex] = {
+        ...existing,
+        ...user,
+        id: targetId,
+        username: existing.username || assignedUsername,
+        updatedAt: new Date().toISOString(),
+      };
+      this.syncUserWithGroups(this.data.users[existingIndex]);
+      this.save();
+      return this.data.users[existingIndex];
+    }
+
     const newUser: StoredUser = {
       ...user,
+      id: targetId,
       username: assignedUsername,
-      id: 'usr_' + Math.random().toString(36).substring(2, 9),
       email: user.email.toLowerCase().trim(),
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      createdAt: user.createdAt || new Date().toISOString(),
+      updatedAt: user.updatedAt || new Date().toISOString(),
     };
     this.data.users.push(newUser);
     this.syncUserWithGroups(newUser);
     this.save();
     return newUser;
+  }
+
+  public saveVerificationOtp(userId: string, email: string, code: string): void {
+    if (!this.data.verificationTokens) {
+      this.data.verificationTokens = [];
+    }
+    this.data.verificationTokens = this.data.verificationTokens.filter(
+      t => t.userId !== userId && t.email.toLowerCase().trim() !== email.toLowerCase().trim()
+    );
+    this.data.verificationTokens.push({
+      id: 'tok_' + Math.random().toString(36).substring(2, 9),
+      userId,
+      email: email.toLowerCase().trim(),
+      code: code.trim(),
+      expiresAt: Date.now() + 15 * 60 * 1000,
+      attempts: 0,
+    });
+    this.save();
   }
 
   public syncUserWithGroups(user: StoredUser): void {
@@ -534,8 +571,14 @@ class Database {
     return code;
   }
 
-  public verifyEmailOtp(userId: string, code: string): { success: boolean; message: string } {
-    const token = this.data.verificationTokens.find(t => t.userId === userId);
+  public verifyEmailOtp(userIdOrEmail: string, code: string): { success: boolean; message: string } {
+    if (!this.data.verificationTokens) {
+      this.data.verificationTokens = [];
+    }
+    const cleanIdOrEmail = (userIdOrEmail || '').toLowerCase().trim();
+    const token = this.data.verificationTokens.find(
+      t => t.userId === userIdOrEmail || t.email.toLowerCase().trim() === cleanIdOrEmail
+    );
     if (!token) {
       return { success: false, message: 'No pending verification found.' };
     }
@@ -554,7 +597,10 @@ class Database {
       this.save();
       return { success: false, message: 'Incorrect verification code. Please check and try again.' };
     }
-    this.updateUser(userId, { isEmailVerified: true });
+    const user = this.findUserById(token.userId) || this.findUserByEmail(token.email);
+    if (user) {
+      this.updateUser(user.id, { isEmailVerified: true });
+    }
     this.data.verificationTokens = this.data.verificationTokens.filter(t => t.id !== token.id);
     this.save();
     return { success: true, message: 'Email successfully verified!' };
