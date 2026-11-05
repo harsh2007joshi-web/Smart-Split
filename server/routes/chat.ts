@@ -11,8 +11,12 @@ const isVercel = !!process.env.VERCEL;
 const UPLOAD_DIR = isVercel
   ? path.join('/tmp', 'splitsmart_uploads', 'chat')
   : path.resolve(process.cwd(), 'server/uploads/chat');
-if (!fs.existsSync(UPLOAD_DIR)) {
-  fs.mkdirSync(UPLOAD_DIR, { recursive: true });
+try {
+  if (!fs.existsSync(UPLOAD_DIR)) {
+    fs.mkdirSync(UPLOAD_DIR, { recursive: true });
+  }
+} catch (e) {
+  console.warn('Chat upload directory initialization warning:', e);
 }
 
 const ALLOWED_MIME_TYPES = new Set([

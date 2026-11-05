@@ -29,10 +29,20 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
     headers,
   });
 
-  const data = await response.json().catch(() => ({}));
+  let data: any = {};
+  try {
+    const rawText = await response.text();
+    try {
+      data = JSON.parse(rawText);
+    } catch {
+      data = { error: rawText.length > 200 ? undefined : rawText };
+    }
+  } catch {
+    data = {};
+  }
 
   if (!response.ok) {
-    throw new ApiError(data.error || data.message || `Request failed with status ${response.status}`, response.status, data);
+    throw new ApiError(data?.error || data?.message || `Request failed with status ${response.status}`, response.status, data);
   }
 
   return data as T;

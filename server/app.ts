@@ -25,7 +25,19 @@ app.use(cors({
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-app.get('/api/health', (req, res) => {
+// Vercel serverless URL normalization
+app.use((req, res, next) => {
+  if (req.url === '/api' || req.url === '/api/' || req.url.startsWith('/api/index')) {
+    if (req.originalUrl && req.originalUrl !== req.url) {
+      req.url = req.originalUrl;
+    }
+  }
+  next();
+});
+
+const apiRouter = express.Router();
+
+apiRouter.get('/health', (req, res) => {
   res.json({
     status: 'ok',
     service: 'SplitSmart AI Backend API',
@@ -37,26 +49,35 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-app.use('/api/auth', authRoutes);
-app.use('/api/groups', groupRoutes);
-app.use('/api/expenses', expenseRoutes);
-app.use('/api/settlements', settlementRoutes);
-app.use('/api/payments', paymentRoutes);
-app.use('/api/ai', aiRoutes);
-app.use('/api/analytics', analyticsRoutes);
-app.use('/api/notifications', notificationRoutes);
-app.use('/api/dashboard', dashboardRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/friends', friendRoutes);
-app.use('/api/contacts', friendRoutes);
-app.use('/api/chat', chatRoutes);
+apiRouter.use('/auth', authRoutes);
+apiRouter.use('/groups', groupRoutes);
+apiRouter.use('/expenses', expenseRoutes);
+apiRouter.use('/settlements', settlementRoutes);
+apiRouter.use('/payments', paymentRoutes);
+apiRouter.use('/ai', aiRoutes);
+apiRouter.use('/analytics', analyticsRoutes);
+apiRouter.use('/notifications', notificationRoutes);
+apiRouter.use('/dashboard', dashboardRoutes);
+apiRouter.use('/users', userRoutes);
+apiRouter.use('/friends', friendRoutes);
+apiRouter.use('/contacts', friendRoutes);
+apiRouter.use('/chat', chatRoutes);
 
+// Mount under both /api and / so all Vercel and local routing paths succeed
+app.use('/api', apiRouter);
+app.use('/', apiRouter);
+
+// Unhandled error handler
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
   console.error('Unhandled server error:', err);
   res.status(500).json({
-    error: 'Internal server error occurred.',
-    message: process.env.NODE_ENV === 'development' ? err.message : undefined,
+    error: err.message || 'Internal server error occurred.',
   });
+});
+
+// Fallback 404 handler for API routes
+app.use((req, res) => {
+  res.status(404).json({ error: `Not found: ${req.method} ${req.originalUrl || req.url}` });
 });
 
 export default app;

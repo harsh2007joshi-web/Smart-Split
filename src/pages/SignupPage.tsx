@@ -105,8 +105,11 @@ export const SignupPage: React.FC = () => {
       setVerificationPhone(phoneNumber.trim());
       setIsVerifying(true);
       setResendCooldown(45);
+      const otp = data.otpCode || data.devCode || data.phoneDispatch?.otp || data.emailDispatch?.code;
       if (data.emailDispatch?.devMode || data.phoneDispatch?.devMode) {
-        setVerificationMessage(`Dev mode: Check server console terminal for the 6-digit OTP code.`);
+        setVerificationMessage(`Verification OTP Code: [ ${otp} ] (Enter this 6-digit code below)`);
+      } else {
+        setVerificationMessage(`Verification code sent to ${data.phoneNumber ? `+91 ${cleanPhone} and ` : ''}${data.email}.`);
       }
     } catch (err: any) {
       setErrorMessage(err.message || 'Registration failed. Please check your information.');

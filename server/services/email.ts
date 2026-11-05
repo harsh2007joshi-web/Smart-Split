@@ -47,6 +47,9 @@ class EmailService {
           this.transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: { user, pass },
+            connectionTimeout: 2500,
+            greetingTimeout: 2500,
+            socketTimeout: 2500,
           });
           this.isSmtpConfigured = true;
           console.log(`✅ Gmail SMTP Email service configured successfully for ${user}.`);
@@ -61,6 +64,9 @@ class EmailService {
           port,
           secure: port === 465,
           auth: { user, pass },
+          connectionTimeout: 2500,
+          greetingTimeout: 2500,
+          socketTimeout: 2500,
         });
         this.isSmtpConfigured = true;
         console.log(`✅ SMTP Email service configured successfully (${host}:${port}).`);
@@ -92,24 +98,10 @@ class EmailService {
   }): Promise<{ delivered: boolean; devMode: boolean; error?: string }> {
     const { to, subject, html, textFallback } = options;
     const fromAddress = process.env.SMTP_FROM || process.env.EMAIL_FROM || 'SplitSmart AI <no-reply@splitsmart.ai>';
+    const isVercel = !!process.env.VERCEL;
 
-    if (this.isSmtpConfigured && this.transporter) {
-      try {
-        await this.transporter.sendMail({
-          from: fromAddress,
-          to,
-          subject,
-          html,
-          text: textFallback,
-        });
-        console.log(`✉️ Email successfully dispatched to ${to} via SMTP.`);
-        return { delivered: true, devMode: false };
-      } catch (err: any) {
-        console.error(`⚠️ Failed to send email via SMTP to ${to}:`, err.message);
-      }
-    }
-
-    if (this.resendApiKey) {
+    const tryResend = async (): Promise<{ delivered: boolean; devMode: boolean; error?: string } | null> => {
+      if (!this.resendApiKey) return null;
       try {
         const response = await fetch('https://api.resend.com/emails', {
           method: 'POST',
@@ -117,6 +109,7 @@ class EmailService {
             Authorization: `Bearer ${this.resendApiKey}`,
             'Content-Type': 'application/json',
           },
+          signal: AbortSignal.timeout(3000),
           body: JSON.stringify({
             from: process.env.RESEND_FROM || 'SplitSmart AI <onboarding@resend.dev>',
             to: [to],
@@ -152,6 +145,40 @@ class EmailService {
         console.error('⚠️ Resend API fetch failed:', err.message);
         return { delivered: false, devMode: true, error: err.message };
       }
+    };
+
+    const trySmtp = async (): Promise<{ delivered: boolean; devMode: boolean } | null> => {
+      if (!this.isSmtpConfigured || !this.transporter) return null;
+      try {
+        await Promise.race([
+          this.transporter.sendMail({
+            from: fromAddress,
+            to,
+            subject,
+            html,
+            text: textFallback,
+          }),
+          new Promise((_, reject) => setTimeout(() => reject(new Error('SMTP timeout')), 2500)),
+        ]);
+        console.log(`✉️ Email successfully dispatched to ${to} via SMTP.`);
+        return { delivered: true, devMode: false };
+      } catch (err: any) {
+        console.warn(`⚠️ Failed to send email via SMTP to ${to} (falling back):`, err.message);
+        return null;
+      }
+    };
+
+    if (isVercel && this.resendApiKey) {
+      const resendRes = await tryResend();
+      if (resendRes && resendRes.delivered) return resendRes;
+      const smtpRes = await trySmtp();
+      if (smtpRes && smtpRes.delivered) return smtpRes;
+      if (resendRes) return resendRes;
+    } else {
+      const smtpRes = await trySmtp();
+      if (smtpRes && smtpRes.delivered) return smtpRes;
+      const resendRes = await tryResend();
+      if (resendRes) return resendRes;
     }
 
     console.log('\n============================================================');

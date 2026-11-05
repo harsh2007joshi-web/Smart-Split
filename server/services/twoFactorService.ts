@@ -44,7 +44,7 @@ class TwoFactorService {
       try {
 
         const url = `${this.baseUrl}/${this.apiKey}/SMS/${formattedPhone}/${otp}/SplitSmartAI`;
-        const res = await fetch(url, { method: 'GET' });
+        const res = await fetch(url, { method: 'GET', signal: AbortSignal.timeout(3000) });
         const data = await res.json();
 
         if (data.Status === 'Success') {
@@ -85,7 +85,7 @@ class TwoFactorService {
       try {
 
         const url = `${this.baseUrl}/${this.apiKey}/SMS/VERIFY/${sessionId}/${enteredOtp.trim()}`;
-        const res = await fetch(url, { method: 'GET' });
+        const res = await fetch(url, { method: 'GET', signal: AbortSignal.timeout(3000) });
         const data = await res.json();
 
         if (data.Status === 'Success' && data.Details === 'OTP Matched') {

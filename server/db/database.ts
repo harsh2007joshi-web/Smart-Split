@@ -9,15 +9,20 @@ const BASE_DB_FILE = path.join(BASE_DATA_DIR, 'splitsmart_db.json');
 const DATA_DIR = isVercel ? path.join('/tmp', 'splitsmart_data') : BASE_DATA_DIR;
 const DB_FILE = isVercel ? path.join(DATA_DIR, 'splitsmart_db.json') : BASE_DB_FILE;
 
-if (!fs.existsSync(DATA_DIR)) {
-  fs.mkdirSync(DATA_DIR, { recursive: true });
-}
-
-if (isVercel && !fs.existsSync(DB_FILE) && fs.existsSync(BASE_DB_FILE)) {
-  try {
-    fs.copyFileSync(BASE_DB_FILE, DB_FILE);
-  } catch (e) {
+try {
+  if (!fs.existsSync(DATA_DIR)) {
+    fs.mkdirSync(DATA_DIR, { recursive: true });
   }
+
+  if (isVercel && !fs.existsSync(DB_FILE) && fs.existsSync(BASE_DB_FILE)) {
+    try {
+      fs.copyFileSync(BASE_DB_FILE, DB_FILE);
+    } catch (e) {
+      console.warn('Initial DB copy to /tmp skipped:', e);
+    }
+  }
+} catch (e) {
+  console.warn('Filesystem init warning for database:', e);
 }
 
 export interface StoredUser {
@@ -299,6 +304,12 @@ class Database {
 
   public save(): void {
     try {
+      const dir = path.dirname(DB_FILE);
+      if (!fs.existsSync(dir)) {
+        try {
+          fs.mkdirSync(dir, { recursive: true });
+        } catch {}
+      }
       const tempFile = `${DB_FILE}.tmp`;
       fs.writeFileSync(tempFile, JSON.stringify(this.data, null, 2), 'utf-8');
       fs.renameSync(tempFile, DB_FILE);
