@@ -232,6 +232,8 @@ router.post('/group/:groupId', async (req: AuthenticatedRequest, res: Response):
       }
     }
 
+    await db.pushToCloud();
+
     res.status(201).json({
       message: 'Expense successfully recorded.',
       expense: newExpense,
@@ -241,7 +243,7 @@ router.post('/group/:groupId', async (req: AuthenticatedRequest, res: Response):
   }
 });
 
-router.put('/:id', (req: AuthenticatedRequest, res: Response): void => {
+router.put('/:id', async (req: AuthenticatedRequest, res: Response): Promise<void> => {
   try {
     const expenseId = (Array.isArray(req.params.id) ? req.params.id[0] : req.params.id) as string;
     const existing = db.getExpenseById(expenseId);
@@ -275,13 +277,15 @@ router.put('/:id', (req: AuthenticatedRequest, res: Response): void => {
       }
     }
 
+    await db.pushToCloud();
+
     res.json({ message: 'Expense updated successfully.', expense: updated });
   } catch (err) {
     res.status(500).json({ error: 'Failed to update expense.' });
   }
 });
 
-router.delete('/:id', (req: AuthenticatedRequest, res: Response): void => {
+router.delete('/:id', async (req: AuthenticatedRequest, res: Response): Promise<void> => {
   try {
     const expenseId = (Array.isArray(req.params.id) ? req.params.id[0] : req.params.id) as string;
     const deleted = db.deleteExpense(expenseId);
@@ -289,6 +293,9 @@ router.delete('/:id', (req: AuthenticatedRequest, res: Response): void => {
       res.status(404).json({ error: 'Expense not found or already deleted.' });
       return;
     }
+
+    await db.pushToCloud();
+
     res.json({ message: 'Expense deleted successfully.' });
   } catch (err) {
     res.status(500).json({ error: 'Failed to delete expense.' });

@@ -48,6 +48,8 @@ router.post('/send-phone-otp', async (req: Request, res: Response): Promise<void
 
     db.savePhoneOtp(phone, smsRes.otp || '', smsRes.sessionId || '');
 
+    await db.pushToCloud();
+
     res.json({
       success: true,
       message: smsRes.message,
@@ -70,13 +72,17 @@ router.post('/verify-phone-otp', async (req: Request, res: Response): Promise<vo
 
     const localCheck = db.verifyPhoneOtpLocally(phone, otp);
     if (localCheck.success) {
-      res.json({ success: true, message: 'Phone number successfully verified!' });
+      await db.pushToCloud();
+
+    res.json({ success: true, message: 'Phone number successfully verified!' });
       return;
     }
 
     const verifyRes = await twoFactorService.verifyOtp(sessionId, otp);
     if (verifyRes.success) {
-      res.json({ success: true, message: verifyRes.message });
+      await db.pushToCloud();
+
+    res.json({ success: true, message: verifyRes.message });
     } else {
       res.status(400).json({ error: verifyRes.message || 'Incorrect OTP code.' });
     }
@@ -202,6 +208,8 @@ router.post('/register', async (req: Request, res: Response): Promise<void> => {
       { expiresIn: '1h' }
     );
 
+    await db.pushToCloud();
+
     res.status(201).json({
       message: phoneNumber
         ? 'Account created successfully! 6-digit OTP code sent to your email.'
@@ -298,6 +306,8 @@ router.post('/verify-email', async (req: Request, res: Response): Promise<void> 
     db.syncUserWithGroups(user);
     const token = generateUserToken(user, true);
 
+    await db.pushToCloud();
+
     res.json({
       message: 'Email verified successfully!',
       token,
@@ -382,6 +392,8 @@ router.post('/resend-verification', async (req: Request, res: Response): Promise
       console.warn('Resend email warning:', e);
     }
 
+    await db.pushToCloud();
+
     res.json({
       message: `A new verification code was sent to ${user.email}`,
       emailDispatch: emailResult,
@@ -397,29 +409,45 @@ router.post('/login', async (req: Request, res: Response): Promise<void> => {
     const { email, password, rememberMe } = req.body;
 
     if (!email || !password) {
-      res.status(400).json({ error: 'Email and password are required.' });
+      res.status(400).json({ error: 'Email, username, and password are required.' });
       return;
     }
 
-    let user = db.findUserByEmail(email);
+    const cleanIdentifier = email.trim();
+    let user = db.findUserByEmail(cleanIdentifier) ||
+               db.findUserByUsername(cleanIdentifier) ||
+               db.findUserByPhone(cleanIdentifier);
+
     if (!user) {
       await db.pullFromCloud();
-      user = db.findUserByEmail(email);
+      user = db.findUserByEmail(cleanIdentifier) ||
+             db.findUserByUsername(cleanIdentifier) ||
+             db.findUserByPhone(cleanIdentifier);
     }
 
     if (!user) {
-      res.status(401).json({ error: 'Invalid email or password. Please try again.' });
+      res.status(401).json({ error: 'Invalid email, username, or password. Please try again.' });
       return;
     }
 
     if (!user.passwordHash) {
       await db.pullFromCloud();
-      user = db.findUserByEmail(email) || user;
+      user = db.findUserByEmail(cleanIdentifier) ||
+             db.findUserByUsername(cleanIdentifier) ||
+             db.findUserByPhone(cleanIdentifier) || user;
     }
 
-    const passwordMatch = user.passwordHash ? bcrypt.compareSync(password, user.passwordHash) : false;
+    let passwordMatch = user.passwordHash ? bcrypt.compareSync(password, user.passwordHash) : false;
     if (!passwordMatch) {
-      res.status(401).json({ error: 'Invalid email or password. Please try again.' });
+      await db.pullFromCloud();
+      user = db.findUserByEmail(cleanIdentifier) ||
+             db.findUserByUsername(cleanIdentifier) ||
+             db.findUserByPhone(cleanIdentifier) || user;
+      passwordMatch = user.passwordHash ? bcrypt.compareSync(password, user.passwordHash) : false;
+    }
+
+    if (!passwordMatch) {
+      res.status(401).json({ error: 'Invalid email, username, or password. Please try again.' });
       return;
     }
 
@@ -464,6 +492,8 @@ router.post('/login', async (req: Request, res: Response): Promise<void> => {
     db.syncUserWithGroups(user);
     const token = generateUserToken(user, !!rememberMe);
 
+    await db.pushToCloud();
+
     res.json({
       message: 'Login successful.',
       token,
@@ -497,37 +527,57 @@ router.post('/forgot-password', async (req: Request, res: Response): Promise<voi
       ? db.findUserByPhone(targetIdentifier)
       : db.findUserByEmail(targetIdentifier);
 
+    if (!user) {
+      await db.pullFromCloud();
+      user = isPhone
+        ? db.findUserByPhone(targetIdentifier)
+        : db.findUserByEmail(targetIdentifier);
+    }
+
     const { challengeId, otp } = db.createPasswordResetChallenge(user ? user.email : targetIdentifier);
 
-    let phoneDispatch = null;
-    let emailDispatch = null;
+    let phoneDispatch: any = null;
+    let emailDispatch: any = null;
 
     if (isPhone || (user && user.phoneNumber)) {
-      const ph = isPhone ? targetIdentifier : user!.phoneNumber!;
-      phoneDispatch = await twoFactorService.sendOtp(ph, otp);
-      db.savePhoneOtp(ph, otp, challengeId);
+      try {
+        const ph = isPhone ? targetIdentifier : user!.phoneNumber!;
+        phoneDispatch = await twoFactorService.sendOtp(ph, otp);
+        db.savePhoneOtp(ph, otp, challengeId);
+      } catch (phoneErr: any) {
+        console.warn('Phone OTP dispatch note (proceeding):', phoneErr.message);
+      }
     }
 
-    if (user) {
-      emailDispatch = await emailService.sendOtp({
-        to: user.email,
-        name: user.name,
-        code: otp,
-        type: 'PASSWORD_RESET',
-        expiryMinutes: 10,
-      });
+    const targetEmail = user ? user.email : (isPhone ? '' : targetIdentifier);
+    if (targetEmail) {
+      try {
+        emailDispatch = await emailService.sendOtp({
+          to: targetEmail,
+          name: user ? user.name : 'there',
+          code: otp,
+          type: 'PASSWORD_RESET',
+          expiryMinutes: 10,
+        });
+      } catch (emailErr: any) {
+        console.warn('Email OTP dispatch note (proceeding):', emailErr.message);
+      }
     }
+
+    await db.pushToCloud();
 
     res.json({
       message: isPhone
-        ? 'A 6-digit password recovery code has been sent via 2Factor.in SMS to your phone.'
-        : 'If an account exists with this credential, a 6-digit recovery code has been dispatched.',
+        ? 'A 6-digit password recovery code has been sent via SMS to your phone.'
+        : 'A 6-digit password recovery code has been sent to your email address.',
       challengeId,
+      devOtp: (emailDispatch?.devMode || process.env.NODE_ENV !== 'production') ? otp : undefined,
       phoneDispatch,
       emailDispatch,
     });
-  } catch (err) {
-    res.status(500).json({ error: 'Password recovery error.' });
+  } catch (err: any) {
+    console.error('Password recovery error:', err);
+    res.status(500).json({ error: err?.message || 'Password recovery error.' });
   }
 });
 
@@ -545,6 +595,8 @@ router.post('/verify-reset-otp', async (req: Request, res: Response): Promise<vo
       res.status(400).json({ error: result.message });
       return;
     }
+
+    await db.pushToCloud();
 
     res.json({
       message: 'OTP verified successfully.',
@@ -582,6 +634,8 @@ router.post('/reset-password', async (req: Request, res: Response): Promise<void
       res.status(400).json({ error: result.message });
       return;
     }
+
+    await db.pushToCloud();
 
     res.json({
       message: 'Your password has been reset successfully. You can now log in with your new credentials.',

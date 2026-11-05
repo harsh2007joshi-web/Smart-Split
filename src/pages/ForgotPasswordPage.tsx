@@ -51,7 +51,9 @@ export const ForgotPasswordPage: React.FC = () => {
       setChallengeId(data.challengeId);
       setStep(2);
       setResendTimer(60);
-      if (data.emailDispatch?.devMode) {
+      if (data.devOtp) {
+        setInfoMessage(`Development Mode: Your 6-digit recovery OTP code is ${data.devOtp}`);
+      } else if (data.emailDispatch?.devMode) {
         setInfoMessage('Development Mode: Check server console terminal for the 6-digit OTP code.');
       }
     } catch (err: any) {

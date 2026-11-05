@@ -1,8 +1,8 @@
 import app from './app';
 
-const PORT = parseInt(process.env.PORT || '5001', 10);
+const PORT = parseInt(process.env.PORT || '5050', 10);
 
-const server = app.listen(PORT, () => {
+const server = app.listen(PORT, '0.0.0.0', () => {
   console.log(`\n============================================================`);
   console.log(`🚀 SplitSmart AI API Server is running on http://localhost:${PORT}`);
   console.log(`⚡ PayPal AI Hackathon Backend Initialized`);
@@ -12,10 +12,9 @@ const server = app.listen(PORT, () => {
 
 server.on('error', (err: any) => {
   if (err.code === 'EADDRINUSE' || err.code === 'EACCES') {
-    const nextPort = PORT + 1;
-    console.warn(`⚠️ Port ${PORT} busy/restricted, auto-switching to http://localhost:${nextPort}...`);
-    app.listen(nextPort, () => {
-      console.log(`🚀 SplitSmart AI API Server is running on http://localhost:${nextPort}`);
-    });
+    console.error(`\n❌ Error: Port ${PORT} is currently in use or restricted.`);
+    console.error(`💡 Tip: Close any existing Node process or specify another port in .env (PORT=xxxx).\n`);
+  } else {
+    console.error('Server error:', err);
   }
 });

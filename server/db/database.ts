@@ -495,7 +495,11 @@ class Database {
 
   public save(): void {
     this.saveLocal();
-    this.scheduleCloudPush();
+    if (isServerless) {
+      this.pushToCloud().catch(err => console.warn('Serverless auto cloud push:', err.message));
+    } else {
+      this.scheduleCloudPush();
+    }
   }
 
   public getRawData(): DatabaseSchema {
@@ -775,6 +779,9 @@ class Database {
   }
 
   public createPasswordResetChallenge(email: string): { challengeId: string; otp: string } {
+    if (!this.data.resetChallenges) {
+      this.data.resetChallenges = [];
+    }
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     const challengeId = 'res_' + Math.random().toString(36).substring(2, 11);
     this.data.resetChallenges = this.data.resetChallenges.filter(c => c.email !== email.toLowerCase().trim());
@@ -791,6 +798,9 @@ class Database {
   }
 
   public verifyResetOtp(challengeId: string, otp: string): { success: boolean; resetToken?: string; message: string } {
+    if (!this.data.resetChallenges) {
+      this.data.resetChallenges = [];
+    }
     const challenge = this.data.resetChallenges.find(c => c.id === challengeId);
     if (!challenge) {
       return { success: false, message: 'Invalid or expired recovery session.' };
@@ -815,16 +825,26 @@ class Database {
   }
 
   public completePasswordReset(resetToken: string, newPasswordHash: string): { success: boolean; message: string } {
+    if (!this.data.resetChallenges) {
+      this.data.resetChallenges = [];
+    }
     const challenge = this.data.resetChallenges.find(c => c.resetToken === resetToken && c.verified);
     if (!challenge) {
       return { success: false, message: 'Invalid or already-used reset authorization.' };
     }
-    const user = this.findUserByEmail(challenge.email);
+    let user = this.findUserByEmail(challenge.email);
     if (!user) {
-      return { success: false, message: 'Associated user account not found.' };
+      user = this.createUser({
+        name: challenge.email.split('@')[0],
+        email: challenge.email,
+        passwordHash: newPasswordHash,
+        isEmailVerified: true,
+        isPhoneVerified: false,
+      });
+    } else {
+      user.passwordHash = newPasswordHash;
+      user.updatedAt = new Date().toISOString();
     }
-    user.passwordHash = newPasswordHash;
-    user.updatedAt = new Date().toISOString();
     this.data.resetChallenges = this.data.resetChallenges.filter(c => c.id !== challenge.id);
     this.save();
     return { success: true, message: 'Password has been successfully updated.' };
@@ -946,9 +966,12 @@ class Database {
       return { success: false, message: 'The requested trip group is no longer active.' };
     }
 
+    const inviteEmail = invitation.email ? invitation.email.toLowerCase().trim() : '';
     const userEmail = user.email.toLowerCase().trim();
     const existingMember = group.members.find(m =>
-      m.userId === user.id || (m.email && m.email.toLowerCase().trim() === userEmail)
+      m.userId === user.id ||
+      (m.email && m.email.toLowerCase().trim() === userEmail) ||
+      (inviteEmail && m.email && m.email.toLowerCase().trim() === inviteEmail)
     );
 
     if (existingMember) {

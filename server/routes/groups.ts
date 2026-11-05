@@ -32,7 +32,7 @@ router.get('/', async (req: AuthenticatedRequest, res: Response): Promise<void> 
   }
 });
 
-router.post('/', (req: AuthenticatedRequest, res: Response): void => {
+router.post('/', async (req: AuthenticatedRequest, res: Response): Promise<void> => {
   try {
     const { name, description, category, currency, initialMembers } = req.body;
 
@@ -57,6 +57,8 @@ router.post('/', (req: AuthenticatedRequest, res: Response): void => {
       type: 'INVITATION',
       link: `/groups/${group.id}`,
     });
+
+    await db.pushToCloud();
 
     res.status(201).json({
       message: 'Group created successfully!',
@@ -188,6 +190,8 @@ router.post('/:id/members', async (req: AuthenticatedRequest, res: Response): Pr
       });
     }
 
+    await db.pushToCloud();
+
     res.status(201).json({
       message: emailResult.delivered
         ? `Invitation successfully sent to ${name} (${email}) with magic join link!`
@@ -220,6 +224,8 @@ router.post('/join', async (req: AuthenticatedRequest, res: Response): Promise<v
       res.status(400).json({ error: result.message });
       return;
     }
+
+    await db.pushToCloud();
 
     res.json({
       success: true,
