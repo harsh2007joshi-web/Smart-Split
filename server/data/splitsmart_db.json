@@ -6,10 +6,10 @@
       "username": "@rahulsharma_101",
       "email": "rahul@example.com",
       "gender": "male",
-      "passwordHash": "$2a$10$dNaCaKDw2ZXFvVsGFZp0sudlOdHlcueOh1BVLU2bI6U2j13gfLAkm",
+      "passwordHash": "$2a$10$GDb4U8/US4ZjPka/VHAmMuAW4AKd3H8CgLnZ7VGtgDEPYnfo7R70.",
       "isEmailVerified": true,
-      "createdAt": "2026-10-06T07:05:55.358Z",
-      "updatedAt": "2026-11-05T07:05:55.360Z"
+      "createdAt": "2026-10-06T07:15:12.584Z",
+      "updatedAt": "2026-11-05T07:15:12.586Z"
     },
     {
       "id": "usr_priya",
@@ -17,11 +17,11 @@
       "username": "@priyapatel_204",
       "email": "priya@example.com",
       "gender": "female",
-      "passwordHash": "$2a$10$dNaCaKDw2ZXFvVsGFZp0sudlOdHlcueOh1BVLU2bI6U2j13gfLAkm",
+      "passwordHash": "$2a$10$GDb4U8/US4ZjPka/VHAmMuAW4AKd3H8CgLnZ7VGtgDEPYnfo7R70.",
       "avatarUrl": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80",
       "isEmailVerified": true,
-      "createdAt": "2026-10-08T07:05:55.360Z",
-      "updatedAt": "2026-11-05T07:05:55.360Z"
+      "createdAt": "2026-10-08T07:15:12.586Z",
+      "updatedAt": "2026-11-05T07:15:12.586Z"
     },
     {
       "id": "usr_aman",
@@ -29,11 +29,11 @@
       "username": "@amangupta_305",
       "email": "aman@example.com",
       "gender": "male",
-      "passwordHash": "$2a$10$dNaCaKDw2ZXFvVsGFZp0sudlOdHlcueOh1BVLU2bI6U2j13gfLAkm",
+      "passwordHash": "$2a$10$GDb4U8/US4ZjPka/VHAmMuAW4AKd3H8CgLnZ7VGtgDEPYnfo7R70.",
       "avatarUrl": "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=150&auto=format&fit=crop&q=80",
       "isEmailVerified": true,
-      "createdAt": "2026-10-11T07:05:55.360Z",
-      "updatedAt": "2026-11-05T07:05:55.360Z"
+      "createdAt": "2026-10-11T07:15:12.586Z",
+      "updatedAt": "2026-11-05T07:15:12.586Z"
     },
     {
       "id": "usr_sneha",
@@ -41,61 +41,61 @@
       "username": "@sneharoy_402",
       "email": "sneha@example.com",
       "gender": "female",
-      "passwordHash": "$2a$10$dNaCaKDw2ZXFvVsGFZp0sudlOdHlcueOh1BVLU2bI6U2j13gfLAkm",
+      "passwordHash": "$2a$10$GDb4U8/US4ZjPka/VHAmMuAW4AKd3H8CgLnZ7VGtgDEPYnfo7R70.",
       "avatarUrl": "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&auto=format&fit=crop&q=80",
       "isEmailVerified": true,
-      "createdAt": "2026-10-16T07:05:55.360Z",
-      "updatedAt": "2026-11-05T07:05:55.360Z"
+      "createdAt": "2026-10-16T07:15:12.586Z",
+      "updatedAt": "2026-11-05T07:15:12.586Z"
     },
     {
       "name": "Test Hackathon Judge",
       "email": "judge@paypal-hackathon.com",
-      "passwordHash": "$2a$10$oQs4KPbUtKfR2X24GMrJbemI5fR7q.KmrMBt2chMKj8nvqmKODoFy",
+      "passwordHash": "$2a$10$j/lk.7X/mAm7ZhebX0dBBenPXlhuq/I0vgaoKMffUtdg8u9jQl19e",
       "isEmailVerified": true,
-      "username": "@testhackathonjudge_233",
-      "id": "usr_0iu4i6y",
-      "createdAt": "2026-11-05T07:05:55.428Z",
-      "updatedAt": "2026-11-05T07:05:55.511Z"
+      "username": "@testhackathonjudge_743",
+      "id": "usr_8d9yd2r",
+      "createdAt": "2026-11-05T07:15:12.657Z",
+      "updatedAt": "2026-11-05T07:15:12.744Z"
     },
     {
       "name": "Deepak Verma",
       "email": "deepak.traveler@example.com",
       "passwordHash": "dummyhash",
       "isEmailVerified": true,
-      "username": "@deepakverma_168",
-      "id": "usr_pg9o69p",
-      "createdAt": "2026-11-05T07:05:55.544Z",
-      "updatedAt": "2026-11-05T07:05:55.544Z"
+      "username": "@deepakverma_359",
+      "id": "usr_rrc68vg",
+      "createdAt": "2026-11-05T07:15:12.779Z",
+      "updatedAt": "2026-11-05T07:15:12.779Z"
     },
     {
       "name": "Harsh Joshi",
       "email": "harsh.test@example.com",
       "passwordHash": "dummyhash",
       "isEmailVerified": true,
-      "username": "@harshjoshi_611",
-      "id": "usr_uxqpgrr",
-      "createdAt": "2026-11-05T07:05:55.557Z",
-      "updatedAt": "2026-11-05T07:05:55.557Z"
+      "username": "@harshjoshi_578",
+      "id": "usr_sd72pak",
+      "createdAt": "2026-11-05T07:15:12.792Z",
+      "updatedAt": "2026-11-05T07:15:12.792Z"
     },
     {
       "name": "Rahul Patel",
       "email": "rahul.patel.test@example.com",
       "passwordHash": "dummyhash",
       "isEmailVerified": true,
-      "username": "@rahulpatel_985",
-      "id": "usr_vjzd1q4",
-      "createdAt": "2026-11-05T07:05:55.559Z",
-      "updatedAt": "2026-11-05T07:05:55.559Z"
+      "username": "@rahulpatel_963",
+      "id": "usr_w6ik7d4",
+      "createdAt": "2026-11-05T07:15:12.794Z",
+      "updatedAt": "2026-11-05T07:15:12.794Z"
     },
     {
       "name": "Vikram Singh",
       "email": "vikram.test@example.com",
       "passwordHash": "dummyhash",
       "isEmailVerified": true,
-      "username": "@vikramsingh_368",
-      "id": "usr_q465ho1",
-      "createdAt": "2026-11-05T07:05:55.594Z",
-      "updatedAt": "2026-11-05T07:05:55.594Z"
+      "username": "@vikramsingh_737",
+      "id": "usr_ub64ath",
+      "createdAt": "2026-11-05T07:15:12.811Z",
+      "updatedAt": "2026-11-05T07:15:12.811Z"
     }
   ],
   "verificationTokens": [
@@ -150,11 +150,11 @@
       "verified": false
     },
     {
-      "id": "pv_7977wtx",
+      "id": "pv_tiike7t",
       "phone": "9876543210",
       "otp": "849201",
       "sessionId": "session_2factor_test_xyz",
-      "expiresAt": 1793862955538,
+      "expiresAt": 1793863512770,
       "verified": true
     }
   ],
@@ -378,6 +378,16 @@
       "token": "inv_31854e4tzomw37bw46",
       "status": "ACCEPTED",
       "createdAt": "2026-11-05T07:05:55.542Z"
+    },
+    {
+      "id": "invit_voioras",
+      "groupId": "grp_goa2026",
+      "groupName": "Goa Trip 2026",
+      "inviterName": "Rahul Sharma",
+      "email": "deepak.traveler@example.com",
+      "token": "inv_33b71iblo3mw37nu2v",
+      "status": "ACCEPTED",
+      "createdAt": "2026-11-05T07:15:12.775Z"
     }
   ],
   "resetChallenges": [
@@ -399,8 +409,8 @@
       "currency": "INR",
       "creatorId": "usr_rahul",
       "budget": 50000,
-      "createdAt": "2026-10-22T07:05:55.360Z",
-      "updatedAt": "2026-11-05T07:05:55.553Z",
+      "createdAt": "2026-10-22T07:15:12.586Z",
+      "updatedAt": "2026-11-05T07:15:12.788Z",
       "members": [
         {
           "id": "gm_1",
@@ -409,7 +419,7 @@
           "name": "Rahul Sharma",
           "email": "rahul@example.com",
           "role": "ADMIN",
-          "joinedAt": "2026-10-22T07:05:55.360Z"
+          "joinedAt": "2026-10-22T07:15:12.586Z"
         },
         {
           "id": "gm_2",
@@ -418,7 +428,7 @@
           "name": "Priya Patel",
           "email": "priya@example.com",
           "role": "MEMBER",
-          "joinedAt": "2026-10-22T07:05:55.360Z"
+          "joinedAt": "2026-10-22T07:15:12.586Z"
         },
         {
           "id": "gm_3",
@@ -427,7 +437,7 @@
           "name": "Aman Gupta",
           "email": "aman@example.com",
           "role": "MEMBER",
-          "joinedAt": "2026-10-22T07:05:55.360Z"
+          "joinedAt": "2026-10-22T07:15:12.586Z"
         },
         {
           "id": "gm_4",
@@ -436,16 +446,16 @@
           "name": "Sneha Roy",
           "email": "sneha@example.com",
           "role": "MEMBER",
-          "joinedAt": "2026-10-23T07:05:55.360Z"
+          "joinedAt": "2026-10-23T07:15:12.586Z"
         },
         {
-          "id": "gm_4u3tlle",
+          "id": "gm_ra7gs5h",
           "groupId": "grp_goa2026",
-          "userId": "usr_pg9o69p",
+          "userId": "usr_rrc68vg",
           "name": "Deepak Verma",
           "email": "deepak.traveler@example.com",
           "role": "MEMBER",
-          "joinedAt": "2026-11-05T07:05:55.546Z"
+          "joinedAt": "2026-11-05T07:15:12.781Z"
         }
       ],
       "budgetCurrency": "INR"
@@ -457,8 +467,8 @@
       "category": "Entertainment",
       "currency": "INR",
       "creatorId": "usr_rahul",
-      "createdAt": "2026-09-21T07:05:55.360Z",
-      "updatedAt": "2026-11-05T07:05:55.360Z",
+      "createdAt": "2026-09-21T07:15:12.586Z",
+      "updatedAt": "2026-11-05T07:15:12.586Z",
       "members": [
         {
           "id": "gm_5",
@@ -467,7 +477,7 @@
           "name": "Rahul Sharma",
           "email": "rahul@example.com",
           "role": "ADMIN",
-          "joinedAt": "2026-09-21T07:05:55.360Z"
+          "joinedAt": "2026-09-21T07:15:12.586Z"
         },
         {
           "id": "gm_6",
@@ -476,7 +486,7 @@
           "name": "Priya Patel",
           "email": "priya@example.com",
           "role": "MEMBER",
-          "joinedAt": "2026-09-21T07:05:55.360Z"
+          "joinedAt": "2026-09-21T07:15:12.586Z"
         },
         {
           "id": "gm_7",
@@ -485,7 +495,7 @@
           "name": "Aman Gupta",
           "email": "aman@example.com",
           "role": "MEMBER",
-          "joinedAt": "2026-09-21T07:05:55.360Z"
+          "joinedAt": "2026-09-21T07:15:12.586Z"
         }
       ]
     },
@@ -496,8 +506,8 @@
       "category": "Utilities",
       "currency": "INR",
       "creatorId": "usr_aman",
-      "createdAt": "2026-09-06T07:05:55.360Z",
-      "updatedAt": "2026-11-05T07:05:55.360Z",
+      "createdAt": "2026-09-06T07:15:12.586Z",
+      "updatedAt": "2026-11-05T07:15:12.586Z",
       "members": [
         {
           "id": "gm_8",
@@ -506,7 +516,7 @@
           "name": "Rahul Sharma",
           "email": "rahul@example.com",
           "role": "MEMBER",
-          "joinedAt": "2026-09-06T07:05:55.360Z"
+          "joinedAt": "2026-09-06T07:15:12.586Z"
         },
         {
           "id": "gm_9",
@@ -515,7 +525,7 @@
           "name": "Aman Gupta",
           "email": "aman@example.com",
           "role": "ADMIN",
-          "joinedAt": "2026-09-06T07:05:55.360Z"
+          "joinedAt": "2026-09-06T07:15:12.586Z"
         }
       ]
     }
@@ -563,8 +573,8 @@
         }
       ],
       "notes": "3 nights stay near Baga Beach with breakfast included",
-      "createdAt": "2026-10-31T07:05:55.360Z",
-      "updatedAt": "2026-11-05T07:05:55.360Z"
+      "createdAt": "2026-10-31T07:15:12.586Z",
+      "updatedAt": "2026-11-05T07:15:12.586Z"
     },
     {
       "id": "exp_2",
@@ -608,8 +618,8 @@
         }
       ],
       "notes": "Candlelight dinner at Curlies Beach Shack",
-      "createdAt": "2026-11-01T07:05:55.360Z",
-      "updatedAt": "2026-11-05T07:05:55.360Z"
+      "createdAt": "2026-11-01T07:15:12.586Z",
+      "updatedAt": "2026-11-05T07:15:12.586Z"
     },
     {
       "id": "exp_3",
@@ -653,8 +663,8 @@
         }
       ],
       "notes": "Airport pickup and north Goa cruising",
-      "createdAt": "2026-11-02T07:05:55.360Z",
-      "updatedAt": "2026-11-05T07:05:55.360Z"
+      "createdAt": "2026-11-02T07:15:12.586Z",
+      "updatedAt": "2026-11-05T07:15:12.586Z"
     },
     {
       "id": "exp_4",
@@ -691,8 +701,8 @@
         }
       ],
       "notes": "Pizzas, pasta and tiramisu",
-      "createdAt": "2026-11-03T07:05:55.360Z",
-      "updatedAt": "2026-11-05T07:05:55.360Z"
+      "createdAt": "2026-11-03T07:15:12.586Z",
+      "updatedAt": "2026-11-05T07:15:12.586Z"
     },
     {
       "id": "exp_5",
@@ -722,8 +732,8 @@
         }
       ],
       "notes": "Monthly connection bill",
-      "createdAt": "2026-11-04T07:05:55.360Z",
-      "updatedAt": "2026-11-05T07:05:55.360Z"
+      "createdAt": "2026-11-04T07:15:12.586Z",
+      "updatedAt": "2026-11-05T07:15:12.586Z"
     }
   ],
   "settlements": [
@@ -854,7 +864,7 @@
       "method": "PAYPAL",
       "status": "COMPLETED",
       "reference": "PP-TXN-88492019",
-      "createdAt": "2026-11-03T07:05:55.360Z",
+      "createdAt": "2026-11-03T07:15:12.586Z",
       "metadata": {
         "note": "Villa booking share settled via PayPal Sandbox"
       }
@@ -870,14 +880,14 @@
       "currency": "INR",
       "method": "CREDIT_CARD",
       "status": "COMPLETED",
-      "reference": "SS-CRD-1793862355534",
-      "receiptNumber": "REC-1793862355534-CRD",
+      "reference": "SS-CRD-1793862912767",
+      "receiptNumber": "REC-1793862912767-CRD",
       "metadata": {
         "cardMasked": "•••• •••• •••• 4242",
         "verified": true
       },
-      "id": "pay_gol4p7r",
-      "createdAt": "2026-11-05T07:05:55.534Z"
+      "id": "pay_etx202s",
+      "createdAt": "2026-11-05T07:15:12.767Z"
     }
   ],
   "notifications": [
@@ -888,7 +898,7 @@
       "message": "Sneha Roy settled ₹3,500 for Beach Resort Villa Booking via PayPal Sandbox.",
       "type": "PAYMENT",
       "isRead": false,
-      "createdAt": "2026-11-03T07:05:55.360Z",
+      "createdAt": "2026-11-03T07:15:12.586Z",
       "link": "/transactions"
     },
     {
@@ -898,7 +908,7 @@
       "message": "Aman Gupta added \"High-Speed Fiber WiFi & Electricity\" (₹2,400) in Roommates Flat 402.",
       "type": "EXPENSE",
       "isRead": false,
-      "createdAt": "2026-11-04T07:05:55.360Z",
+      "createdAt": "2026-11-04T07:15:12.586Z",
       "link": "/groups/grp_roommates"
     },
     {
@@ -908,7 +918,7 @@
       "message": "Food and Accommodation account for 61% of your group spending this month.",
       "type": "ALERT",
       "isRead": true,
-      "createdAt": "2026-11-02T07:05:55.360Z",
+      "createdAt": "2026-11-02T07:15:12.586Z",
       "link": "/analytics"
     },
     {
@@ -918,7 +928,7 @@
       "message": "Sneha Roy (@sneharoy_402) sent you a friend request.",
       "type": "FRIEND_REQUEST",
       "isRead": false,
-      "createdAt": "2026-11-05T05:05:55.360Z",
+      "createdAt": "2026-11-05T05:15:12.586Z",
       "link": "/contacts",
       "metadata": {
         "friendRequestId": "freq_demo_sneha",
@@ -928,100 +938,100 @@
       }
     },
     {
-      "userId": "usr_vjzd1q4",
+      "userId": "usr_w6ik7d4",
       "title": "New Friend Request 👋",
-      "message": "Harsh Joshi (@harshjoshi_611) sent you a friend request.",
+      "message": "Harsh Joshi (@harshjoshi_578) sent you a friend request.",
       "type": "FRIEND_REQUEST",
       "link": "/contacts",
       "metadata": {
-        "friendRequestId": "freq_r63e2ua",
-        "senderId": "usr_uxqpgrr",
+        "friendRequestId": "freq_ysy18uc",
+        "senderId": "usr_sd72pak",
         "senderName": "Harsh Joshi",
-        "senderUsername": "@harshjoshi_611"
+        "senderUsername": "@harshjoshi_578"
       },
-      "id": "notif_63md18n",
+      "id": "notif_2kcolff",
       "isRead": true,
-      "createdAt": "2026-11-05T07:05:55.562Z"
+      "createdAt": "2026-11-05T07:15:12.797Z"
     },
     {
-      "userId": "usr_uxqpgrr",
+      "userId": "usr_sd72pak",
       "title": "Friend Request Accepted 🎉",
-      "message": "Rahul Patel (@rahulpatel_985) accepted your friend request. You can now chat privately!",
+      "message": "Rahul Patel (@rahulpatel_963) accepted your friend request. You can now chat privately!",
       "type": "FRIEND_REQUEST",
       "link": "/contacts",
       "metadata": {
-        "friendRequestId": "freq_r63e2ua",
-        "acceptedUserId": "usr_vjzd1q4"
+        "friendRequestId": "freq_ysy18uc",
+        "acceptedUserId": "usr_w6ik7d4"
       },
-      "id": "notif_vn7sni0",
+      "id": "notif_x0jhdmd",
       "isRead": false,
-      "createdAt": "2026-11-05T07:05:55.571Z"
+      "createdAt": "2026-11-05T07:15:12.805Z"
     },
     {
-      "userId": "usr_uxqpgrr",
+      "userId": "usr_sd72pak",
       "title": "New Friend Request 👋",
-      "message": "Vikram Singh (@vikramsingh_368) sent you a friend request.",
+      "message": "Vikram Singh (@vikramsingh_737) sent you a friend request.",
       "type": "FRIEND_REQUEST",
       "link": "/contacts",
       "metadata": {
-        "friendRequestId": "freq_h23u60b",
-        "senderId": "usr_q465ho1",
+        "friendRequestId": "freq_pak5jyr",
+        "senderId": "usr_ub64ath",
         "senderName": "Vikram Singh",
-        "senderUsername": "@vikramsingh_368"
+        "senderUsername": "@vikramsingh_737"
       },
-      "id": "notif_zoowbg6",
+      "id": "notif_s3yz5lh",
       "isRead": true,
-      "createdAt": "2026-11-05T07:05:55.596Z"
+      "createdAt": "2026-11-05T07:15:12.813Z"
     },
     {
-      "userId": "usr_vjzd1q4",
+      "userId": "usr_w6ik7d4",
       "title": "New Message from Harsh Joshi",
       "message": "Hello Rahul! How is the trip planning going?",
       "type": "MESSAGE",
-      "link": "/contacts?chat=usr_uxqpgrr",
-      "id": "notif_c1wb1li",
+      "link": "/contacts?chat=usr_sd72pak",
+      "id": "notif_tzygcdn",
       "isRead": false,
-      "createdAt": "2026-11-05T07:05:55.604Z"
+      "createdAt": "2026-11-05T07:15:12.820Z"
     },
     {
-      "userId": "usr_uxqpgrr",
+      "userId": "usr_sd72pak",
       "title": "New Message from Rahul Patel",
       "message": "Hey Harsh! Everything is booked. I will share the receipt.",
       "type": "MESSAGE",
-      "link": "/contacts?chat=usr_vjzd1q4",
-      "id": "notif_zpoetnv",
+      "link": "/contacts?chat=usr_w6ik7d4",
+      "id": "notif_tno8sa3",
       "isRead": false,
-      "createdAt": "2026-11-05T07:05:55.609Z"
+      "createdAt": "2026-11-05T07:15:12.826Z"
     },
     {
-      "userId": "usr_vjzd1q4",
+      "userId": "usr_w6ik7d4",
       "title": "New File from Harsh Joshi",
       "message": "Harsh Joshi sent you an image: GoaResortBooking.jpg",
       "type": "MESSAGE",
-      "link": "/contacts?chat=usr_uxqpgrr",
-      "id": "notif_hry55i3",
+      "link": "/contacts?chat=usr_sd72pak",
+      "id": "notif_nan17if",
       "isRead": false,
-      "createdAt": "2026-11-05T07:05:55.615Z"
+      "createdAt": "2026-11-05T07:15:12.834Z"
     },
     {
-      "userId": "usr_vjzd1q4",
+      "userId": "usr_w6ik7d4",
       "title": "New File from Harsh Joshi",
       "message": "Harsh Joshi sent you a file: FlightTickets.pdf",
       "type": "MESSAGE",
-      "link": "/contacts?chat=usr_uxqpgrr",
-      "id": "notif_mt3udkr",
+      "link": "/contacts?chat=usr_sd72pak",
+      "id": "notif_n5mum9l",
       "isRead": false,
-      "createdAt": "2026-11-05T07:05:55.620Z"
+      "createdAt": "2026-11-05T07:15:12.838Z"
     },
     {
-      "userId": "usr_vjzd1q4",
+      "userId": "usr_w6ik7d4",
       "title": "Payment Receipt Shared by Harsh Joshi",
       "message": "Harsh Joshi shared a settlement receipt for INR 1,200 (Goa Trip 2026).",
       "type": "PAYMENT",
-      "link": "/contacts?chat=usr_uxqpgrr",
-      "id": "notif_71smq68",
+      "link": "/contacts?chat=usr_sd72pak",
+      "id": "notif_630husw",
       "isRead": false,
-      "createdAt": "2026-11-05T07:05:55.624Z"
+      "createdAt": "2026-11-05T07:15:12.844Z"
     }
   ],
   "friendRequests": [
@@ -1035,32 +1045,32 @@
       "receiverName": "Rahul Sharma",
       "receiverUsername": "@rahulsharma_101",
       "status": "PENDING",
-      "createdAt": "2026-11-05T05:05:55.360Z",
-      "updatedAt": "2026-11-05T05:05:55.360Z"
+      "createdAt": "2026-11-05T05:15:12.586Z",
+      "updatedAt": "2026-11-05T05:15:12.586Z"
     },
     {
-      "id": "freq_r63e2ua",
-      "senderId": "usr_uxqpgrr",
+      "id": "freq_ysy18uc",
+      "senderId": "usr_sd72pak",
       "senderName": "Harsh Joshi",
-      "senderUsername": "@harshjoshi_611",
-      "receiverId": "usr_vjzd1q4",
+      "senderUsername": "@harshjoshi_578",
+      "receiverId": "usr_w6ik7d4",
       "receiverName": "Rahul Patel",
-      "receiverUsername": "@rahulpatel_985",
+      "receiverUsername": "@rahulpatel_963",
       "status": "ACCEPTED",
-      "createdAt": "2026-11-05T07:05:55.562Z",
-      "updatedAt": "2026-11-05T07:05:55.566Z"
+      "createdAt": "2026-11-05T07:15:12.797Z",
+      "updatedAt": "2026-11-05T07:15:12.801Z"
     },
     {
-      "id": "freq_h23u60b",
-      "senderId": "usr_q465ho1",
+      "id": "freq_pak5jyr",
+      "senderId": "usr_ub64ath",
       "senderName": "Vikram Singh",
-      "senderUsername": "@vikramsingh_368",
-      "receiverId": "usr_uxqpgrr",
+      "senderUsername": "@vikramsingh_737",
+      "receiverId": "usr_sd72pak",
       "receiverName": "Harsh Joshi",
-      "receiverUsername": "@harshjoshi_611",
+      "receiverUsername": "@harshjoshi_578",
       "status": "DECLINED",
-      "createdAt": "2026-11-05T07:05:55.596Z",
-      "updatedAt": "2026-11-05T07:05:55.600Z"
+      "createdAt": "2026-11-05T07:15:12.813Z",
+      "updatedAt": "2026-11-05T07:15:12.816Z"
     }
   ],
   "contacts": [
@@ -1068,25 +1078,25 @@
       "id": "cnt_1",
       "userId": "usr_rahul",
       "contactUserId": "usr_priya",
-      "createdAt": "2026-10-11T07:05:55.360Z"
+      "createdAt": "2026-10-11T07:15:12.586Z"
     },
     {
       "id": "cnt_2",
       "userId": "usr_priya",
       "contactUserId": "usr_rahul",
-      "createdAt": "2026-10-11T07:05:55.360Z"
+      "createdAt": "2026-10-11T07:15:12.586Z"
     },
     {
       "id": "cnt_3",
       "userId": "usr_rahul",
       "contactUserId": "usr_aman",
-      "createdAt": "2026-10-16T07:05:55.360Z"
+      "createdAt": "2026-10-16T07:15:12.586Z"
     },
     {
       "id": "cnt_4",
       "userId": "usr_aman",
       "contactUserId": "usr_rahul",
-      "createdAt": "2026-10-16T07:05:55.360Z"
+      "createdAt": "2026-10-16T07:15:12.586Z"
     }
   ],
   "chatMessages": [
@@ -1102,7 +1112,7 @@
       "receiverUsername": "@rahulsharma_101",
       "type": "TEXT",
       "text": "Hey Rahul! Did you receive the settlement for Beach Resort Villa Booking?",
-      "createdAt": "2026-11-03T19:05:55.360Z",
+      "createdAt": "2026-11-03T19:15:12.586Z",
       "isRead": true
     },
     {
@@ -1117,7 +1127,7 @@
       "receiverAvatarUrl": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80",
       "type": "TEXT",
       "text": "Yes! All confirmed on PayPal Sandbox. Here is the verified payment receipt for your records:",
-      "createdAt": "2026-11-03T20:05:55.360Z",
+      "createdAt": "2026-11-03T20:15:12.586Z",
       "isRead": true
     },
     {
@@ -1137,52 +1147,52 @@
         "amount": 3500,
         "currency": "INR",
         "groupName": "Goa Trip 2026",
-        "date": "2026-11-03T07:05:55.360Z",
+        "date": "2026-11-03T07:15:12.586Z",
         "status": "COMPLETED",
         "payerName": "Sneha Roy",
         "recipientName": "Rahul Sharma",
         "receiptNumber": "REC-2026-88492"
       },
-      "createdAt": "2026-11-03T21:05:55.360Z",
+      "createdAt": "2026-11-03T21:15:12.586Z",
       "isRead": true
     },
     {
-      "id": "msg_oc4ti2xoq",
-      "conversationId": "usr_uxqpgrr:usr_vjzd1q4",
-      "senderId": "usr_uxqpgrr",
+      "id": "msg_mq5g2y4po",
+      "conversationId": "usr_sd72pak:usr_w6ik7d4",
+      "senderId": "usr_sd72pak",
       "senderName": "Harsh Joshi",
-      "senderUsername": "@harshjoshi_611",
-      "receiverId": "usr_vjzd1q4",
+      "senderUsername": "@harshjoshi_578",
+      "receiverId": "usr_w6ik7d4",
       "receiverName": "Rahul Patel",
-      "receiverUsername": "@rahulpatel_985",
+      "receiverUsername": "@rahulpatel_963",
       "type": "TEXT",
       "text": "Hello Rahul! How is the trip planning going?",
-      "createdAt": "2026-11-05T07:05:55.604Z",
+      "createdAt": "2026-11-05T07:15:12.820Z",
       "isRead": false
     },
     {
-      "id": "msg_5j1wc3g05",
-      "conversationId": "usr_uxqpgrr:usr_vjzd1q4",
-      "senderId": "usr_vjzd1q4",
+      "id": "msg_nr0qs2v8y",
+      "conversationId": "usr_sd72pak:usr_w6ik7d4",
+      "senderId": "usr_w6ik7d4",
       "senderName": "Rahul Patel",
-      "senderUsername": "@rahulpatel_985",
-      "receiverId": "usr_uxqpgrr",
+      "senderUsername": "@rahulpatel_963",
+      "receiverId": "usr_sd72pak",
       "receiverName": "Harsh Joshi",
-      "receiverUsername": "@harshjoshi_611",
+      "receiverUsername": "@harshjoshi_578",
       "type": "TEXT",
       "text": "Hey Harsh! Everything is booked. I will share the receipt.",
-      "createdAt": "2026-11-05T07:05:55.609Z",
+      "createdAt": "2026-11-05T07:15:12.826Z",
       "isRead": true
     },
     {
-      "id": "msg_4hchedn3v",
-      "conversationId": "usr_uxqpgrr:usr_vjzd1q4",
-      "senderId": "usr_uxqpgrr",
+      "id": "msg_t3lr1y79l",
+      "conversationId": "usr_sd72pak:usr_w6ik7d4",
+      "senderId": "usr_sd72pak",
       "senderName": "Harsh Joshi",
-      "senderUsername": "@harshjoshi_611",
-      "receiverId": "usr_vjzd1q4",
+      "senderUsername": "@harshjoshi_578",
+      "receiverId": "usr_w6ik7d4",
       "receiverName": "Rahul Patel",
-      "receiverUsername": "@rahulpatel_985",
+      "receiverUsername": "@rahulpatel_963",
       "type": "IMAGE",
       "attachment": {
         "id": "att_test_img_1",
@@ -1190,20 +1200,20 @@
         "originalName": "GoaResortBooking.jpg",
         "mimeType": "image/jpeg",
         "size": 245100,
-        "uploadedAt": "2026-11-05T07:05:55.615Z"
+        "uploadedAt": "2026-11-05T07:15:12.833Z"
       },
-      "createdAt": "2026-11-05T07:05:55.615Z",
+      "createdAt": "2026-11-05T07:15:12.834Z",
       "isRead": false
     },
     {
-      "id": "msg_eujcjz7ab",
-      "conversationId": "usr_uxqpgrr:usr_vjzd1q4",
-      "senderId": "usr_uxqpgrr",
+      "id": "msg_cwxvge2zo",
+      "conversationId": "usr_sd72pak:usr_w6ik7d4",
+      "senderId": "usr_sd72pak",
       "senderName": "Harsh Joshi",
-      "senderUsername": "@harshjoshi_611",
-      "receiverId": "usr_vjzd1q4",
+      "senderUsername": "@harshjoshi_578",
+      "receiverId": "usr_w6ik7d4",
       "receiverName": "Rahul Patel",
-      "receiverUsername": "@rahulpatel_985",
+      "receiverUsername": "@rahulpatel_963",
       "type": "FILE",
       "attachment": {
         "id": "att_test_pdf_1",
@@ -1211,34 +1221,34 @@
         "originalName": "FlightTickets.pdf",
         "mimeType": "application/pdf",
         "size": 512000,
-        "uploadedAt": "2026-11-05T07:05:55.619Z"
+        "uploadedAt": "2026-11-05T07:15:12.838Z"
       },
-      "createdAt": "2026-11-05T07:05:55.620Z",
+      "createdAt": "2026-11-05T07:15:12.838Z",
       "isRead": false
     },
     {
-      "id": "msg_68p5tvjm5",
-      "conversationId": "usr_uxqpgrr:usr_vjzd1q4",
-      "senderId": "usr_uxqpgrr",
+      "id": "msg_3p9qdtte9",
+      "conversationId": "usr_sd72pak:usr_w6ik7d4",
+      "senderId": "usr_sd72pak",
       "senderName": "Harsh Joshi",
-      "senderUsername": "@harshjoshi_611",
-      "receiverId": "usr_vjzd1q4",
+      "senderUsername": "@harshjoshi_578",
+      "receiverId": "usr_w6ik7d4",
       "receiverName": "Rahul Patel",
-      "receiverUsername": "@rahulpatel_985",
+      "receiverUsername": "@rahulpatel_963",
       "type": "RECEIPT",
       "receipt": {
-        "paymentId": "pay_gol4p7r",
-        "reference": "SS-CRD-1793862355534",
+        "paymentId": "pay_etx202s",
+        "reference": "SS-CRD-1793862912767",
         "amount": 1200,
         "currency": "INR",
         "groupName": "Goa Trip 2026",
-        "date": "2026-11-05T07:05:55.534Z",
+        "date": "2026-11-05T07:15:12.767Z",
         "status": "COMPLETED",
         "payerName": "Rahul Sharma",
         "recipientName": "Priya Patel",
-        "receiptNumber": "REC-1793862355534-CRD"
+        "receiptNumber": "REC-1793862912767-CRD"
       },
-      "createdAt": "2026-11-05T07:05:55.624Z",
+      "createdAt": "2026-11-05T07:15:12.844Z",
       "isRead": false
     }
   ]

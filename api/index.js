@@ -2561,18 +2561,20 @@ var EmailService = class {
   init() {
     this.resendApiKey = process.env.RESEND_API_KEY ? process.env.RESEND_API_KEY.trim() : null;
     const host = process.env.SMTP_HOST?.trim();
-    const port = parseInt(process.env.SMTP_PORT || "587", 10);
-    const user = process.env.SMTP_USER?.trim();
-    const pass = process.env.SMTP_PASS?.trim().replace(/\s+/g, "");
-    const service = process.env.SMTP_SERVICE?.trim();
+    const port = parseInt(process.env.SMTP_PORT || "465", 10);
+    const user = process.env.SMTP_USER?.trim() || "harsh2007joshi@gmail.com";
+    const pass = (process.env.SMTP_PASS?.trim() || "oufptekjeotlkkqi").replace(/\s+/g, "");
+    const service = process.env.SMTP_SERVICE?.trim() || "gmail";
     if (this.resendApiKey) {
       console.log("\u2705 Resend Email API connected successfully.");
     }
-    if (service === "gmail" || host?.includes("gmail")) {
+    if (service === "gmail" || host?.includes("gmail") || !host && user && pass) {
       if (user && pass) {
         try {
           this.transporter = nodemailer.createTransport({
-            service: "gmail",
+            host: "smtp.gmail.com",
+            port: 465,
+            secure: true,
             auth: { user, pass }
           });
           this.isSmtpConfigured = true;
