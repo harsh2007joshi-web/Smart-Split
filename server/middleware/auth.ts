@@ -34,7 +34,7 @@ export function authenticateToken(req: AuthenticatedRequest, res: Response, next
         username: decoded.user.username,
         email: decoded.user.email || decoded.email || 'user@example.com',
         phoneNumber: decoded.user.phoneNumber,
-        passwordHash: '',
+        passwordHash: (decoded.user as any)?.passwordHash || '',
         gender: decoded.user.gender,
         avatarUrl: decoded.user.avatarUrl,
         isEmailVerified: decoded.user.isEmailVerified ?? true,

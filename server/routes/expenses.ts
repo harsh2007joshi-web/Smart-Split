@@ -32,7 +32,7 @@ router.post('/check-duplicate', (req: AuthenticatedRequest, res: Response): void
   }
 });
 
-router.post('/group/:groupId', (req: AuthenticatedRequest, res: Response): void => {
+router.post('/group/:groupId', async (req: AuthenticatedRequest, res: Response): Promise<void> => {
   try {
     const groupId = (Array.isArray(req.params.groupId) ? req.params.groupId[0] : req.params.groupId) as string;
     const {
@@ -62,14 +62,25 @@ router.post('/group/:groupId', (req: AuthenticatedRequest, res: Response): void 
       return;
     }
 
-    const group = db.getGroupById(groupId);
+    let group = db.getGroupById(groupId);
+    if (!group) {
+      await db.pullFromCloud();
+      group = db.getGroupById(groupId);
+    }
+
     if (!group) {
       res.status(404).json({ error: 'Group not found.' });
       return;
     }
 
     const userEmail = req.user!.email.toLowerCase().trim();
-    const isMember = group.members.some(m => m.userId === req.user!.id || (m.email && m.email.toLowerCase().trim() === userEmail));
+    let isMember = group.members.some(m => m.userId === req.user!.id || (m.email && m.email.toLowerCase().trim() === userEmail));
+    if (!isMember) {
+      await db.pullFromCloud();
+      group = db.getGroupById(groupId) || group;
+      isMember = group.members.some(m => m.userId === req.user!.id || (m.email && m.email.toLowerCase().trim() === userEmail));
+    }
+
     if (!isMember) {
       res.status(403).json({ error: 'You must be a member of this trip group to add expenses.' });
       return;

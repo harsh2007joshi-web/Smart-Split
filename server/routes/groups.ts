@@ -7,10 +7,14 @@ import { emailService } from '../services/email';
 const router = Router();
 router.use(authenticateToken);
 
-router.get('/', (req: AuthenticatedRequest, res: Response): void => {
+router.get('/', async (req: AuthenticatedRequest, res: Response): Promise<void> => {
   try {
     const userId = req.user!.id;
-    const groups = db.getGroupsForUser(userId);
+    let groups = db.getGroupsForUser(userId);
+    if (groups.length === 0) {
+      await db.pullFromCloud();
+      groups = db.getGroupsForUser(userId);
+    }
 
     const enrichedGroups = groups.map(g => {
       const expenses = db.getExpensesForGroup(g.id);
@@ -67,10 +71,14 @@ router.post('/', (req: AuthenticatedRequest, res: Response): void => {
   }
 });
 
-router.get('/:id', (req: AuthenticatedRequest, res: Response): void => {
+router.get('/:id', async (req: AuthenticatedRequest, res: Response): Promise<void> => {
   try {
     const groupId = (Array.isArray(req.params.id) ? req.params.id[0] : req.params.id) as string;
-    const group = db.getGroupById(groupId);
+    let group = db.getGroupById(groupId);
+    if (!group) {
+      await db.pullFromCloud();
+      group = db.getGroupById(groupId);
+    }
 
     if (!group) {
       res.status(404).json({ error: 'Group not found.' });
@@ -149,13 +157,15 @@ router.post('/:id/members', async (req: AuthenticatedRequest, res: Response): Pr
 
     const invitation = db.createGroupInvitation(groupId, group.name, req.user!.name, email);
 
-    const clientOrigin = (req.headers.origin as string) || (req.headers.referer ? new URL(req.headers.referer).origin : '');
-    const clientBaseUrl = typeof req.body.clientBaseUrl === 'string' && req.body.clientBaseUrl.trim() !== ''
-      ? req.body.clientBaseUrl.trim().replace(/\/$/, '')
-      : '';
-    const baseUrl = (process.env.APP_URL && process.env.APP_URL.trim() !== '')
-      ? process.env.APP_URL.trim().replace(/\/$/, '')
-      : (clientBaseUrl || (clientOrigin ? clientOrigin.replace(/\/$/, '') : 'http://localhost:5173'));
+    const reqHost = req.headers['x-forwarded-host'] || req.headers.host;
+    const reqProto = req.headers['x-forwarded-proto'] || (req.secure ? 'https' : 'http');
+    const dynamicOrigin = (req.headers.origin as string) || (req.headers.referer ? new URL(req.headers.referer).origin : (reqHost ? `${reqProto}://${reqHost}` : ''));
+
+    const baseUrl = (dynamicOrigin && !dynamicOrigin.includes('localhost') && !dynamicOrigin.includes('127.0.0.1'))
+      ? dynamicOrigin.replace(/\/$/, '')
+      : (process.env.APP_URL && !process.env.APP_URL.includes('192.168.')
+          ? process.env.APP_URL.trim().replace(/\/$/, '')
+          : (dynamicOrigin || 'http://localhost:5173'));
 
     const joinUrl = `${baseUrl}/join-group?token=${invitation.token}&groupId=${groupId}`;
 
@@ -192,7 +202,7 @@ router.post('/:id/members', async (req: AuthenticatedRequest, res: Response): Pr
   }
 });
 
-router.post('/join', (req: AuthenticatedRequest, res: Response): void => {
+router.post('/join', async (req: AuthenticatedRequest, res: Response): Promise<void> => {
   try {
     const { token } = req.body;
     if (!token) {
@@ -200,7 +210,12 @@ router.post('/join', (req: AuthenticatedRequest, res: Response): void => {
       return;
     }
 
-    const result = db.acceptGroupInvitation(token, req.user!);
+    let result = db.acceptGroupInvitation(token, req.user!);
+    if (!result.success) {
+      await db.pullFromCloud();
+      result = db.acceptGroupInvitation(token, req.user!);
+    }
+
     if (!result.success) {
       res.status(400).json({ error: result.message });
       return;

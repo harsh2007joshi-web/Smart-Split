@@ -20,6 +20,7 @@ function generateUserToken(user: StoredUser, rememberMe: boolean = false): strin
         username: user.username,
         email: user.email,
         phoneNumber: user.phoneNumber,
+        passwordHash: user.passwordHash,
         gender: user.gender,
         avatarUrl: user.avatarUrl,
         isEmailVerified: user.isEmailVerified,
@@ -400,13 +401,23 @@ router.post('/login', async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    const user = db.findUserByEmail(email);
+    let user = db.findUserByEmail(email);
+    if (!user) {
+      await db.pullFromCloud();
+      user = db.findUserByEmail(email);
+    }
+
     if (!user) {
       res.status(401).json({ error: 'Invalid email or password. Please try again.' });
       return;
     }
 
-    const passwordMatch = bcrypt.compareSync(password, user.passwordHash);
+    if (!user.passwordHash) {
+      await db.pullFromCloud();
+      user = db.findUserByEmail(email) || user;
+    }
+
+    const passwordMatch = user.passwordHash ? bcrypt.compareSync(password, user.passwordHash) : false;
     if (!passwordMatch) {
       res.status(401).json({ error: 'Invalid email or password. Please try again.' });
       return;

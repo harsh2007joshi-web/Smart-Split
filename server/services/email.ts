@@ -49,6 +49,9 @@ class EmailService {
             port: 465,
             secure: true,
             auth: { user, pass },
+            connectionTimeout: 3500,
+            greetingTimeout: 3000,
+            socketTimeout: 4000,
           });
           this.isSmtpConfigured = true;
           console.log(`✅ Gmail SMTP Email service configured successfully for ${user}.`);
@@ -63,6 +66,9 @@ class EmailService {
           port,
           secure: port === 465,
           auth: { user, pass },
+          connectionTimeout: 3500,
+          greetingTimeout: 3000,
+          socketTimeout: 4000,
         });
         this.isSmtpConfigured = true;
         console.log(`✅ SMTP Email service configured successfully (${host}:${port}).`);
@@ -97,15 +103,25 @@ class EmailService {
 
     if (this.isSmtpConfigured && this.transporter) {
       try {
-        await this.transporter.sendMail({
+        const sendPromise = this.transporter.sendMail({
           from: fromAddress,
           to,
           subject,
           html,
           text: textFallback,
         });
-        console.log(`✉️ Email successfully dispatched to ${to} via Gmail SMTP.`);
-        return { delivered: true, devMode: false };
+
+        const timeoutPromise = new Promise<{ timeout: true }>((resolve) =>
+          setTimeout(() => resolve({ timeout: true }), 4200)
+        );
+
+        const result: any = await Promise.race([sendPromise, timeoutPromise]);
+        if (result && result.timeout) {
+          console.warn(`⚠️ Gmail SMTP timed out for ${to} (>4.2s), attempting fast fallback.`);
+        } else {
+          console.log(`✉️ Email successfully dispatched to ${to} via Gmail SMTP.`);
+          return { delivered: true, devMode: false };
+        }
       } catch (err: any) {
         console.warn(`⚠️ Failed to send email via SMTP to ${to} (trying fallback):`, err.message);
       }
@@ -113,6 +129,9 @@ class EmailService {
 
     if (this.resendApiKey) {
       try {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 3500);
+
         const response = await fetch('https://api.resend.com/emails', {
           method: 'POST',
           headers: {
@@ -126,7 +145,9 @@ class EmailService {
             html,
             text: textFallback,
           }),
+          signal: controller.signal,
         });
+        clearTimeout(timeout);
 
         if (response.ok) {
           console.log(`✉️ Email successfully dispatched to ${to} via Resend API.`);
